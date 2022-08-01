@@ -1,11 +1,17 @@
 const { Telegraf } = require('telegraf')
 require('dotenv').config({path: './.env'});
+const fs = require('fs');
 const  twitter  = require('./twitter')
 //Variables usuarios
 const usuarioAdmin = JSON.parse(process.env.BOT_AdminUsers)[0]
 
 //Creando el bot
 const bot = new Telegraf(process.env.BOT_TOKEN_Beta)
+//Comprobar si el archivo bot.log existe, si no crearlo
+if(fs.existsSync('./bot.log') === false){
+    fs.writeFileSync('./bot.log', 'Registro de tweets enviados al canal\n')
+    
+}
 
 //Comandos del bot
 bot.start((ctx) => {
@@ -30,6 +36,7 @@ try {
 
 
 function obtenerTweets(){
+    console.log('Comprobación de tweets nuevos')
     var users = JSON.parse(process.env.Twitter_Accounts);
     users.forEach(user => {
         obtenerTweet(user.id, user.name)
@@ -38,7 +45,7 @@ function obtenerTweets(){
 setTimeout(function(){
     console.log("I am the third log after 10 seconds");
     obtenerTweets()
-},10000);
+},300000);
 }
 async function obtenerTweet(id, name) {
     let tweet = await twitter.getTwett(id)
@@ -50,31 +57,22 @@ async function obtenerTweet(id, name) {
     //Mensaje sin sonido = disable_notification: true
     }else{
         //Guardar en .log fecha y hora del tweet
-        console.log(`[Mensaje ya envíado]\nId Tweet: ${tweet.id}\nUsuario: ${name}`+ `\n${new Date()}`) 
+        console.log(`[Mensaje rechazado - Ya envíado]\nId Tweet: ${tweet.id}\nUsuario: ${name}`+ `\n${new Date()}`) 
     }
     
     function comprobarEnviado(){
-        //Comprobar un registro si el tweet se ha enviado
-        var log = JSON.parse(process.env.BOT_Log)
-        var encontrado = false
-        log.forEach(element => {
-            if(element.id === tweet.id){
-                encontrado = true
-            }
-        }
-        )
-        //Si no se ha encontrado el tweet en el log, se añade al log
-        if(encontrado === false){
-            log.push({id: tweet.id})
-            //Guardar en .log fecha y hora del tweet
-            console.log(`[Mensaje enviado]\nId Tweet: ${tweet.id}\nUsuario: ${name}`+ `\n${new Date()}`)
-            //Guardar en .log el log
-            fs.writeFileSync('./.env', JSON.stringify({BOT_Log: log}))
-            return false
-        }else{
+        
+        //Comprobar un registro .log si el tweet se ha enviado
+        var log = fs.readFileSync('./bot.log', 'utf8')
+        if(log.includes(tweet.id)){
             return true
+        }else{
+            //Añade el id del  tweet al .log
+            fs.appendFileSync('./bot.log', `Id Tweet: ${tweet.id}\nUsuario: ${name}`+ `\n${new Date()}\n`)
+            return false
         }
        
+        
     
     }
    
