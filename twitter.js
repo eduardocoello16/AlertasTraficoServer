@@ -1,6 +1,6 @@
 
   require('dotenv').config({path: './.env'});
-  async function obtenerTwett(id){
+  async function getTwett(id){
    
     const axios = require('axios').default;
 
@@ -20,5 +20,5 @@
 
 
   module.exports = {
-    obtenerTwett
+    getTwett
   };
