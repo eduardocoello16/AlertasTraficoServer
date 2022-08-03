@@ -1,0 +1,4 @@
+{
+    "whiteList": ["tráfico", "carretera", "carreteras", "circular", "calle", "coche", "señal", "vehículos", "TF-1","TF-5", "guaguas"],
+    "blackList": ["Datos", "plazo", "meses", "euros", "inversión", "licita", "licitación", "proximamente", "mañana","pasado", "semana", "mes", "año", "asistió", "atropelló", "intervino"]
+}

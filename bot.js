@@ -1,6 +1,7 @@
 const { Telegraf } = require('telegraf')
 require('dotenv').config({path: './.env'});
 const fs = require('fs');
+const axios = require('axios').default;
 const  twitter  = require('./twitter')
 //Variables usuarios
 const usuarioAdmin = JSON.parse(process.env.BOT_AdminUsers)[0]
@@ -13,6 +14,7 @@ if(fs.existsSync('./bot.log') === false){
     
 }
 
+
 //Comandos del bot
 bot.start((ctx) => {
     //Get group id
@@ -21,6 +23,7 @@ bot.start((ctx) => {
     ctx.reply('Welcome')
 }
 )
+
 
 //Start bot
 try {
@@ -48,19 +51,34 @@ setTimeout(function(){
 },300000);
 }
 async function obtenerTweet(id, name) {
-    let tweet = await twitter.getTwett(id)
-    //Comprobar si el tweet ya se ha enviado anteriormente
-    if(comprobarEnviado() === false){
+    var tweet = await twitter.getTwett(id)
+    //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
+    if(comprobarLog() === false){
         //Filtrar Tweet
-        //Send message without url preview
-    bot.telegram.sendMessage(process.env.BOT_ChannelToSend,`${tweet.text}\n${name}`,{disable_web_page_preview: true})
-    //Mensaje sin sonido = disable_notification: true
+        if( filtradoWhiteList(tweet) === true){
+            if(filtradoBlackList(tweet) === true){
+                      //Enviar tweet al grupo
+                      bot.telegram.sendMessage(process.env.BOT_GroupToSend,`${tweet.text}\n${name}`,
+                      //Send message without url preview
+                      {disable_web_page_preview: true})
+                      //Mensaje sin sonido = disable_notification: true
+                
+            }else{
+                    //Enviar tweet al canal
+                    bot.telegram.sendMessage(process.env.BOT_ChannelToSend,`${tweet.text}\n${name}`,
+                    //Send message without url preview
+                    {disable_web_page_preview: true})
+                    //Mensaje sin sonido = disable_notification: true
+            }
+           
+        }
+        
     }else{
         //Guardar en .log fecha y hora del tweet
         console.log(`[Mensaje rechazado - Ya envíado]\nId Tweet: ${tweet.id}\nUsuario: ${name}`+ `\n${new Date()}`) 
     }
     
-    function comprobarEnviado(){
+    function comprobarLog(){
         
         //Comprobar un registro .log si el tweet se ha enviado
         var log = fs.readFileSync('./bot.log', 'utf8')
@@ -78,3 +96,31 @@ async function obtenerTweet(id, name) {
    
 }
 
+ function filtradoWhiteList(tweet){
+    let salida = false
+    let rawdata = fs.readFileSync('filtro.json');
+    let result = JSON.parse(rawdata);
+    let whiteList = result.whiteList;
+    let tweetText = tweet.text;
+    whiteList.forEach(element => {
+        if(tweetText.includes(element)){
+       
+            salida = true
+        }
+    })
+    return salida
+}
+function filtradoBlackList(tweet){
+    let salida = false
+    let rawdata = fs.readFileSync('filtro.json');
+    let result = JSON.parse(rawdata);
+    let whiteList = result.blackList;
+    let tweetText = tweet.text;
+    whiteList.forEach(element => {
+        if(tweetText.includes(element)){
+       
+            salida = true
+        }
+    })
+    return salida
+}
