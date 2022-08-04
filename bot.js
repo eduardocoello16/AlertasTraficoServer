@@ -55,7 +55,7 @@ async function obtenerTweet(id, name) {
     //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
     if(comprobarLog() === false){
         //Filtrar Tweet
-        if( filtradoWhiteList(tweet) === true){
+        if( filtradoAcceso(tweet) === true){
             if(filtradoBlackList(tweet) === true){
                       //Enviar tweet al grupo
                       bot.telegram.sendMessage(process.env.BOT_GroupToSend,`${tweet.text}\n${name}`,
@@ -96,11 +96,12 @@ async function obtenerTweet(id, name) {
    
 }
 
- function filtradoWhiteList(tweet){
+ function filtradoAcceso(tweet){
     let salida = false
     let rawdata = fs.readFileSync('filtro.json');
     let result = JSON.parse(rawdata);
     let whiteList = result.whiteList;
+    let blackList = result.blackList;
     let tweetText = tweet.text;
     whiteList.forEach(element => {
         if(tweetText.includes(element)){
@@ -108,13 +109,23 @@ async function obtenerTweet(id, name) {
             salida = true
         }
     })
+    blackList.forEach(element => {
+        if(tweetText.includes(element)){
+       
+            salida = false
+        }
+    })
+
+
+
+    
     return salida
 }
 function filtradoBlackList(tweet){
     let salida = false
     let rawdata = fs.readFileSync('filtro.json');
     let result = JSON.parse(rawdata);
-    let whiteList = result.blackList;
+    let whiteList = result.blackListGroup;
     let tweetText = tweet.text;
     whiteList.forEach(element => {
         if(tweetText.includes(element)){
