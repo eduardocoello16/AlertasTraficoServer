@@ -1,7 +1,6 @@
 
   require('dotenv').config({path: './.env'});
   async function getTwett(id){
-   
     const axios = require('axios').default;
 
       var url = `https://api.twitter.com/2/users/${id}/tweets`;

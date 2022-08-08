@@ -1,5 +1,5 @@
 {
-    "whiteList": ["tráfico", "carretera", "carreteras", "circular", "calle", "coche", "señal", "vehículos", "TF-1","TF-5", "guaguas", "radar", "radares"],
-    "blackList": ["GC", "LPGC", "Gran Canaria", "Fuerteventura", "Lanzarote", "La Gomera", "Las Palmas"],
-    "blackListGroup": ["Datos","Renovamos", "plazo", "meses", "euros", "inversión", "licita", "licitación", "proximamente", "mañana","pasado", "semana", "mes", "año", "asistió", "atropelló", "intervino"]
+    "whiteList": ["tráfico","#TRÁFICOSC", "TF","Tenerife", "carretera", "carreteras", "circular", "calle", "coche", "señal", "vehículos", "TF-1","TF-5", "guaguas", "radar", "radares"],
+    "blackList": ["GC","RT", "LPGC","Lapalma", "Gran Canaria", "Fuerteventura", "Lanzarote", "La Gomera", "Las Palmas"],
+    "blackListGroup": ["últimos días","se llevarán a cabo","Renovamos", "plazo", "meses", "euros", "inversión", "licita", "licitación", "proximamente", "mañana","pasado", "semana", "mes", "año", "asistió", "atropelló", "intervino"]
 }
