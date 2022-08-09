@@ -12,7 +12,7 @@
         }
   let result = await  axios.get(url, config)
     
-       return result.data.data[0]
+       return result.data.data.reverse();
       
   }
 

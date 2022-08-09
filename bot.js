@@ -109,8 +109,9 @@ function comprobarTweets(){
  
 async function obtenerTweets(id, name) {
    
-    var tweet = await twitter.getTwett(id)
-
+    var tweets = await twitter.getTwett(id)
+    for(const tweet of tweets){
+        await new Promise(r => setTimeout(r, 3000));
           //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
     if(comprobarLog(tweet,name) === false){
         //Filtrar Tweet
@@ -145,10 +146,10 @@ async function obtenerTweets(id, name) {
             let fecha = new Date()
             let hora = fecha.getHours() + ':' + fecha.getMinutes() + ':' + fecha.getSeconds()
         //Guardar en .log fecha y hora del tweet
-        console.log(`Mensaje con ID:  ${tweet.id} ya envíado. [${hora}]`)
+        console.log(`Mensaje con ID:  ${tweet.id} ya envíado. Cuenta:${name}  [${hora}]`)
      
     }
-    
+}
    
 }
 
