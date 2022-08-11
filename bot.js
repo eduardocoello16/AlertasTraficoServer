@@ -4,7 +4,7 @@ const fs = require('fs');
 const axios = require('axios').default;
 const  twitter  = require('./twitter')
 //Variables usuarios
-const usuarioAdmin = JSON.parse(process.env.BOT_AdminUsers)[0]
+const usuariosAdmin = JSON.parse(process.env.BOT_AdminUsers)
 
 //Creando el bot
 const bot = new Telegraf(process.env.BOT_TOKEN_Beta)
@@ -13,17 +13,89 @@ if(fs.existsSync('./bot.log') === false){
     fs.writeFileSync('./bot.log', 'Registro de tweets enviados al canal\n')
     
 }
+//Cambiar permisos un usuario a administrador y hacerlo anónimo
+bot.command('modoOculto', async (ctx) => {
+    
+    let id = ctx.message.from.id
+    //Comprobar que un usuario es anonimo
+    let user = await bot.telegram.getChatMember(process.env.BOT_GroupToSend, id)
+
+    console.log(user.can_change_info)
+    try {
+        if(user.is_anonymous === true){
+        await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, id, {is_anonymous: false, can_change_info: user.can_change_info, can_delete_messages: user.can_delete_messages, can_invite_users: user.can_invite_users, can_restrict_members: user.can_restrict_members, can_pin_messages: user.can_pin_messages, can_promote_members: user.can_promote_members})
+        ctx.reply('Modo oculto desactivado')
+    }else{
+        await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, id, {is_anonymous: true, can_change_info: user.can_change_info, can_delete_messages: user.can_delete_messages, can_invite_users: user.can_invite_users, can_restrict_members: user.can_restrict_members, can_pin_messages: user.can_pin_messages, can_promote_members: user.can_promote_members})
+        ctx.reply('Modo oculto activado')
+    }
+        
+        
+    } catch (error) {
+        ctx.reply('Ha ocurrido un error al cambiar el modo oculto. ¿Eres un administrador asignado por el bot?')
+    }
+
+})
+
+//Hacer un usuario administrador
+bot.command('setAdmin', async (ctx) => {
+    let id = ctx.message.from.id
+    if(comprobarAdmin(ctx) === true){
+        console.log(ctx.message.text)
+        //Obtener usuario a añadir a la lista de administradores
+        let user = ctx.message.text.split(' ')[1]
+        console.log(user)
+        //Añadir usuario a la lista de administradores
+       try {
+        await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, user, { can_change_info: true, can_delete_messages: true,can_manage_chat: true ,can_invite_users: true, can_restrict_members: true, can_pin_messages: true, can_manage_video_chats: true, can_promote_members: true}) 
+        ctx.reply(`Se han actualizado los permisos del usuario ${user}`)
+       } catch (error) {
+        console.log(error)
+        ctx.reply('Error al añadir usuario')
+       }
+    }else{
+        ctx.reply('No tienes permisos para ejecutar este comando')
+    }
+
+} )
+
+//Quitar un usuario administrador
+bot.command('quitAdmin', async (ctx) => {
+    let id = ctx.message.from.id
+    if(comprobarAdmin(ctx) === true){
+        console.log(ctx.message.text)
+        //Obtener usuario a añadir a la lista de administradores
+        let user = ctx.message.text.split(' ')[1]
+        console.log(user)
+        //Añadir usuario a la lista de administradores
+       try {
+        await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, user, { }) 
+        ctx.reply(`Se han actualizado los permisos del usuario ${user}`)
+       } catch (error) {
+        console.log(error)
+        ctx.reply('Error al añadir usuario')
+       }
+    }else{
+        ctx.reply('No tienes permisos para ejecutar este comando')
+    }
+
+} )
 
 
-//Comandos del bot
 
-//Detectar envio de mensajes 
-/*
-bot.on('message', async (ctx) => {
-    //Obtener id del usuario
-    let id = ctx.update.message.from.id
-    console.log(id)
-})*/
+
+
+
+bot.command('getId' , async (ctx) => {
+let id;
+if(ctx.update.message.chat.type === 'private'){
+id = ctx.message.from.id
+}else{
+     id = ctx.update.message.from.id
+}
+ctx.reply(id)
+} )
+
 
 bot.start((ctx) => {
     //Get group id
@@ -82,7 +154,7 @@ else{
 console.log('Iniciando bot... ')
 bot.launch().then(() => {
     console.log('Bot iniciado')
-    comprobarTweets();
+    //comprobarTweets();
     setInterval(() => {
         console.log("Comprobando Tweets cada 10 minutos");
         comprobarTweets();
@@ -111,6 +183,7 @@ async function obtenerTweets(id, name) {
    
     var tweets = await twitter.getTwett(id)
     for(const tweet of tweets){
+        //Await 3 segundos para no saturar el BOT
         await new Promise(r => setTimeout(r, 3000));
           //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
     if(comprobarLog(tweet,name) === false){
@@ -218,13 +291,21 @@ function filtradoBlackList(tweet){
 }
 
 function comprobarAdmin(ctx) {
+    console.log('Comprobando permisos de administrador')
     let salida = false
-    let admins = JSON.parse(process.env.BOT_AdminUsers)
-    let id = ctx.update.message.chat.id
+    let id;
     if(ctx.update.message.chat.type === 'private'){
-    if(admins.includes(id)){
+    id = ctx.message.from.id
+    }else{
+         id = ctx.update.message.from.id
+    }
+   
+    if(id === null){
+        id = ctx.update.message.from.id
+    }
+    if(usuariosAdmin.includes(id)){
         salida = true
     }
-}
+
     return salida
   }
