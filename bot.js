@@ -24,10 +24,10 @@ bot.command('modoOculto', async (ctx) => {
     try {
         if(user.is_anonymous === true){
         await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, id, {is_anonymous: false, can_change_info: user.can_change_info, can_delete_messages: user.can_delete_messages, can_invite_users: user.can_invite_users, can_restrict_members: user.can_restrict_members, can_pin_messages: user.can_pin_messages, can_promote_members: user.can_promote_members})
-        ctx.reply('Modo oculto desactivado')
+        ctx.reply(`${ctx.message.from.first_name} ha desactivado el modo oculto `)
     }else{
         await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, id, {is_anonymous: true, can_change_info: user.can_change_info, can_delete_messages: user.can_delete_messages, can_invite_users: user.can_invite_users, can_restrict_members: user.can_restrict_members, can_pin_messages: user.can_pin_messages, can_promote_members: user.can_promote_members})
-        ctx.reply('Modo oculto activado')
+        ctx.reply(`${ctx.message.from.first_name} ha activado el modo oculto `)
     }
         
         
@@ -39,53 +39,61 @@ bot.command('modoOculto', async (ctx) => {
 
 //Hacer un usuario administrador
 bot.command('setAdmin', async (ctx) => {
-    let id = ctx.message.from.id
     if(comprobarAdmin(ctx) === true){
         console.log(ctx.message.text)
         //Obtener usuario a añadir a la lista de administradores
-        let user = ctx.message.text.split(' ')[1]
-        console.log(user)
+        let id = ctx.message.text.split(' ')[1]
+            //Comprobar que un usuario es anonimo
+            try {
+                let user = await bot.telegram.getChatMember(process.env.BOT_GroupToSend, id)
+    if(user.status === 'left'){
+        ctx.reply('El usuario no está en el grupo')
+    }else{
         //Añadir usuario a la lista de administradores
        try {
-        await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, user, { can_change_info: true, can_delete_messages: true,can_manage_chat: true ,can_invite_users: true, can_restrict_members: true, can_pin_messages: true, can_manage_video_chats: true, can_promote_members: true}) 
-        ctx.reply(`Se han actualizado los permisos del usuario ${user}`)
+        await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, id, { can_change_info: true, can_delete_messages: true,can_manage_chat: true ,can_invite_users: true, can_restrict_members: true, can_pin_messages: true, can_manage_video_chats: true, can_promote_members: true}) 
+        ctx.reply(`Se han actualizado los permisos del usuario ${user.user.first_name} ${user.user.last_name}`)
        } catch (error) {
-        console.log(error)
         ctx.reply('Error al añadir usuario')
        }
+    }
+        } catch (error) {
+        ctx.reply('Id o nombre inválido')
+        }
     }else{
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
-
-} )
+})
 
 //Quitar un usuario administrador
-bot.command('quitAdmin', async (ctx) => {
-    let id = ctx.message.from.id
+bot.command('delAdmin', async (ctx) => {
     if(comprobarAdmin(ctx) === true){
         console.log(ctx.message.text)
         //Obtener usuario a añadir a la lista de administradores
-        let user = ctx.message.text.split(' ')[1]
-        console.log(user)
+        let id = ctx.message.text.split(' ')[1]
+            //Comprobar que un usuario es anonimo
+            try {
+                let user = await bot.telegram.getChatMember(process.env.BOT_GroupToSend, id)
+    if(user.status === 'left'){
+        ctx.reply('El usuario no está en el grupo')
+    }else{
         //Añadir usuario a la lista de administradores
        try {
-        await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, user, { }) 
-        ctx.reply(`Se han actualizado los permisos del usuario ${user}`)
+        await bot.telegram.promoteChatMember(process.env.BOT_GroupToSend, id, { }) 
+        ctx.reply(`Se han actualizado los permisos del usuario ${user.user.first_name} ${user.user.last_name}`)
        } catch (error) {
-        console.log(error)
         ctx.reply('Error al añadir usuario')
        }
+    }
+        } catch (error) {
+        ctx.reply('Id o nombre inválido')
+        }
     }else{
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
+})
 
-} )
-
-
-
-
-
-
+//Obtener el ID de un usuario
 bot.command('getId' , async (ctx) => {
 let id;
 if(ctx.update.message.chat.type === 'private'){
@@ -94,7 +102,7 @@ id = ctx.message.from.id
      id = ctx.update.message.from.id
 }
 ctx.reply(id)
-} )
+})
 
 
 bot.start((ctx) => {
