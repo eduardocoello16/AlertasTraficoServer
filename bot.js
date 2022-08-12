@@ -9,10 +9,10 @@ const axios = require('axios').default;
 const twitter = require('./twitter')
 //Variables usuarios
 const usuariosAdmin = JSON.parse(process.env.BOT_AdminUsers)
-const grupoAdmins = process.env.BOT_AdminGroup_Beta
-const grupoAlertas = process.env.BOT_GroupToSend_Beta
-const canalAlertas = process.env.BOT_ChannelToSend_Beta
-const bot = new Telegraf(process.env.BOT_TOKEN_Beta)
+const grupoAdmins = process.env.BOT_AdminGroup
+const grupoAlertas = process.env.BOT_GroupToSend
+const canalAlertas = process.env.BOT_ChannelToSend
+const bot = new Telegraf(process.env.BOT_TOKEN)
 
 //Comprobar si el archivo bot.log existe, si no crearlo
 if (fs.existsSync('./bot.log') === false) {
