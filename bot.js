@@ -13,7 +13,7 @@ const grupoAdmins = process.env.BOT_AdminGroup_Beta
 const grupoAlertas = process.env.BOT_GroupToSend_Beta
 const canalAlertas = process.env.BOT_ChannelToSend_Beta
 const bot = new Telegraf(process.env.BOT_TOKEN_Beta)
-
+//Prueba
 //Comprobar si el archivo bot.log existe, si no crearlo
 if (fs.existsSync('./bot.log') === false) {
     fs.writeFileSync('./bot.log', 'Registro de tweets enviados al canal\n')
