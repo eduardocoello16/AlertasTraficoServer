@@ -161,55 +161,102 @@ bot.command('delAdmin', async (ctx) => {
 })
 //Comando /getBlackList -> Obtiene la BlackList del JSON 
 bot.command('getBlackList', (ctx) => {
-    let filtrado = obtenerFiltro('getBlackList', ctx)
-    if (filtrado) {
-        ctx.reply(`Black List:\n${filtrado}`)
+   
+    if (comprobarAdmin(ctx) === true) {
+        let filtrado = obtenerFiltro(ctx)
+        ctx.reply(`Black List:\n${filtrado.blackList}`)
     } else {
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
 })
 //Comando /getBlackListGroup -> Obtiene la BlackListGroup del JSON 
 bot.command('getBlackGroupList', (ctx) => {
-    let filtrado = obtenerFiltro('getBlackGroupList', ctx)
-    if (filtrado) {
-        ctx.reply(`Black List Grupo:\n${filtrado}`)
+
+    if (comprobarAdmin(ctx) === true) {
+        let filtrado = obtenerFiltro( ctx)
+        ctx.reply(`Black List Grupo:\n${filtrado.blackListGroup}`)
     } else {
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
 })
 //Comando /getWhiteList -> Obtiene la WhiteList del JSON 
 bot.command('getWhiteList', (ctx) => {
-    let filtrado = obtenerFiltro('getWhiteList', ctx)
-    if (filtrado) {
-        ctx.reply(`WhiteList:\n${filtrado}`)
+    if (comprobarAdmin(ctx) === true) {
+        let filtrado = obtenerFiltro( ctx)
+        ctx.reply(`WhiteList:\n${filtrado.whiteList}`)
     } else {
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
 })
 
-function obtenerFiltro(filtro, ctx) {
-    //Comprobar el usuario es admin
-    if (comprobarAdmin(ctx) === true) {
 
+
+//Añadir a la BlackList del JSON
+bot.command('addBlackList', async (ctx) => {
+    if (comprobarAdmin(ctx) === true) {
+        let filtro = obtenerFiltro()
+        if(ctx.message.text.split(' ').length != 2){
+            ctx.reply('Solo se puede añadir una palabra a la BlackList')
+        }
+        else{
+            filtro.blackList.push(ctx.message.text.split(' ')[1])
+            guardarFiltro(filtro)
+            ctx.reply('Palabra añadida a la BlackList')
+        }
+       
+    
+    }else{
+        ctx.reply('No tienes permisos para ejecutar este comando')
+    }
+})
+//Añadir a la WhiteList del JSON
+bot.command('addWhiteList', async (ctx) => {
+    if (comprobarAdmin(ctx) === true) {
+        let filtro = obtenerFiltro()
+        if(ctx.message.text.split(' ').length != 2){
+            ctx.reply('Solo se puede añadir una palabra a la WhiteList')
+        }
+        else{
+            filtro.whiteList.push(ctx.message.text.split(' ')[1])
+            guardarFiltro(filtro)
+            ctx.reply('Palabra añadida a la WhiteList')
+        }
+       
+    
+    }else{
+        ctx.reply('No tienes permisos para ejecutar este comando')
+    }
+}) 
+//Añadir a la BlackListGroup del JSON
+bot.command('addBlackGroupList', async (ctx) => {
+    if (comprobarAdmin(ctx) === true) {
+        let filtro = obtenerFiltro()
+        if(ctx.message.text.split(' ').length != 2){
+            ctx.reply('Solo se puede añadir una palabra a la Black Group List')
+        }
+        else{
+            filtro.blackListGroup.push(ctx.message.text.split(' ')[1])
+            guardarFiltro(filtro)
+            ctx.reply('Palabra añadida a la Black Group List')
+        }
+       
+    
+    }else{
+        ctx.reply('No tienes permisos para ejecutar este comando')
+    }
+})                     
+
+function obtenerFiltro() {
+    //Comprobar el usuario es admin
         let rawdata = fs.readFileSync('filtro.json');
         let result = JSON.parse(rawdata);
-        let salida
-        //Switch 
-        switch (filtro) {
-            case 'getWhiteList':
-                salida = result.whiteList
-                break;
-            case 'getBlackList':
-                salida = result.blackList
-            case 'getBlackGroupList':
-                salida = result.blackListGroup
-
-            default:
-                break;
-        }
-        return salida
-    }
+        return result 
 }
+
+function guardarFiltro(filtro) {
+    fs.writeFileSync('filtro.json', JSON.stringify(filtro))
+}
+
 
 //Funciónes Obtener tweets
 

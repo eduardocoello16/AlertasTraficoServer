@@ -1,5 +1,1 @@
-{
-    "whiteList": ["tráfico","#TRÁFICOSC", "TF","Tenerife", "carretera", "carreteras", "circular", "calle", "coche", "señal", "vehículos", "TF-1","TF-5", "guaguas", "radar", "radares"],
-    "blackList": ["GC","RT","ElHierro","La Graciosa", "LPGC","Lapalma", "Gran Canaria", "Fuerteventura", "Lanzarote", "La Gomera", "Las Palmas"],
-    "blackListGroup": ["rehabilitará", "fue","últimos días","proximos", "días","agradecer","anoche","se llevarán a cabo","Renovamos", "plazo", "meses", "euros", "inversión", "licita", "licitación", "proximamente", "mañana","pasado", "semana", "mes", "año", "asistió", "atropelló", "intervino"]
-}
+{"whiteList":["tráfico","#TRÁFICOSC","TF","Tenerife","carretera","carreteras","circular","calle","coche","señal","vehículos","TF-1","TF-5","guaguas","radar","radares","hola"],"blackList":["GC","RT","ElHierro","La Graciosa","LPGC","Lapalma","Gran Canaria","Fuerteventura","Lanzarote","La Gomera","Las Palmas","adios","adios"],"blackListGroup":["rehabilitará","fue","últimos días","proximos","días","agradecer","anoche","se llevarán a cabo","Renovamos","plazo","meses","euros","inversión","licita","licitación","proximamente","mañana","pasado","semana","mes","año","asistió","atropelló","intervino"]}
