@@ -5,7 +5,7 @@ require('dotenv').config({
     path: './.env'
 });
 const fs = require('fs');
-const axios = require('axios').default;
+
 const twitter = require('./twitter')
 //Variables usuarios
 const usuariosAdmin = JSON.parse(process.env.BOT_AdminUsers)
@@ -243,7 +243,30 @@ bot.command('addBlackGroupList', async (ctx) => {
     }else{
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
-})                     
+})  
+//Borrar de la BlackList del JSON
+
+bot.command('delBlackList', async (ctx) => {
+    if (comprobarAdmin(ctx) === true) {
+        let filtro = obtenerFiltro()
+        if(ctx.message.text.split(' ').length != 2){
+            ctx.reply('Solo se puede borrar una palabra de la BlackList')
+        }
+        else{
+            filtro.blackList.splice(filtro.blackList.indexOf(ctx.message.text.split(' ')[1]), 1)
+            guardarFiltro(filtro)
+            ctx.reply('Palabra borrada de la BlackList')
+        }
+    }else{
+        ctx.reply('No tienes permisos para ejecutar este comando')
+    }
+});
+
+
+
+
+
+
 
 function obtenerFiltro() {
     //Comprobar el usuario es admin
