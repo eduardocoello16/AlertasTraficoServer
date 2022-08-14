@@ -158,6 +158,7 @@ bot.command('delAdmin', async (ctx) => {
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
 })
+
 //Comando /getBlackList -> Obtiene la BlackList del JSON 
 bot.command('getBlackList', (ctx) => {
    
@@ -243,7 +244,83 @@ bot.command('addBlackGroupList', async (ctx) => {
     }else{
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
-})                     
+})  
+
+// Borrar de la whiteList 
+
+bot.command('delWhiteList', async (ctx) => {
+    if (comprobarAdmin(ctx) === true) {
+        let filtro = obtenerFiltro()
+        if(ctx.message.text.split(' ').length != 2){
+            ctx.reply('Solo se puede borrar de una en una palabra a la WhiteList')
+        }
+        else{
+            //Comprobar que la palabra está en el array del filtro
+            let posEncontrado = filtro.whiteList.indexOf(ctx.message.text.split(' ')[1])
+            if(posEncontrado === -1){
+                //No está en el filtro
+                ctx.reply('La palabra no está en el filtro')
+            }else{
+                filtro.whiteList.splice(posEncontrado, 1)
+                guardarFiltro(filtro)
+                ctx.reply(`La palabra ${ctx.message.text.split(' ')[1]} ha sido borrada con éxito` )
+            }
+        }
+    }else{
+        ctx.reply('No tienes permisos para ejecutar este comando')
+    }
+}) 
+
+// Borrar de la BlackList 
+
+bot.command('delBlackList', async (ctx) => {
+    if (comprobarAdmin(ctx) === true) {
+        let filtro = obtenerFiltro()
+        if(ctx.message.text.split(' ').length != 2){
+            ctx.reply('Solo se puede borrar de una en una palabra a la BlackList')
+        }
+        else{
+            //Comprobar que la palabra está en el array del filtro
+            let posEncontrado = filtro.blackList.indexOf(ctx.message.text.split(' ')[1])
+            if(posEncontrado === -1){
+                //No está en el filtro
+                ctx.reply('La palabra no está en el filtro')
+            }else{
+                filtro.blackList.splice(posEncontrado, 1)
+                guardarFiltro(filtro)
+                ctx.reply(`La palabra ${ctx.message.text.split(' ')[1]} ha sido borrada con éxito` )
+            }
+        }
+    }else{
+        ctx.reply('No tienes permisos para ejecutar este comando')
+    }
+}) 
+
+// Borrar de la Black group List 
+
+bot.command('delBlackGroupList', async (ctx) => {
+    if (comprobarAdmin(ctx) === true) {
+        let filtro = obtenerFiltro()
+        if(ctx.message.text.split(' ').length != 2){
+            ctx.reply('Solo se puede borrar de una en una palabra a la Black Group List')
+        }
+        else{
+            //Comprobar que la palabra está en el array del filtro
+            let posEncontrado = filtro.blackListGroup.indexOf(ctx.message.text.split(' ')[1])
+            if(posEncontrado === -1){
+                //No está en el filtro
+                ctx.reply('La palabra no está en el filtro')
+            }else{
+                filtro.blackListGroup.splice(posEncontrado, 1)
+                guardarFiltro(filtro)
+                ctx.reply(`La palabra ${ctx.message.text.split(' ')[1]} ha sido borrada con éxito` )
+            }
+        }
+    }else{
+        ctx.reply('No tienes permisos para ejecutar este comando')
+    }
+}) 
+
 
 function obtenerFiltro() {
     //Comprobar el usuario es admin
