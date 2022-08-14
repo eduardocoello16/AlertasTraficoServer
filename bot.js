@@ -56,7 +56,7 @@ bot.command('getId', async (ctx) => {
 
 //Cambiar permisos un usuario a administrador y hacerlo anónimo
 bot.command('modoOculto', async (ctx) => {
-    if (ctx.message.chat.id == grupoAdmins || comprobarAdmin === true) {
+    if ((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin === true)) {
         let id = ctx.message.from.id
         //Comprobar que un usuario es anonimo
         let user = await bot.telegram.getChatMember(grupoAlertas, id)
@@ -362,7 +362,7 @@ var enfriamiento = true;
 bot.command('obtenerTweets', async (ctx) => {
   console.log('Chat id' + ctx.message.chat.id)
   console.log('Grupo admins ' + grupoAdmins)
-    if(ctx.message.chat.id == grupoAdmins || comprobarAdmin === true){
+    if((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin === true)){
         
     if (enfriamiento === true) {
         enfriamiento = false
