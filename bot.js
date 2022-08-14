@@ -9,10 +9,10 @@ const fs = require('fs');
 const twitter = require('./twitter')
 //Variables usuarios
 const usuariosAdmin = JSON.parse(process.env.BOT_AdminUsers)
-const grupoAdmins = process.env.BOT_AdminGroup_Beta
-const grupoAlertas = process.env.BOT_GroupToSend_Beta
-const canalAlertas = process.env.BOT_ChannelToSend_Beta
-const bot = new Telegraf(process.env.BOT_TOKEN_Beta)
+const grupoAdmins = process.env.BOT_AdminGroup
+const grupoAlertas = process.env.BOT_GroupToSend
+const canalAlertas = process.env.BOT_ChannelToSend
+const bot = new Telegraf(process.env.BOT_TOKEN)
 
 //Comprobar si el archivo bot.log existe, si no crearlo
 if (fs.existsSync('./bot.log') === false) {
@@ -39,7 +39,7 @@ bot.launch().then(() => {
 bot.start((ctx) => {
     //Get group id
     var id = ctx.update.message.chat;
-    console.log(id)
+    
     ctx.reply('Hola, bienvenído al BOT  de Alertas de Tráfico TNF')
 })
 
@@ -97,7 +97,7 @@ bot.command('modoOculto', async (ctx) => {
 //Hacer un usuario administrador
 bot.command('setAdmin', async (ctx) => {
     if (comprobarAdmin(ctx) === true) {
-        console.log(ctx.message.text)
+      
         //Obtener usuario a añadir a la lista de administradores
         let id = ctx.message.text.split(' ')[1]
         //Comprobar que un usuario es anonimo
@@ -134,7 +134,7 @@ bot.command('setAdmin', async (ctx) => {
 //Quitar un usuario administrador
 bot.command('delAdmin', async (ctx) => {
     if (comprobarAdmin(ctx) === true) {
-        console.log(ctx.message.text)
+       
         //Obtener usuario a añadir a la lista de administradores
         let id = ctx.message.text.split(' ')[1]
         //Comprobar que un usuario es anonimo
@@ -348,6 +348,38 @@ function comprobarTweets() {
 }
 
 //Obtener tweets llamando a la API twitter
+
+//Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
+
+var enfriamiento = true;
+
+bot.command('obtenerTweets', async (ctx) => {
+  console.log('Chat id' + ctx.message.chat.id)
+  console.log('Grupo admins ' + grupoAdmins)
+    if(ctx.message.chat.id == grupoAdmins){
+        
+    if (enfriamiento === true) {
+        enfriamiento = false
+        comprobarTweets()
+        ctx.reply('Obteniendo todos los tweets...')
+         //Set timeout para cambiar de estado a false de 2 minutos
+        setTimeout(() => {
+            enfriamiento = true;
+        }, 120000);
+    }else{
+       
+        ctx.reply('El bot está enfriado por favor espera unos minutos (Tiempo total de espera: 2 minutos)')
+    }
+   
+
+    
+
+} else{
+    ctx.reply('No tienes permisos para ejecutar este comando')
+}
+} )
+
+
 async function obtenerTweets(id, name) {
 
     var tweets = await twitter.getTwett(id)
