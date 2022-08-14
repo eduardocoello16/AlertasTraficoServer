@@ -87,6 +87,7 @@ bot.command('modoOculto', async (ctx) => {
 
 
         } catch (error) {
+            console.log(error)
             ctx.reply('Ha ocurrido un error al cambiar el modo oculto. ¿Eres un administrador asignado por el bot?')
         }
     } else {
@@ -125,7 +126,9 @@ bot.command('setAdmin', async (ctx) => {
                 }
             }
         } catch (error) {
+            console.log(error)
             ctx.reply('Id o nombre inválido')
+
         }
     } else {
         ctx.reply('No tienes permisos para ejecutar este comando')
@@ -149,10 +152,12 @@ bot.command('delAdmin', async (ctx) => {
                     await bot.telegram.promoteChatMember(grupoAlertas, id, {})
                     ctx.reply(`Se han actualizado los permisos del usuario ${user.user.first_name} ${user.user.last_name}`)
                 } catch (error) {
+                    console.log(error)
                     ctx.reply('Error al añadir usuario')
                 }
             }
         } catch (error) {
+            console.log(error)
             ctx.reply('Id o nombre inválido')
         }
     } else {
