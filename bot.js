@@ -56,10 +56,12 @@ bot.command('getId', async (ctx) => {
 
 //Cambiar permisos un usuario a administrador y hacerlo anónimo
 bot.command('modoOculto', async (ctx) => {
-    if ((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin === true)) {
+
+    if ((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin(ctx) === true)) {
         let id = ctx.message.from.id
         //Comprobar que un usuario es anonimo
         let user = await bot.telegram.getChatMember(grupoAlertas, id)
+        console.log(user)
         try {
             if (user.is_anonymous === true) {
                 await bot.telegram.promoteChatMember(grupoAlertas, id, {
@@ -73,15 +75,17 @@ bot.command('modoOculto', async (ctx) => {
                 })
                 ctx.reply(`${ctx.message.from.first_name} ha desactivado el modo oculto `)
             } else {
-                await bot.telegram.promoteChatMember(grupoAlertas, id, {
-                    is_anonymous: true,
-                    can_change_info: user.can_change_info,
-                    can_delete_messages: user.can_delete_messages,
-                    can_invite_users: user.can_invite_users,
-                    can_restrict_members: user.can_restrict_members,
-                    can_pin_messages: user.can_pin_messages,
-                    can_promote_members: user.can_promote_members
-                })
+                 await bot.telegram.promoteChatMember(grupoAlertas, id, {
+                        can_change_info: true,
+                        can_delete_messages: true,
+                        can_manage_chat: true,
+                        can_invite_users: true,
+                        can_restrict_members: true,
+                        can_pin_messages: true,
+                        can_manage_video_chats: true,
+                        can_promote_members: false,
+                        is_anonymous: true
+                    })
                 ctx.reply(`${ctx.message.from.first_name} ha activado el modo oculto `)
             }
 
@@ -117,7 +121,7 @@ bot.command('setAdmin', async (ctx) => {
                         can_restrict_members: true,
                         can_pin_messages: true,
                         can_manage_video_chats: true,
-                        can_promote_members: true
+                        can_promote_members: false
                     })
                     ctx.reply(`Se han actualizado los permisos del usuario ${user.user.first_name} ${user.user.last_name}`)
                 } catch (error) {
@@ -362,7 +366,7 @@ var enfriamiento = true;
 bot.command('obtenerTweets', async (ctx) => {
   console.log('Chat id' + ctx.message.chat.id)
   console.log('Grupo admins ' + grupoAdmins)
-    if((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin === true)){
+    if((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin(ctx) === true)){
         
     if (enfriamiento === true) {
         enfriamiento = false
