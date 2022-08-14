@@ -120,6 +120,7 @@ bot.command('setAdmin', async (ctx) => {
                     })
                     ctx.reply(`Se han actualizado los permisos del usuario ${user.user.first_name} ${user.user.last_name}`)
                 } catch (error) {
+                    console.log(error)
                     ctx.reply('Error al añadir usuario')
                 }
             }
@@ -485,7 +486,7 @@ function filtradoBlackList(tweet) {
 }
 
 function comprobarAdmin(ctx) {
-    console.log('Comprobando permisos de administrador')
+   
     let salida = false
     let id;
     if (ctx.update.message.chat.type === 'private') {
