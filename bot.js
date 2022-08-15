@@ -400,7 +400,7 @@ async function obtenerTweets(id, name) {
         if (comprobarLog(tweet, name) === false) {
             //Filtrar Tweet
             if (filtradoAcceso(tweet) === true) {
-                if (filtradoBlackList(tweet) === true) {
+                if (filtradoBlackListGroup(tweet) === true) {
 
 
 
@@ -421,10 +421,11 @@ async function obtenerTweets(id, name) {
 
         } else {
             //Obtener hora y fecha actual 
+            /*
             let fecha = new Date()
             let hora = fecha.getHours() + ':' + fecha.getMinutes() + ':' + fecha.getSeconds()
             //Guardar en .log fecha y hora del tweet
-            console.log(`Mensaje con ID:  ${tweet.id} ya envíado. Cuenta:${name}  [${hora}]`)
+            console.log(`Mensaje con ID:  ${tweet.id} ya envíado. Cuenta:${name}  [${hora}]`)*/
 
         }
     }
@@ -464,29 +465,38 @@ function filtradoAcceso(tweet) {
     let result = JSON.parse(rawdata);
     let whiteList = result.whiteList;
     let blackList = result.blackList;
-    let tweetText = tweet.text.toLowerCase();
-    whiteList.forEach(element => {
-        if (tweetText.includes(element.toLowerCase())) {
-
-            salida = true
-        }
-    })
-    blackList.forEach(element => {
-        if (tweetText.includes(element.toLowerCase())) {
-            salida = false
-        }
-    })
+    let tweetText = tweet.text.toLowerCase()
+    let arrayTweetText = tweetText.split(' ');
+    try {
+        whiteList.forEach(element => {
+            if (arrayTweetText.includes(element.toLowerCase())) {
+    
+                salida = true
+            }
+        })
+        blackList.forEach(element => {
+            if (arrayTweetText.includes(element.toLowerCase())) {
+                console.log(element)
+                console.log(tweet.text)
+                salida = false
+            }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+    
     return salida
 }
 
-function filtradoBlackList(tweet) {
+function filtradoBlackListGroup(tweet) {
     let salida = false
     let rawdata = fs.readFileSync('filtro.json');
     let result = JSON.parse(rawdata);
-    let whiteList = result.blackListGroup;
+    let blackListGroup = result.blackListGroup;
     let tweetText = tweet.text.toLowerCase();
-    whiteList.forEach(element => {
-        if (tweetText.includes(element.toLowerCase())) {
+    let arrayTweetText = tweetText.split(' ');
+    blackListGroup.forEach(element => {
+        if (arrayTweetText.includes(element.toLowerCase())) {
 
             salida = true
         }
