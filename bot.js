@@ -57,7 +57,7 @@ bot.command('getId', async (ctx) => {
 //Cambiar permisos un usuario a administrador y hacerlo anónimo
 bot.command('modoOculto', async (ctx) => {
 
-    if ((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin(ctx) === true)) {
+    if (await comprobarGrupoAdmin(ctx) === true) {
         let id = ctx.message.from.id
         //Comprobar que un usuario es anonimo
         let user = await bot.telegram.getChatMember(grupoAlertas, id)
@@ -521,5 +521,16 @@ function comprobarAdmin(ctx) {
         salida = true
     }
 
+    return salida
+}
+
+async function comprobarGrupoAdmin(ctx){
+    let salida = false
+   let id = ctx.message.from.id
+    let user = await bot.telegram.getChatMember(grupoAdmins, id)
+    if(user.status != 'left'){
+        salida = true
+    }
+    console.log(user)
     return salida
 }
