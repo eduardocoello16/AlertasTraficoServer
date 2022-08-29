@@ -1,4 +1,4 @@
-const variables = require('../variables')
+const variables = require('../variablesEntorno/variables')
 
 
 function comprobarAdmin(ctx) {
