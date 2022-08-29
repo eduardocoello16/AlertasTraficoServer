@@ -1,23 +1,17 @@
-const {
-    Telegraf
-} = require('telegraf')
 require('dotenv').config({
     path: './.env'
 });
 const fs = require('fs');
-
+const filtro = require('./accionesBot/Filtro')
 const twitter = require('./twitter')
+const variables = require('./variables')
 //Variables usuarios
-const usuariosAdmin = JSON.parse(process.env.BOT_AdminUsers)
-const grupoAdmins = process.env.BOT_AdminGroup
-const grupoAlertas = process.env.BOT_GroupToSend
-const canalAlertas = process.env.BOT_ChannelToSend
-const bot = new Telegraf(process.env.BOT_TOKEN_Test, 
-    {
-        telegram: {
-           testEnv: true
-        } 
-        })
+
+const usuariosAdmin = variables.usuariosAdmin
+const grupoAdmins = variables.grupoAdmins
+const grupoAlertas = variables.grupoAlertas
+const canalAlertas = variables.canalAlertas
+const bot = variables.bot
 
 //Comprobar si el archivo bot.log existe, si no crearlo
 if (fs.existsSync('./bot.log') === false) {
@@ -48,19 +42,7 @@ bot.start((ctx) => {
     ctx.reply('Hola, bienvenído al BOT  de Alertas de Tráfico TNF')
 })
 
-try {
-    bot.telegram.answerWebAppQuery('AAF4OgoqAgAAAHg6Ciq7cLm3', {
-        type: 'result',
-        result: 'ok',
-        input_menssage_content: {
-            message_text: 'Hola'
-        }
-    })
-    
-} catch (error) {
-    console.log(error)
-}
-    
+
 
 
 
@@ -68,12 +50,12 @@ try {
 
 
 //Obtener el ID de un usuario
-bot.command('getId', async (ctx) => {
+bot.command('getid', async (ctx) => {
     let id;
     if (ctx.update.message.chat.type === 'private') {
         id = ctx.message.from.id
     } else {
-        id = ctx.update.message.from.id
+        id = ctx.update.message.chat.id
     }
     ctx.reply(id)
 })
@@ -194,90 +176,32 @@ bot.command('delAdmin', async (ctx) => {
 })
 
 //Comando /getBlackList -> Obtiene la BlackList del JSON 
-bot.command('getBlackList', (ctx) => {
-   
-    if (comprobarAdmin(ctx) === true) {
-        let filtrado = obtenerFiltro(ctx)
-        ctx.reply(`Black List:\n${filtrado.blackList}`)
-    } else {
-        ctx.reply('No tienes permisos para ejecutar este comando')
-    }
+bot.command('getblacklist', (ctx) => {
+    
+    filtro.getBlackList(ctx)
 })
 //Comando /getBlackListGroup -> Obtiene la BlackListGroup del JSON 
-bot.command('getBlackGroupList', (ctx) => {
-
-    if (comprobarAdmin(ctx) === true) {
-        let filtrado = obtenerFiltro( ctx)
-        ctx.reply(`Black List Grupo:\n${filtrado.blackListGroup}`)
-    } else {
-        ctx.reply('No tienes permisos para ejecutar este comando')
-    }
+bot.command('getblacklistgroup', (ctx) => {
+    filtro.getBlackListGroup(ctx)
 })
 //Comando /getWhiteList -> Obtiene la WhiteList del JSON 
-bot.command('getWhiteList', (ctx) => {
-    if (comprobarAdmin(ctx) === true) {
-        let filtrado = obtenerFiltro( ctx)
-        ctx.reply(`WhiteList:\n${filtrado.whiteList}`)
-    } else {
-        ctx.reply('No tienes permisos para ejecutar este comando')
-    }
+bot.command('getwhitelist', (ctx) => {
+ filtro.getWhiteList(ctx)
 })
 
 
 
 //Añadir a la BlackList del JSON
-bot.command('addBlackList', async (ctx) => {
-    if (comprobarAdmin(ctx) === true) {
-        let filtro = obtenerFiltro()
-        if(ctx.message.text.split(' ').length != 2){
-            ctx.reply('Solo se puede añadir una palabra a la BlackList')
-        }
-        else{
-            filtro.blackList.push(ctx.message.text.split(' ')[1])
-            guardarFiltro(filtro)
-            ctx.reply('Palabra añadida a la BlackList')
-        }
-       
-    
-    }else{
-        ctx.reply('No tienes permisos para ejecutar este comando')
-    }
+bot.command('addblacklist', (ctx) => {
+    filtro.addBlackList(ctx);
 })
 //Añadir a la WhiteList del JSON
-bot.command('addWhiteList', async (ctx) => {
-    if (comprobarAdmin(ctx) === true) {
-        let filtro = obtenerFiltro()
-        if(ctx.message.text.split(' ').length != 2){
-            ctx.reply('Solo se puede añadir una palabra a la WhiteList')
-        }
-        else{
-            filtro.whiteList.push(ctx.message.text.split(' ')[1])
-            guardarFiltro(filtro)
-            ctx.reply('Palabra añadida a la WhiteList')
-        }
-       
-    
-    }else{
-        ctx.reply('No tienes permisos para ejecutar este comando')
-    }
+bot.command('addwhitelist', (ctx) => {
+    filtro.addWhiteList(ctx);
 }) 
 //Añadir a la BlackListGroup del JSON
-bot.command('addBlackGroupList', async (ctx) => {
-    if (comprobarAdmin(ctx) === true) {
-        let filtro = obtenerFiltro()
-        if(ctx.message.text.split(' ').length != 2){
-            ctx.reply('Solo se puede añadir una palabra a la Black Group List')
-        }
-        else{
-            filtro.blackListGroup.push(ctx.message.text.split(' ')[1])
-            guardarFiltro(filtro)
-            ctx.reply('Palabra añadida a la Black Group List')
-        }
-       
-    
-    }else{
-        ctx.reply('No tienes permisos para ejecutar este comando')
-    }
+bot.command('addblacklistgroup',  (ctx) => {
+  filtro.addBlackListGroup(ctx);
 })  
 
 // Borrar de la whiteList 
