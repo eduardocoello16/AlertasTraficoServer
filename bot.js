@@ -4,7 +4,7 @@ require('dotenv').config({
 const fs = require('fs');
 const filtro = require('./accionesBot/Filtro')
 const twitter = require('./twitter')
-const variables = require('./variablesEntorno/variables')
+const variables = require('./variables')
 const errores = require('./errores.js')
 //Variables usuarios
 
