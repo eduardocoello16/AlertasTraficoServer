@@ -65,7 +65,7 @@ bot.command('getid', async (ctx) => {
 })
 
 //Cambiar permisos un usuario a administrador y hacerlo anónimo
-bot.command('modoOculto', async (ctx) => {
+bot.command('modoooculto', async (ctx) => {
 
     if (await comprobarGrupoAdmin(ctx) === true) {
         let id = ctx.message.from.id
@@ -110,7 +110,7 @@ bot.command('modoOculto', async (ctx) => {
 })
 
 //Hacer un usuario administrador
-bot.command('setAdmin', async (ctx) => {
+bot.command('setadmin', async (ctx) => {
     if (comprobarAdmin(ctx) === true) {
       
         //Obtener usuario a añadir a la lista de administradores
@@ -150,7 +150,7 @@ bot.command('setAdmin', async (ctx) => {
 })
 
 //Quitar un usuario administrador
-bot.command('delAdmin', async (ctx) => {
+bot.command('deladmin', async (ctx) => {
     if (comprobarAdmin(ctx) === true) {
        
         //Obtener usuario a añadir a la lista de administradores
@@ -235,7 +235,7 @@ bot.command('delWhiteList', async (ctx) => {
 
 // Borrar de la BlackList 
 
-bot.command('delBlackList', async (ctx) => {
+bot.command('delblacklist', async (ctx) => {
     if (comprobarAdmin(ctx) === true) {
         let filtro = obtenerFiltro()
         if(ctx.message.text.split(' ').length != 2){
@@ -260,7 +260,7 @@ bot.command('delBlackList', async (ctx) => {
 
 // Borrar de la Black group List 
 
-bot.command('delBlackGroupList', async (ctx) => {
+bot.command('delblacklistgroup', async (ctx) => {
     if (comprobarAdmin(ctx) === true) {
         let filtro = obtenerFiltro()
         if(ctx.message.text.split(' ').length != 2){
@@ -315,7 +315,7 @@ function comprobarTweets() {
 
 var enfriamiento = true;
 
-bot.command('obtenerTweets', async (ctx) => {
+bot.command('obtenertweets', async (ctx) => {
  
     if((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin(ctx) === true)){
         
