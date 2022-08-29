@@ -15,7 +15,7 @@ async function getTwett(id) {
   }
   try {
     let result = await axios.get(url, config)
-    return result.data.data.reverse();
+   return result.data.data.at(1);
   } catch (error) {
     console.log(error);
     

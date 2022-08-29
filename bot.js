@@ -14,11 +14,6 @@ const grupoAlertas = variables.grupoAlertas
 const canalAlertas = variables.canalAlertas
 const bot = variables.bot
 
-//Comprobar si el archivo bot.log existe, si no crearlo
-if (fs.existsSync('./bot.log') === false) {
-    fs.writeFileSync('./bot.log', 'Registro de tweets enviados al canal\n')
-
-}
 
 
 
@@ -76,7 +71,7 @@ bot.command('modoOculto', async (ctx) => {
         let id = ctx.message.from.id
         //Comprobar que un usuario es anonimo
         let user = await bot.telegram.getChatMember(grupoAlertas, id)
-        console.log(user)
+       
         try {
             if (user.is_anonymous === true) {
                 await bot.telegram.promoteChatMember(grupoAlertas, id, {
@@ -321,8 +316,7 @@ function comprobarTweets() {
 var enfriamiento = true;
 
 bot.command('obtenerTweets', async (ctx) => {
-  console.log('Chat id' + ctx.message.chat.id)
-  console.log('Grupo admins ' + grupoAdmins)
+ 
     if((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin(ctx) === true)){
         
     if (enfriamiento === true) {
@@ -349,12 +343,10 @@ bot.command('obtenerTweets', async (ctx) => {
 
 async function obtenerTweets(id, name) {
 
-    var tweets = await twitter.getTwett(id)
-    for (const tweet of tweets) {
-        //Await 3 segundos para no saturar el BOT
-        await new Promise(r => setTimeout(r, 3000));
+    var tweet = await twitter.getTwett(id)
+   
         //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
-        if (comprobarLog(tweet, name) === false) {
+        if (comprobarLog(tweet, id) === false) {
             //Filtrar Tweet
             if (filtradoAcceso(tweet) === true) {
                 if (filtradoBlackListGroup(tweet) === true) {
@@ -387,7 +379,7 @@ async function obtenerTweets(id, name) {
         }
     }
 
-}
+
 
 function enviarMensaje(tweet, name, destinatario) {
     //Enviar tweet al grupo
@@ -403,17 +395,42 @@ function enviarMensaje(tweet, name, destinatario) {
     //Mensaje sin sonido = disable_notification: true
 }
 
-function comprobarLog(tweet, name) {
+function comprobarLog(tweet, id) {
 
-    //Comprobar un registro .log si el tweet se ha enviado
-    var log = fs.readFileSync('./bot.log', 'utf8')
-    if (log.includes(tweet.id)) {
-        return true
-    } else {
-        //Añade el id del  tweet al .log
-        fs.appendFileSync('./bot.log', `Id Tweet: ${tweet.id}\nUsuario: ${name}` + `\n${new Date()}\n`)
-        return false
-    }
+//Comprobar si el archivo bot.log existe, si no crearlo
+if (fs.existsSync('./ultimosTweets.json') === false) {
+    fs.writeFileSync('./ultimosTweets.json', '[]')
+
+}
+  //Comprobar un registro .log si el tweet se ha enviado
+  var json = fs.readFileSync('./ultimosTweets.json', 'utf8')
+  let ultimosTweets = JSON.parse(json)
+  let nuevoTweet = {
+      idTweet: tweet.id,
+      idCuenta: id
+     }
+let cuentaEncontrada = ultimosTweets.findIndex(e => e.idCuenta === id);
+
+if(cuentaEncontrada != -1){
+ if( ultimosTweets[cuentaEncontrada].idTweet === tweet.id){
+
+  return true
+ }else{
+  ultimosTweets.splice(cuentaEncontrada, 1)
+  
+      ultimosTweets.push(nuevoTweet)
+      fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
+     
+   
+
+ }
+}else{
+  ultimosTweets.push(nuevoTweet)
+  fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
+}
+
+    return false
+    
 }
 
 function filtradoAcceso(tweet) {
@@ -433,8 +450,7 @@ function filtradoAcceso(tweet) {
         })
         blackList.forEach(element => {
             if (arrayTweetText.includes(element.toLowerCase())) {
-                console.log(element)
-                console.log(tweet.text)
+               
                 salida = false
             }
         })
@@ -488,6 +504,6 @@ async function comprobarGrupoAdmin(ctx){
     if(user.status != 'left'){
         salida = true
     }
-    console.log(user)
+   
     return salida
 }
