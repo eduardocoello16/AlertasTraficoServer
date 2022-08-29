@@ -12,7 +12,12 @@ const usuariosAdmin = JSON.parse(process.env.BOT_AdminUsers)
 const grupoAdmins = process.env.BOT_AdminGroup
 const grupoAlertas = process.env.BOT_GroupToSend
 const canalAlertas = process.env.BOT_ChannelToSend
-const bot = new Telegraf(process.env.BOT_TOKEN)
+const bot = new Telegraf(process.env.BOT_TOKEN_Test, 
+    {
+        telegram: {
+           testEnv: true
+        } 
+        })
 
 //Comprobar si el archivo bot.log existe, si no crearlo
 if (fs.existsSync('./bot.log') === false) {
@@ -39,9 +44,28 @@ bot.launch().then(() => {
 bot.start((ctx) => {
     //Get group id
     var id = ctx.update.message.chat;
-    
+   
     ctx.reply('Hola, bienvenído al BOT  de Alertas de Tráfico TNF')
 })
+
+try {
+    bot.telegram.answerWebAppQuery('AAF4OgoqAgAAAHg6Ciq7cLm3', {
+        type: 'result',
+        result: 'ok',
+        input_menssage_content: {
+            message_text: 'Hola'
+        }
+    })
+    
+} catch (error) {
+    console.log(error)
+}
+    
+
+
+
+
+
 
 //Obtener el ID de un usuario
 bot.command('getId', async (ctx) => {
