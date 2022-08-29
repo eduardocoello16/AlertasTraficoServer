@@ -1,4 +1,4 @@
-const usuariosAdmin = JSON.parse(process.env.BOT_AdminUsers)
+const usuariosAdmin = JSON.parse(process.env.BOT_AdminUsers_Test)
 const grupoAdmins = process.env.BOT_AdminGroup_Test
 const grupoAlertas = process.env.BOT_GroupToSend_Test
 const canalAlertas = process.env.BOT_ChannelToSend_Test
