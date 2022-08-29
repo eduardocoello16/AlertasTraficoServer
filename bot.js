@@ -5,6 +5,7 @@ const fs = require('fs');
 const filtro = require('./accionesBot/Filtro')
 const twitter = require('./twitter')
 const variables = require('./variables')
+const errores = require('./errores.js')
 //Variables usuarios
 
 const usuariosAdmin = variables.usuariosAdmin
@@ -18,6 +19,9 @@ if (fs.existsSync('./bot.log') === false) {
     fs.writeFileSync('./bot.log', 'Registro de tweets enviados al canal\n')
 
 }
+
+
+
 //Start bot
 //Detectar cuando el bot se conecta
 console.log('Iniciando bot... ')
@@ -46,7 +50,12 @@ bot.start((ctx) => {
 
 
 
-
+bot.command('delerrorlog', (ctx) => {
+    errores.borrarFichero(ctx);
+})
+bot.command('geterrorlog', (ctx) => {
+    errores.obtenerFichero(ctx);
+})
 
 
 //Obtener el ID de un usuario

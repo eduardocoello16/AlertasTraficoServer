@@ -1,5 +1,6 @@
 const admin = require('./admin')
 const fs = require('fs');
+const errores = require('../errores')
 //Funciones para abrir el archivo json
 function obtenerFiltro() {
     //Comprobar el usuario es admin
@@ -18,15 +19,16 @@ function guardarFiltro(filtro) {
 
 function getBlackList(ctx){
     try {
-        if (admin.comprobarAdmin(ctx) === true) {
+        if (admsin.comprobarAdmin(ctx) === true) {
             let filtrado = obtenerFiltro(ctx)
             ctx.reply(`Black List:\n${filtrado.blackList}`)
         } else {
             ctx.reply('No tienes permisos para ejecutar este comando')
         }
     } catch (error) {
-        
-        ctx.reply('Error interno del bot')
+        let msg = 'Error al obtener la blackList.'
+        errores.botError(msg, error)
+        ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
     }
 }
 function getBlackListGroup(ctx){
@@ -38,7 +40,9 @@ function getBlackListGroup(ctx){
             ctx.reply('No tienes permisos para ejecutar este comando')
         }
     } catch (error) {
-       ctx.reply('Error interno del bot')
+        let msg = 'Error al obtener la blackList para el grupo.'
+        errores.botError(msg, error)
+        ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
 
     }
 }
@@ -53,7 +57,7 @@ function getWhiteList(ctx){
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
   } catch (error) {
-    ctx.reply('Error interno del bot')
+    ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
   }
 }
 
@@ -78,7 +82,7 @@ function addBlackList(ctx){
             ctx.reply('No tienes permisos para ejecutar este comando')
         }
     } catch (error) {
-        ctx.reply('Error interno del bot')
+        ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
     }
 }
 function addWhiteList(ctx) {
@@ -99,7 +103,7 @@ function addWhiteList(ctx) {
             ctx.reply('No tienes permisos para ejecutar este comando')
         }
     } catch (error) {
-        ctx.reply('Error interno del bot')
+        ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
     }
 }
 
@@ -121,7 +125,7 @@ function addBlackListGroup(ctx){
             ctx.reply('No tienes permisos para ejecutar este comando')
         }
     } catch (error) {
-        ctx.reply('Error interno del bot')
+        ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
     }
 }
 
