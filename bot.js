@@ -42,13 +42,7 @@ bot.start((ctx) => {
 })
 
 
-bot.command('stopbot', (ctx) => {
-    if(comprobarAdmin(ctx)=== false){
-        ctx.reply('Necesitas ser admin. ¿Que intentas?')
-    }else{
-    ctx.reply('Bot apagado, para reiniciar tendrás que ir a la consola.')
-    process.exit() }
-})
+
 
 
 bot.command('delerrorlog', (ctx) => {
