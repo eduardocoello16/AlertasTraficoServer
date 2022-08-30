@@ -19,7 +19,7 @@ function guardarFiltro(filtro) {
 
 function getBlackList(ctx){
     try {
-        if (admsin.comprobarAdmin(ctx) === true) {
+        if (admin.comprobarAdmin(ctx) === true) {
             let filtrado = obtenerFiltro(ctx)
             ctx.reply(`Black List:\n${filtrado.blackList}`)
         } else {
