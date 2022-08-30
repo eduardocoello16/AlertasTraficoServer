@@ -187,8 +187,8 @@ async function obtenerTweets(id, name) {
         //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
         if (comprobarUltimosTweets(tweet, id) === false) {
             //Filtrar Tweet
-            if (filtradoAcceso(tweet) === true) {
-                if (filtradoBlackListGroup(tweet) === true) {
+            if (filtro.filtradoAcceso(tweet) === true) {
+                if (filtro.filtradoBlackListGroup(tweet) === true) {
 
 
 
@@ -278,47 +278,5 @@ if (fs.existsSync('./ultimosTweets.json') === false) {
     
 }
 
-function filtradoAcceso(tweet) {
-    let salida = false
-    let rawdata = fs.readFileSync('filtro.json');
-    let result = JSON.parse(rawdata);
-    let whiteList = result.whiteList;
-    let blackList = result.blackList;
-    let tweetText = tweet.text.toLowerCase()
-    let arrayTweetText = tweetText.split(' ');
-    try {
-        whiteList.forEach(element => {
-            if (arrayTweetText.includes(element.toLowerCase())) {
-    
-                salida = true
-            }
-        })
-        blackList.forEach(element => {
-            if (arrayTweetText.includes(element.toLowerCase())) {
-               
-                salida = false
-            }
-        })
-    } catch (error) {
-        console.log(error)
-    }
-    
-    return salida
-}
 
-function filtradoBlackListGroup(tweet) {
-    let salida = false
-    let rawdata = fs.readFileSync('filtro.json');
-    let result = JSON.parse(rawdata);
-    let blackListGroup = result.blackListGroup;
-    let tweetText = tweet.text.toLowerCase();
-    let arrayTweetText = tweetText.split(' ');
-    blackListGroup.forEach(element => {
-        if (arrayTweetText.includes(element.toLowerCase())) {
-
-            salida = true
-        }
-    })
-    return salida
-}
 

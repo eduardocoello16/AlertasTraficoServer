@@ -250,6 +250,49 @@ function delBlackListGroup(ctx){
         ctx.reply(errorInterno)
     }
 }
+function filtradoAcceso(tweet) {
+    let salida = false
+    let rawdata = fs.readFileSync('filtro.json');
+    let result = JSON.parse(rawdata);
+    let whiteList = result.whiteList;
+    let blackList = result.blackList;
+    let tweetText = tweet.text.toLowerCase()
+    let arrayTweetText = tweetText.split(' ');
+    try {
+        whiteList.forEach(element => {
+            if (arrayTweetText.includes(element.toLowerCase())) {
+    
+                salida = true
+            }
+        })
+        blackList.forEach(element => {
+            if (arrayTweetText.includes(element.toLowerCase())) {
+               
+                salida = false
+            }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+    
+    return salida
+}
+
+function filtradoBlackListGroup(tweet) {
+    let salida = false
+    let rawdata = fs.readFileSync('filtro.json');
+    let result = JSON.parse(rawdata);
+    let blackListGroup = result.blackListGroup;
+    let tweetText = tweet.text.toLowerCase();
+    let arrayTweetText = tweetText.split(' ');
+    blackListGroup.forEach(element => {
+        if (arrayTweetText.includes(element.toLowerCase())) {
+
+            salida = true
+        }
+    })
+    return salida
+}
 module.exports = {
     getBlackList,
     getBlackListGroup,
@@ -259,5 +302,7 @@ module.exports = {
     addBlackListGroup,
     delWhiteList,
     delBlackList,
-    delBlackListGroup
+    delBlackListGroup,
+    filtradoAcceso,
+    filtradoBlackListGroup
   };
