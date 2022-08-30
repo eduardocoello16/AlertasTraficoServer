@@ -1,16 +1,31 @@
 const admin = require('./admin')
 const fs = require('fs');
 const errores = require('../errores')
+const errorInterno = 'Error interno del bot, por favor contacta con el desarrollador. Ver error -> /geterrorlog'
 //Funciones para abrir el archivo json
 function obtenerFiltro() {
-    //Comprobar el usuario es admin
+    try {
         let rawdata = fs.readFileSync('filtro.json');
         let result = JSON.parse(rawdata);
         return result 
+    } catch (error) {
+        let msg = 'Error al obtener filtro.'
+        errores.botError(msg, error)
+        return false
+    }
+        
 }
 
 function guardarFiltro(filtro) {
-    fs.writeFileSync('filtro.json', JSON.stringify(filtro))
+    try {
+        fs.writeFileSync('filtro.json', JSON.stringify(filtro))
+        return true
+    } catch (error) {
+        let msg = 'Error al guardar filtro.'
+        errores.botError(msg, error)
+        return false
+    }
+    
 }
 
 //Funciones de los comandos
@@ -42,7 +57,7 @@ function getBlackListGroup(ctx){
     } catch (error) {
         let msg = 'Error al obtener la blackList para el grupo.'
         errores.botError(msg, error)
-        ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
+        ctx.reply(errorInterno)
 
     }
 }
@@ -57,7 +72,9 @@ function getWhiteList(ctx){
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
   } catch (error) {
-    ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
+    let msg = 'Error al obtener la White List para el grupo.'
+    errores.botError(msg, error)
+    ctx.reply(errorInterno)
   }
 }
 
@@ -72,9 +89,14 @@ function addBlackList(ctx){
                 ctx.reply('Solo se puede añadir una palabra a la BlackList')
             }
             else{
-                filtro.blackList.push(ctx.message.text.split(' ')[1])
-                guardarFiltro(filtro)
-                ctx.reply('Palabra añadida a la BlackList')
+                if(filtro.blackList.indexOf(ctx.message.text.split(' ')[1]) != -1){
+                    ctx.reply('La palabra ya se encuentra en la BlackList')
+                }else{
+                    filtro.blackList.push(ctx.message.text.split(' ')[1])
+                    guardarFiltro(filtro)
+                    ctx.reply('Palabra añadida a la BlackList')
+                }
+             
             }
            
         
@@ -82,7 +104,9 @@ function addBlackList(ctx){
             ctx.reply('No tienes permisos para ejecutar este comando')
         }
     } catch (error) {
-        ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
+        let msg = 'Error al añadir a la Black List.'
+        errores.botError(msg, error)
+        ctx.reply(errorInterno)
     }
 }
 function addWhiteList(ctx) {
@@ -93,17 +117,22 @@ function addWhiteList(ctx) {
                 ctx.reply('Solo se puede añadir una palabra a la WhiteList')
             }
             else{
+                if(filtro.whiteList.indexOf(ctx.message.text.split(' ')[1]) != -1){
+                    ctx.reply('La palabra ya se encuentra en la BlackList')
+                }else{
                 filtro.whiteList.push(ctx.message.text.split(' ')[1])
                 guardarFiltro(filtro)
                 ctx.reply('Palabra añadida a la WhiteList')
             }
-           
+        }
         
         }else{
             ctx.reply('No tienes permisos para ejecutar este comando')
         }
     } catch (error) {
-        ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
+        let msg = 'Error al añadir a la White List para el grupo.'
+        errores.botError(msg, error)
+        ctx.reply(errorInterno)
     }
 }
 
@@ -115,25 +144,120 @@ function addBlackListGroup(ctx){
                 ctx.reply('Solo se puede añadir una palabra a la Black Group List')
             }
             else{
+                if(filtro.blackListGroup.indexOf(ctx.message.text.split(' ')[1]) != -1){
+                    ctx.reply('La palabra ya se encuentra en la BlackList')
+                }else{
                 filtro.blackListGroup.push(ctx.message.text.split(' ')[1])
                 guardarFiltro(filtro)
-                ctx.reply('Palabra añadida a la Black Group List')
+                ctx.reply(errorInterno)
             }
+        }
            
         
         }else{
             ctx.reply('No tienes permisos para ejecutar este comando')
         }
     } catch (error) {
-        ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
+        let msg = 'Error al obtener la blackList para el grupo.'
+        errores.botError(msg, error)
+        ctx.reply(errorInterno)
     }
 }
-
+function delWhiteList(ctx){
+    try {
+        if (admin.comprobarAdmin(ctx) === true) {
+            let filtro = obtenerFiltro()
+            if(ctx.message.text.split(' ').length != 2){
+                ctx.reply('Solo se puede borrar de una en una palabra a la WhiteList')
+            }
+            else{
+                //Comprobar que la palabra está en el array del filtro
+                let posEncontrado = filtro.whiteList.indexOf(ctx.message.text.split(' ')[1])
+                if(posEncontrado === -1){
+                    //No está en el filtro
+                    ctx.reply('La palabra no está en el filtro')
+                }else{
+                    filtro.whiteList.splice(posEncontrado, 1)
+                    guardarFiltro(filtro)
+                    if(posEncontrado != -1) delWhiteList(ctx)
+                    ctx.reply(`La palabra ${ctx.message.text.split(' ')[1]} ha sido borrada con éxito` )
+                }
+            }
+        }else{
+            ctx.reply('No tienes permisos para ejecutar este comando')
+        }
+    } catch (error) {
+        let msg = 'Error al borrar un elemento en la White List'
+        errores.botError(msg, error)
+        ctx.reply(errorInterno)
+    }
+}
+function delBlackList(ctx){
+    try {
+        if (admin.comprobarAdmin(ctx) === true) {
+            let filtro = obtenerFiltro()
+            if(ctx.message.text.split(' ').length != 2){
+                ctx.reply('Solo se puede borrar de una en una palabra a la BlackList')
+            }
+            else{
+                //Comprobar que la palabra está en el array del filtro
+                let posEncontrado = filtro.blackList.indexOf(ctx.message.text.split(' ')[1])
+                if(posEncontrado === -1){
+                    //No está en el filtro
+                    ctx.reply('La palabra no está en el filtro')
+                }else{
+                    filtro.blackList.splice(posEncontrado, 1)
+                    guardarFiltro(filtro)
+                    if(posEncontrado != -1) delBlackList(ctx)
+                    ctx.reply(`La palabra ${ctx.message.text.split(' ')[1]} ha sido borrada con éxito` )
+                }
+            }
+        }else{
+            ctx.reply('No tienes permisos para ejecutar este comando')
+        }
+    } catch (error) {
+        let msg = 'Error al borrar un elemento en la black List'
+        errores.botError(msg, error)
+        ctx.reply(errorInterno)
+    }
+}
+function delBlackListGroup(ctx){
+    try {
+        if (admin.comprobarAdmin(ctx) === true) {
+            let filtro = obtenerFiltro()
+            if(ctx.message.text.split(' ').length != 2){
+                ctx.reply('Solo se puede borrar de una en una palabra a la Black Group List')
+            }
+            else{
+                //Comprobar que la palabra está en el array del filtro
+                let posEncontrado = filtro.blackListGroup.indexOf(ctx.message.text.split(' ')[1])
+                if(posEncontrado === -1){
+                    //No está en el filtro
+                    ctx.reply('La palabra no está en el filtro')
+                }else{
+                    filtro.blackListGroup.splice(posEncontrado, 1)
+                    guardarFiltro(filtro)
+                    if(posEncontrado != -1) delBlackListGroup(ctx)
+                    ctx.reply(`La palabra ${ctx.message.text.split(' ')[1]} ha sido borrada con éxito` )
+                }
+            }
+        }else{
+            ctx.reply('No tienes permisos para ejecutar este comando')
+        }
+    } catch (error) {
+        let msg = 'Error al borrar un elemento en la black List del grupo'
+        errores.botError(msg, error)
+        ctx.reply(errorInterno)
+    }
+}
 module.exports = {
     getBlackList,
     getBlackListGroup,
     getWhiteList,
     addBlackList,
     addWhiteList,
-    addBlackListGroup
+    addBlackListGroup,
+    delWhiteList,
+    delBlackList,
+    delBlackListGroup
   };

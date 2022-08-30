@@ -22,6 +22,7 @@ function borrarFichero(ctx) {
         try {
           fs.unlinkSync('./errores.log')
             console.log('Un administrador ha borrado el fichero log de errores' + new Date)
+            ctx.reply('El archivo de errores log, ha sido borrado.')
           } catch(err) {
             console.error('No se pudo borrar el fichero de errores', err)
             ctx.reply('Hubo un error al borrar el fichero, revisa la consola de comandos.')
