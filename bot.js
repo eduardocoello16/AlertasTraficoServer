@@ -7,9 +7,8 @@ const twitter = require('./twitter')
 const variables = require('./variables')
 const errores = require('./errores.js')
 const cAdmin = require('./accionesBot/admin')
+const moders = require('./accionesBot/moders')
 //Variables usuarios
-
-const usuariosAdmin = variables.usuariosAdmin
 const grupoAdmins = variables.grupoAdmins
 const grupoAlertas = variables.grupoAlertas
 const canalAlertas = variables.canalAlertas
@@ -25,9 +24,9 @@ bot.launch().then(() => {
     console.log('Bot iniciado')
     //comprobarTweets();
     setInterval(() => {
-        console.log("Comprobando Tweets cada 10 minutos");
+        console.log("Comprobando Tweets cada 5 minutos");
         comprobarTweets();
-    }, 300000);
+    }, 150000);
 }).catch(err => {
     console.log(err)
 })
@@ -52,7 +51,7 @@ bot.start((ctx) => {
 //Comando para obtener lista de comandos para admins
 bot.command('admincommands',(ctx) => {
 
-    ctx.reply("-------------------- Comandos para los administradores ----------------\n\nComandos Tweets\n/obtenertweets - Para obtener los últimos tweets\n \nComandos para el Filtro\n/getwhitelist - Obtener la White List\n/getblacklist - Obtener la Black List\n /getblacklistgroup - Obtener la Black List para el grupo\n/addblacklist - Añade un elemento a la Black List\n/addwhitelist - Añade un elemento a la White List\n/addblacklistgroup - Añade un elemento a la Black List del grupo\n/delblacklist - Borra un elemento a la Black List\n/delwhitelist - Borra un elemento a la White List\n/delblacklistgroup - Borra un elemento a la Black List del grupo\n\nComandos archivo log errores\n/delerrorlog - Borra el fichero .log de errores\n/geterrorlog - Obtiene el fichero log de errores y se reenvía por aquí.\n\n Para moderadores \n/modooculto - Para los moderadores del grupo de administradores, puedan ponerse en anónimo en el grupo de alertas.")
+    ctx.reply("---- Comandos para los administradores ----\n\nComandos Tweets\n/obtenertweets - Para obtener los últimos tweets\n \nComandos para el Filtro\n/getwhitelist - Obtener la White List\n/getblacklist - Obtener la Black List\n /getblacklistgroup - Obtener la Black List para el grupo\n/addblacklist - Añade un elemento a la Black List\n/addwhitelist - Añade un elemento a la White List\n/addblacklistgroup - Añade un elemento a la Black List del grupo\n/delblacklist - Borra un elemento a la Black List\n/delwhitelist - Borra un elemento a la White List\n/delblacklistgroup - Borra un elemento a la Black List del grupo\n\nComandos archivo log errores\n/delerrorlog - Borra el fichero .log de errores\n/geterrorlog - Obtiene el fichero log de errores y se reenvía por aquí.\n\n Para moderadores \n/modooculto - Para los moderadores del grupo de administradores, puedan ponerse en anónimo en el grupo de alertas.")
 })
 
 
@@ -78,118 +77,13 @@ bot.command('getid', async (ctx) => {
 })
 
 //Cambiar permisos un usuario a administrador y hacerlo anónimo
-bot.command('modoooculto', async (ctx) => {
-
-    if (await comprobarGrupoAdmin(ctx) === true) {
-        let id = ctx.message.from.id
-        //Comprobar que un usuario es anonimo
-        let user = await bot.telegram.getChatMember(grupoAlertas, id)
-       
-        try {
-            if (user.is_anonymous === true) {
-                await bot.telegram.promoteChatMember(grupoAlertas, id, {
-                    is_anonymous: false,
-                    can_change_info: user.can_change_info,
-                    can_delete_messages: user.can_delete_messages,
-                    can_invite_users: user.can_invite_users,
-                    can_restrict_members: user.can_restrict_members,
-                    can_pin_messages: user.can_pin_messages,
-                    can_promote_members: user.can_promote_members
-                })
-                ctx.reply(`${ctx.message.from.first_name} ha desactivado el modo oculto `)
-            } else {
-                 await bot.telegram.promoteChatMember(grupoAlertas, id, {
-                        can_change_info: true,
-                        can_delete_messages: true,
-                        can_manage_chat: true,
-                        can_invite_users: true,
-                        can_restrict_members: true,
-                        can_pin_messages: true,
-                        can_manage_video_chats: true,
-                        can_promote_members: false,
-                        is_anonymous: true
-                    })
-                ctx.reply(`${ctx.message.from.first_name} ha activado el modo oculto `)
-            }
-
-
-        } catch (error) {
-            console.log(error)
-            ctx.reply('Ha ocurrido un error al cambiar el modo oculto. ¿Eres un administrador asignado por el bot?')
-        }
-    } else {
-        ctx.reply('Comando solo para administradores')
-    }
-})
-
-//Hacer un usuario administrador
-bot.command('setadmin', async (ctx) => {
-    if (comprobarAdmin(ctx) === true) {
-      
-        //Obtener usuario a añadir a la lista de administradores
-        let id = ctx.message.text.split(' ')[1]
-        //Comprobar que un usuario es anonimo
-        try {
-            let user = await bot.telegram.getChatMember(grupoAlertas, id)
-            if (user.status === 'left') {
-                ctx.reply('El usuario no está en el grupo')
-            } else {
-                //Añadir usuario a la lista de administradores
-                try {
-                    await bot.telegram.promoteChatMember(grupoAlertas, id, {
-                        can_change_info: true,
-                        can_delete_messages: true,
-                        can_manage_chat: true,
-                        can_invite_users: true,
-                        can_restrict_members: true,
-                        can_pin_messages: true,
-                        can_manage_video_chats: true,
-                        can_promote_members: false
-                    })
-                    ctx.reply(`Se han actualizado los permisos del usuario ${user.user.first_name} ${user.user.last_name}`)
-                } catch (error) {
-                    console.log(error)
-                    ctx.reply('Error al añadir usuario')
-                }
-            }
-        } catch (error) {
-            console.log(error)
-            ctx.reply('Id o nombre inválido')
-
-        }
-    } else {
-        ctx.reply('No tienes permisos para ejecutar este comando')
-    }
+bot.command('modooculto',  (ctx) => {
+   moders.modoOculto(ctx, bot);
 })
 
 //Quitar un usuario administrador
 bot.command('deladmin', async (ctx) => {
-    if (comprobarAdmin(ctx) === true) {
-       
-        //Obtener usuario a añadir a la lista de administradores
-        let id = ctx.message.text.split(' ')[1]
-        //Comprobar que un usuario es anonimo
-        try {
-            let user = await bot.telegram.getChatMember(grupoAlertas, id)
-            if (user.status === 'left') {
-                ctx.reply('El usuario no está en el grupo')
-            } else {
-                //Añadir usuario a la lista de administradores
-                try {
-                    await bot.telegram.promoteChatMember(grupoAlertas, id, {})
-                    ctx.reply(`Se han actualizado los permisos del usuario ${user.user.first_name} ${user.user.last_name}`)
-                } catch (error) {
-                    console.log(error)
-                    ctx.reply('Error al añadir usuario')
-                }
-            }
-        } catch (error) {
-            console.log(error)
-            ctx.reply('Id o nombre inválido')
-        }
-    } else {
-        ctx.reply('No tienes permisos para ejecutar este comando')
-    }
+    cAdmin.deleteAdmin(ctx,bot);
 })
 
 
@@ -262,7 +156,7 @@ var enfriamiento = true;
 
 bot.command('obtenertweets', async (ctx) => {
  
-    if((ctx.message.chat.id == grupoAdmins) || (comprobarAdmin(ctx) === true)){
+    if((ctx.message.chat.id == grupoAdmins) || (cAdmin.comprobarAdmin(ctx) === true)){
         
     if (enfriamiento === true) {
         enfriamiento = false
@@ -271,10 +165,10 @@ bot.command('obtenertweets', async (ctx) => {
          //Set timeout para cambiar de estado a false de 2 minutos
         setTimeout(() => {
             enfriamiento = true;
-        }, 120000);
+        }, 60000);
     }else{
        
-        ctx.reply('El bot está enfriado por favor espera unos minutos (Tiempo total de espera: 2 minutos)')
+        ctx.reply('El bot está enfriado por favor espera unos minutos (Tiempo total de espera: 1 minutos)')
     }
    
 
@@ -291,7 +185,7 @@ async function obtenerTweets(id, name) {
     var tweet = await twitter.getTwett(id)
    
         //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
-        if (comprobarLog(tweet, id) === false) {
+        if (comprobarUltimosTweets(tweet, id) === false) {
             //Filtrar Tweet
             if (filtradoAcceso(tweet) === true) {
                 if (filtradoBlackListGroup(tweet) === true) {
@@ -327,6 +221,7 @@ async function obtenerTweets(id, name) {
 
 
 function enviarMensaje(tweet, name, destinatario) {
+
     //Enviar tweet al grupo
     try {
         bot.telegram.sendMessage(destinatario, `${tweet.text}\n${name}`,
@@ -340,7 +235,7 @@ function enviarMensaje(tweet, name, destinatario) {
     //Mensaje sin sonido = disable_notification: true
 }
 
-function comprobarLog(tweet, id) {
+function comprobarUltimosTweets(tweet, id) {
 let salida = false;
 //Comprobar si el archivo bot.log existe, si no crearlo
 if (fs.existsSync('./ultimosTweets.json') === false) {
@@ -427,33 +322,3 @@ function filtradoBlackListGroup(tweet) {
     return salida
 }
 
-function comprobarAdmin(ctx) {
-   
-    let salida = false
-    let id;
-    if (ctx.update.message.chat.type === 'private') {
-        id = ctx.message.from.id
-    } else {
-        id = ctx.update.message.from.id
-    }
-
-    if (id === null) {
-        id = ctx.update.message.from.id
-    }
-    if (usuariosAdmin.includes(id)) {
-        salida = true
-    }
-
-    return salida
-}
-
-async function comprobarGrupoAdmin(ctx){
-    let salida = false
-   let id = ctx.message.from.id
-    let user = await bot.telegram.getChatMember(grupoAdmins, id)
-    if(user.status != 'left'){
-        salida = true
-    }
-   
-    return salida
-}
