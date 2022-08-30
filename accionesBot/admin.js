@@ -5,7 +5,7 @@ function comprobarAdmin(ctx) {
    
     let salida = false
     let id;
-    if (ctx.update.message.chat.type === 'private') {
+    if (ctx.message.chat.type === 'private') {
         id = ctx.message.from.id
     } else {
         id = ctx.update.message.from.id

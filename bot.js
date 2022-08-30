@@ -6,6 +6,7 @@ const filtro = require('./accionesBot/Filtro')
 const twitter = require('./twitter')
 const variables = require('./variables')
 const errores = require('./errores.js')
+const cAdmin = require('./accionesBot/admin')
 //Variables usuarios
 
 const usuariosAdmin = variables.usuariosAdmin
@@ -37,10 +38,22 @@ bot.launch().then(() => {
 bot.start((ctx) => {
     //Get group id
     var id = ctx.update.message.chat;
-   
-    ctx.reply('Hola, bienvenído al BOT  de Alertas de Tráfico TNF')
+   let nombre =  '';
+   if(ctx.message.from.first_name){
+    nombre = ' ' + ctx.message.from.first_name;
+   }
+    ctx.reply(`Hola${nombre}, este es el  BOT oficial de Alertas de Tráfico TNF`)
+    //Mensaje para administradores: 
+    if(cAdmin.comprobarAdmin(ctx) === true){
+        ctx.reply('Para ver los comandos de administrador usa el comando /admincommands')
+    }
 })
 
+//Comando para obtener lista de comandos para admins
+bot.command('admincommands',(ctx) => {
+
+    ctx.reply("-------------------- Comandos para los administradores ----------------\n\nComandos Tweets\n/obtenertweets - Para obtener los últimos tweets\n \nComandos para el Filtro\n/getwhitelist - Obtener la White List\n/getblacklist - Obtener la Black List\n /getblacklistgroup - Obtener la Black List para el grupo\n/addblacklist - Añade un elemento a la Black List\n/addwhitelist - Añade un elemento a la White List\n/addblacklistgroup - Añade un elemento a la Black List del grupo\n/delblacklist - Borra un elemento a la Black List\n/delwhitelist - Borra un elemento a la White List\n/delblacklistgroup - Borra un elemento a la Black List del grupo\n\nComandos archivo log errores\n/delerrorlog - Borra el fichero .log de errores\n/geterrorlog - Obtiene el fichero log de errores y se reenvía por aquí.\n\n Para moderadores \n/modooculto - Para los moderadores del grupo de administradores, puedan ponerse en anónimo en el grupo de alertas.")
+})
 
 
 
