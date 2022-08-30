@@ -299,12 +299,15 @@ function guardarFiltro(filtro) {
 //Funciónes Obtener tweets
 
 //Comprobar tweets nuevos
-function comprobarTweets() {
+ function comprobarTweets() {
     console.log('Comprobación de tweets nuevos')
     var cuentasTwitter = JSON.parse(process.env.Twitter_Accounts);
-    cuentasTwitter.forEach(cuenta => {
+   
+      
+    for(let cuenta of cuentasTwitter){
+       // await new Promise(r => setTimeout(r, 1000));
         obtenerTweets(cuenta.id, cuenta.name)
-    });
+    }
 
 
 }
@@ -396,40 +399,45 @@ function enviarMensaje(tweet, name, destinatario) {
 }
 
 function comprobarLog(tweet, id) {
-
+let salida = false;
 //Comprobar si el archivo bot.log existe, si no crearlo
 if (fs.existsSync('./ultimosTweets.json') === false) {
     fs.writeFileSync('./ultimosTweets.json', '[]')
 
 }
   //Comprobar un registro .log si el tweet se ha enviado
-  var json = fs.readFileSync('./ultimosTweets.json', 'utf8')
-  let ultimosTweets = JSON.parse(json)
-  let nuevoTweet = {
-      idTweet: tweet.id,
-      idCuenta: id
-     }
-let cuentaEncontrada = ultimosTweets.findIndex(e => e.idCuenta === id);
-
-if(cuentaEncontrada != -1){
- if( ultimosTweets[cuentaEncontrada].idTweet === tweet.id){
-
-  return true
- }else{
-  ultimosTweets.splice(cuentaEncontrada, 1)
+  try {
+    var json = fs.readFileSync('./ultimosTweets.json', 'utf8')
+    let ultimosTweets = JSON.parse(json)
+    let nuevoTweet = {
+        idTweet: tweet.id,
+        idCuenta: id
+       }
+  let cuentaEncontrada = ultimosTweets.findIndex(e => e.idCuenta === id);
   
-      ultimosTweets.push(nuevoTweet)
-      fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
+  if(cuentaEncontrada != -1){
+   if( ultimosTweets[cuentaEncontrada].idTweet === tweet.id){
+  
+   salida = true;
+   }else{
+    ultimosTweets.splice(cuentaEncontrada, 1)
+    
+        ultimosTweets.push(nuevoTweet)
+        fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
+       
      
-   
-
- }
-}else{
-  ultimosTweets.push(nuevoTweet)
-  fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
-}
-
-    return false
+  
+   }
+  }else{
+    ultimosTweets.push(nuevoTweet)
+    fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
+  }
+  
+  } catch (error) {
+    console.log(error)
+  }
+ 
+    return salida
     
 }
 
