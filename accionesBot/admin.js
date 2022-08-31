@@ -1,4 +1,5 @@
 const variables = require('../variables')
+const errores = require('../errores')
 
 
 function comprobarAdmin(ctx) {
@@ -51,7 +52,27 @@ async function deleteAdmin(ctx, bot){
     }
 }
 
+function broadcast(ctx, bot){
+    if (comprobarAdmin(ctx)) {
+        let mensaje = ctx.message.text
+        mensaje = mensaje.replace('/broadcast', '')
+        if (mensaje === '') {
+            ctx.reply('Mensaje vacío')
+        } else {
+            try {
+                bot.telegram.sendMessage(variables.grupoAlertas, mensaje)
+            } catch (error) {
+                ctx.reply('Error interno del bot')
+                errores.botError('Error al hacer un broadcast', error)
+            }
+        }
+    } else {
+        ctx.reply('Tienes que ser admin para ejecutar este comando.')
+    }
+}
+
 module.exports = {
     comprobarAdmin,
-    deleteAdmin
+    deleteAdmin,
+    broadcast
   };

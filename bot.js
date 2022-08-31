@@ -7,7 +7,7 @@ const twitter = require('./twitter')
 const variables = require('./variables')
 const errores = require('./errores.js')
 const cAdmin = require('./accionesBot/admin')
-const moders = require('./accionesBot/moders')
+const moders = require('./accionesBot/moders');
 //Variables usuarios
 const grupoAdmins = variables.grupoAdmins
 const grupoAlertas = variables.grupoAlertas
@@ -37,24 +37,39 @@ bot.launch().then(() => {
 bot.start((ctx) => {
     //Get group id
     var id = ctx.update.message.chat;
-   let nombre =  '';
-   if(ctx.message.from.first_name){
-    nombre = ' ' + ctx.message.from.first_name;
-   }
+    let nombre = '';
+    if (ctx.message.from.first_name) {
+        nombre = ' ' + ctx.message.from.first_name;
+    }
     ctx.reply(`Hola${nombre}, este es el  BOT oficial de Alertas de Tráfico TNF`)
     //Mensaje para administradores: 
-    if(cAdmin.comprobarAdmin(ctx) === true){
+    if (cAdmin.comprobarAdmin(ctx) === true) {
         ctx.reply('Para ver los comandos de administrador usa el comando /admincommands')
     }
 })
 
+
+
 //Comando para obtener lista de comandos para admins
-bot.command('admincommands',(ctx) => {
+bot.command('admincommands', async (ctx) => {
 
     ctx.reply("---- Comandos para los administradores ----\n\nComandos Tweets\n/obtenertweets - Para obtener los últimos tweets\n \nComandos para el Filtro\n/getwhitelist - Obtener la White List\n/getblacklist - Obtener la Black List\n /getblacklistgroup - Obtener la Black List para el grupo\n/addblacklist - Añade un elemento a la Black List\n/addwhitelist - Añade un elemento a la White List\n/addblacklistgroup - Añade un elemento a la Black List del grupo\n/delblacklist - Borra un elemento a la Black List\n/delwhitelist - Borra un elemento a la White List\n/delblacklistgroup - Borra un elemento a la Black List del grupo\n\nComandos archivo log errores\n/delerrorlog - Borra el fichero .log de errores\n/geterrorlog - Obtiene el fichero log de errores y se reenvía por aquí.\n\n Para moderadores \n/modooculto - Para los moderadores del grupo de administradores, puedan ponerse en anónimo en el grupo de alertas.")
 })
 
+/*
+bot.telegram.answerWebAppQuery('AAF4OgoqAgAAAHg6CipoP962', {
+    type: 'article',
+    title: 'DemoTitle',
+    id: 'unique-id',
+    input_message_content: {
+        message_text: 'Probando'
+    }
+})
+*/
 
+bot.command('broadcast', (ctx) => {
+    cAdmin.broadcast(ctx, bot);
+})
 
 
 bot.command('delerrorlog', (ctx) => {
@@ -65,7 +80,8 @@ bot.command('geterrorlog', (ctx) => {
 })
 
 
-//Obtener el ID de un usuario
+//Obtener el ID de un usuario+
+/*
 bot.command('getid', async (ctx) => {
     let id;
     if (ctx.update.message.chat.type === 'private') {
@@ -75,15 +91,16 @@ bot.command('getid', async (ctx) => {
     }
     ctx.reply(id)
 })
+*/
 
 //Cambiar permisos un usuario a administrador y hacerlo anónimo
-bot.command('modooculto',  (ctx) => {
-   moders.modoOculto(ctx, bot);
+bot.command('modooculto', (ctx) => {
+    moders.modoOculto(ctx, bot);
 })
 
 //Quitar un usuario administrador
 bot.command('deladmin', async (ctx) => {
-    cAdmin.deleteAdmin(ctx,bot);
+    cAdmin.deleteAdmin(ctx, bot);
 })
 
 
@@ -92,7 +109,7 @@ bot.command('deladmin', async (ctx) => {
 
 //Comando /getBlackList -> Obtiene la BlackList del JSON 
 bot.command('getblacklist', (ctx) => {
-    
+
     filtro.getBlackList(ctx)
 })
 //Comando /getBlackListGroup -> Obtiene la BlackListGroup del JSON 
@@ -101,7 +118,7 @@ bot.command('getblacklistgroup', (ctx) => {
 })
 //Comando /getWhiteList -> Obtiene la WhiteList del JSON 
 bot.command('getwhitelist', (ctx) => {
- filtro.getWhiteList(ctx)
+    filtro.getWhiteList(ctx)
 })
 //Añadir a la BlackList del JSON
 bot.command('addblacklist', (ctx) => {
@@ -110,40 +127,40 @@ bot.command('addblacklist', (ctx) => {
 //Añadir a la WhiteList del JSON
 bot.command('addwhitelist', (ctx) => {
     filtro.addWhiteList(ctx);
-}) 
+})
 //Añadir a la BlackListGroup del JSON
-bot.command('addblacklistgroup',  (ctx) => {
-  filtro.addBlackListGroup(ctx);
-})  
+bot.command('addblacklistgroup', (ctx) => {
+    filtro.addBlackListGroup(ctx);
+})
 
 // Borrar de la whiteList 
 
 bot.command('delwhitelist', async (ctx) => {
     filtro.delWhiteList(ctx);
-}) 
+})
 
 // Borrar de la BlackList 
 
 bot.command('delblacklist', async (ctx) => {
-   filtro.delBlackList(ctx);
-}) 
+    filtro.delBlackList(ctx);
+})
 
 // Borrar de la Black group List 
 
 bot.command('delblacklistgroup', async (ctx) => {
-  filtro.delBlackListGroup(ctx);
-}) 
+    filtro.delBlackListGroup(ctx);
+})
 
 //Funciónes Obtener tweets
 
 //Comprobar tweets nuevos
- function comprobarTweets() {
+function comprobarTweets() {
     console.log('Comprobación de tweets nuevos')
     var cuentasTwitter = JSON.parse(process.env.Twitter_Accounts);
-   
-      
-    for(let cuenta of cuentasTwitter){
-       // await new Promise(r => setTimeout(r, 1000));
+
+
+    for (let cuenta of cuentasTwitter) {
+        // await new Promise(r => setTimeout(r, 1000));
         obtenerTweets(cuenta.id, cuenta.name)
     }
 }
@@ -155,68 +172,68 @@ bot.command('delblacklistgroup', async (ctx) => {
 var enfriamiento = true;
 
 bot.command('obtenertweets', async (ctx) => {
- 
-    if((ctx.message.chat.id == grupoAdmins) || (cAdmin.comprobarAdmin(ctx) === true)){
-        
-    if (enfriamiento === true) {
-        enfriamiento = false
-        comprobarTweets()
-        ctx.reply('Obteniendo todos los tweets...')
-         //Set timeout para cambiar de estado a false de 2 minutos
-        setTimeout(() => {
-            enfriamiento = true;
-        }, 60000);
-    }else{
-       
-        ctx.reply('El bot está enfriado por favor espera unos minutos (Tiempo total de espera: 1 minutos)')
+
+    if ((ctx.message.chat.id == grupoAdmins) || (cAdmin.comprobarAdmin(ctx) === true)) {
+
+        if (enfriamiento === true) {
+            enfriamiento = false
+            comprobarTweets()
+            ctx.reply('Obteniendo todos los tweets...')
+            //Set timeout para cambiar de estado a false de 2 minutos
+            setTimeout(() => {
+                enfriamiento = true;
+            }, 60000);
+        } else {
+
+            ctx.reply('El bot está enfriado por favor espera unos minutos (Tiempo total de espera: 1 minutos)')
+        }
+
+
+
+
+    } else {
+        ctx.reply('No tienes permisos para ejecutar este comando')
     }
-   
-
-    
-
-} else{
-    ctx.reply('No tienes permisos para ejecutar este comando')
-}
-} )
+})
 
 
 async function obtenerTweets(id, name) {
 
     var tweet = await twitter.getTwett(id)
-   
-        //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
-        if (comprobarUltimosTweets(tweet, id) === false) {
-            //Filtrar Tweet
-            if (filtro.filtradoAcceso(tweet) === true) {
-                if (filtro.filtradoBlackListGroup(tweet) === true) {
+
+    //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
+    if (comprobarUltimosTweets(tweet, id) === false) {
+        //Filtrar Tweet
+        if (filtro.filtradoAcceso(tweet) === true) {
+            if (filtro.filtradoBlackListGroup(tweet) === true) {
 
 
 
-                    try {
-                        enviarMensaje(tweet, name, grupoAlertas);
-                    } catch (error) {
-                        console.log(error)
-                    }
-                } else {
-                    try {
-                        enviarMensaje(tweet, name, canalAlertas);
-                    } catch (error) {
-                        console.log(error)
-                    }
+                try {
+                    enviarMensaje(tweet, name, grupoAlertas);
+                } catch (error) {
+                    console.log(error)
                 }
-
+            } else {
+                try {
+                    enviarMensaje(tweet, name, canalAlertas);
+                } catch (error) {
+                    console.log(error)
+                }
             }
 
-        } else {
-            //Obtener hora y fecha actual 
-            /*
-            let fecha = new Date()
-            let hora = fecha.getHours() + ':' + fecha.getMinutes() + ':' + fecha.getSeconds()
-            //Guardar en .log fecha y hora del tweet
-            console.log(`Mensaje con ID:  ${tweet.id} ya envíado. Cuenta:${name}  [${hora}]`)*/
-
         }
+
+    } else {
+        //Obtener hora y fecha actual 
+        /*
+        let fecha = new Date()
+        let hora = fecha.getHours() + ':' + fecha.getMinutes() + ':' + fecha.getSeconds()
+        //Guardar en .log fecha y hora del tweet
+        console.log(`Mensaje con ID:  ${tweet.id} ya envíado. Cuenta:${name}  [${hora}]`)*/
+
     }
+}
 
 
 
@@ -236,47 +253,44 @@ function enviarMensaje(tweet, name, destinatario) {
 }
 
 function comprobarUltimosTweets(tweet, id) {
-let salida = false;
-//Comprobar si el archivo bot.log existe, si no crearlo
-if (fs.existsSync('./ultimosTweets.json') === false) {
-    fs.writeFileSync('./ultimosTweets.json', '[]')
+    let salida = false;
+    //Comprobar si el archivo bot.log existe, si no crearlo
+    if (fs.existsSync('./ultimosTweets.json') === false) {
+        fs.writeFileSync('./ultimosTweets.json', '[]')
 
-}
-  //Comprobar un registro .log si el tweet se ha enviado
-  try {
-    var json = fs.readFileSync('./ultimosTweets.json', 'utf8')
-    let ultimosTweets = JSON.parse(json)
-    let nuevoTweet = {
-        idTweet: tweet.id,
-        idCuenta: id
-       }
-  let cuentaEncontrada = ultimosTweets.findIndex(e => e.idCuenta === id);
-  
-  if(cuentaEncontrada != -1){
-   if( ultimosTweets[cuentaEncontrada].idTweet === tweet.id){
-  
-   salida = true;
-   }else{
-    ultimosTweets.splice(cuentaEncontrada, 1)
-    
-        ultimosTweets.push(nuevoTweet)
-        fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
-       
-     
-  
-   }
-  }else{
-    ultimosTweets.push(nuevoTweet)
-    fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
-  }
-  
-  } catch (error) {
-    console.log(error)
-  }
- 
+    }
+    //Comprobar un registro .log si el tweet se ha enviado
+    try {
+        var json = fs.readFileSync('./ultimosTweets.json', 'utf8')
+        let ultimosTweets = JSON.parse(json)
+        let nuevoTweet = {
+            idTweet: tweet.id,
+            idCuenta: id
+        }
+        let cuentaEncontrada = ultimosTweets.findIndex(e => e.idCuenta === id);
+
+        if (cuentaEncontrada != -1) {
+            if (ultimosTweets[cuentaEncontrada].idTweet === tweet.id) {
+
+                salida = true;
+            } else {
+                ultimosTweets.splice(cuentaEncontrada, 1)
+
+                ultimosTweets.push(nuevoTweet)
+                fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
+
+
+
+            }
+        } else {
+            ultimosTweets.push(nuevoTweet)
+            fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets))
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+
     return salida
-    
+
 }
-
-
-

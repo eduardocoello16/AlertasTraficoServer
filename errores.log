@@ -1,0 +1,9 @@
+----------------Registro de errores---------------
+
+Error en el bot: Error al hacer un broadcast 
+ReferenceError: bot is not defined
+Wed Aug 31 2022 12:16:14 GMT+0100 (GMT+02:00)
+
+Error en el bot: Error al hacer un broadcast 
+ReferenceError: grupoAlertas is not defined
+Wed Aug 31 2022 12:16:37 GMT+0100 (GMT+02:00)
