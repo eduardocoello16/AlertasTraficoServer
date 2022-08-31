@@ -72,7 +72,7 @@ function broadcast(ctx, bot){
 }
 
 module.exports = {
-    comprobarAdmin,
     deleteAdmin,
-    broadcast
+    broadcast,
+    comprobarAdmin
   };
