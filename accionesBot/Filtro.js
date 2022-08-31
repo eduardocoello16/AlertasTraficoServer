@@ -118,7 +118,7 @@ function addWhiteList(ctx) {
             }
             else{
                 if(filtro.whiteList.indexOf(ctx.message.text.split(' ')[1]) != -1){
-                    ctx.reply('La palabra ya se encuentra en la BlackList')
+                    ctx.reply('La palabra ya se encuentra en la WhiteList')
                 }else{
                 filtro.whiteList.push(ctx.message.text.split(' ')[1])
                 guardarFiltro(filtro)
@@ -257,16 +257,16 @@ function filtradoAcceso(tweet) {
     let whiteList = result.whiteList;
     let blackList = result.blackList;
     let tweetText = tweet.text.toLowerCase()
-    let arrayTweetText = tweetText.split(' ');
+
     try {
         whiteList.forEach(element => {
-            if (arrayTweetText.includes(element.toLowerCase())) {
+            if (tweetText.indexOf(element.toLowerCase()) != -1) {
     
                 salida = true
             }
         })
         blackList.forEach(element => {
-            if (arrayTweetText.includes(element.toLowerCase())) {
+            if (tweetText.indexOf(element.toLowerCase()) != -1) {
                
                 salida = false
             }
