@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { comprobarAdmin } = require('./accionesBot/admin');
+const admin = require('./accionesBot/admin');
 function crearFichero()
 {
     //Comprobar si el archivo bot.log existe, si no crearlo
@@ -15,7 +15,7 @@ function botError(msg, error){
 
 
 function borrarFichero(ctx) {
-    if(comprobarAdmin(ctx)=== false){
+    if(admin.comprobarAdmin(ctx)=== false){
         ctx.reply('Tienes que ser administrador para ejecutar este comando.')
     }else{
         if (fs.existsSync('./errores.log') != false) {
@@ -37,7 +37,7 @@ function borrarFichero(ctx) {
 
 function obtenerFichero(ctx){
     
-    if(comprobarAdmin(ctx)=== false){
+    if(admin.comprobarAdmin(ctx)=== false){
         ctx.reply('Tienes que ser administrador para ejecutar este comando.')
     }else{
         if (fs.existsSync('./errores.log') != false) {

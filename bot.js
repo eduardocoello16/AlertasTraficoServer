@@ -6,8 +6,9 @@ const filtro = require('./accionesBot/Filtro')
 const twitter = require('./twitter')
 const variables = require('./variables')
 const errores = require('./errores.js')
-const cAdmin = require('./accionesBot/admin')
-const moders = require('./accionesBot/moders');
+const cAdmin = require('./accionesBot/admin') 
+var express = require('express');
+var app = express();
 //Variables usuarios
 const grupoAdmins = variables.grupoAdmins
 const grupoAlertas = variables.grupoAlertas
@@ -15,8 +16,13 @@ const canalAlertas = variables.canalAlertas
 const bot = variables.bot
 
 
-
-
+app.listen(2000, () =>{
+    console.log("Servidor levantado correctamente en  http://localhost:" + 2000 )
+})
+app.get('/', function(req, res) {
+    console.log('dsfd')
+   });
+ 
 //Start bot
 //Detectar cuando el bot se conecta
 console.log('Iniciando bot... ')
