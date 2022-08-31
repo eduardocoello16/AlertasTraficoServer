@@ -9,26 +9,27 @@ const errores = require('./errores.js')
 const cAdmin = require('./accionesBot/admin') 
 var express = require('express');
 var app = express();
+var bp = require('body-parser')
+const cors = require('cors')
 //Variables usuarios
 const grupoAdmins = variables.grupoAdmins
 const grupoAlertas = variables.grupoAlertas
 const canalAlertas = variables.canalAlertas
 const bot = variables.bot
 
-
+app.use(bp.json())
+app.use(bp.urlencoded({ extended: true }))
+app.use(cors())
 app.listen(2000, () =>{
     console.log("Servidor levantado correctamente en  http://localhost:" + 2000 )
 })
-app.get('/', function(req, res) {
-    console.log('dsfd')
-   });
+
  
 //Start bot
 //Detectar cuando el bot se conecta
 console.log('Iniciando bot... ')
 bot.launch().then(() => {
     console.log('Bot iniciado')
-    //comprobarTweets();
     setInterval(() => {
         console.log("Comprobando Tweets cada 5 minutos");
         comprobarTweets();
@@ -160,16 +161,30 @@ bot.command('delblacklistgroup', async (ctx) => {
 //Funciónes Obtener tweets
 
 //Comprobar tweets nuevos
-function comprobarTweets() {
-    console.log('Comprobación de tweets nuevos')
+async function comprobarTweets(ctx) {
+    
     var cuentasTwitter = JSON.parse(process.env.Twitter_Accounts);
 
 
-    for (let cuenta of cuentasTwitter) {
-        // await new Promise(r => setTimeout(r, 1000));
+    for await (let cuenta of cuentasTwitter) {
+         await new Promise(r => setTimeout(r, 1000));
+         if(ctx){
+            ctx.reply('Obteniendo ultimo tweet de la cuenta ' + cuenta.name)
+         }else{
+            console.log('Obteniendo ultimo tweet de la cuenta ' + cuenta.name)
+         }
+        
         obtenerTweets(cuenta.id, cuenta.name)
+       
     }
+   if(ctx){
+    ctx.reply('Finalizado')
+   }else{
+    console.log('Finalizado')
+   }
 }
+
+
 
 //Obtener tweets llamando a la API twitter
 
@@ -178,12 +193,12 @@ function comprobarTweets() {
 var enfriamiento = true;
 
 bot.command('obtenertweets', async (ctx) => {
-
+    console.log('Comprobación de tweets nuevos (Comando Usuario) - ' + new Date )
     if ((ctx.message.chat.id == grupoAdmins) || (cAdmin.comprobarAdmin(ctx) === true)) {
 
         if (enfriamiento === true) {
             enfriamiento = false
-            comprobarTweets()
+            comprobarTweets(ctx)
             ctx.reply('Obteniendo todos los tweets...')
             //Set timeout para cambiar de estado a false de 2 minutos
             setTimeout(() => {
@@ -300,3 +315,27 @@ function comprobarUltimosTweets(tweet, id) {
     return salida
 
 }
+
+
+//Express
+
+
+app.post('/usuariogrupo', async function(req, res) {
+    let id = req.body.id
+    try {
+        let user = await bot.telegram.getChatMember(variables.grupoAdmins, id)
+        console.log(user.status)
+        if(user.status === 'left'){
+            res.status(200).send(false)
+        }else{
+          //  bot.telegram.sendMessage(user.user.id, 'Se abrió la web ' +  user.user.first_name)
+            res.status(200).send(true)
+        }
+        
+    } catch (error) {
+   
+        res.status(200).send(false)
+    }
+    
+   
+   });
