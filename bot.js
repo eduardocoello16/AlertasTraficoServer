@@ -167,7 +167,7 @@ async function comprobarTweets(ctx) {
 
 
     for await (let cuenta of cuentasTwitter) {
-         await new Promise(r => setTimeout(r, 1000));
+       
          if(ctx){
             ctx.reply('Obteniendo ultimo tweet de la cuenta ' + cuenta.name)
          }else{
@@ -175,6 +175,8 @@ async function comprobarTweets(ctx) {
          }
         
         obtenerTweets(cuenta.id, cuenta.name)
+         //Esperar un tiempo
+        await new Promise(r => setTimeout(r, 1000));
        
     }
    if(ctx){
