@@ -1,5 +1,5 @@
 const variables = require('../variables')
-const errores = require('../errores')
+
 
 
 function comprobarAdmin(ctx) {
@@ -63,7 +63,7 @@ function broadcast(ctx, bot){
                 bot.telegram.sendMessage(variables.grupoAlertas, mensaje)
             } catch (error) {
                 ctx.reply('Error interno del bot')
-                errores.botError('Error al hacer un broadcast', error)
+                
             }
         }
     } else {
@@ -72,7 +72,8 @@ function broadcast(ctx, bot){
 }
 
 module.exports = {
+    comprobarAdmin,
     deleteAdmin,
-    broadcast,
-    comprobarAdmin
+    broadcast
+    
   };
