@@ -325,7 +325,7 @@ function comprobarUltimosTweets(tweet, id) {
 app.post('/usuariogrupo', async function(req, res) {
     let id = req.body.id
     try {
-        let user = await bot.telegram.getChatMember(variables.grupoAdmins, id)
+        let user = await bot.telegram.getChatMember(variables.grupoAlertas, id)
         console.log(user.status)
         if(user.status === 'left'){
             res.status(200).send(false)
