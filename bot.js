@@ -321,9 +321,13 @@ function comprobarUltimosTweets(tweet, id) {
 
 //Express
 
-
+bot.command('prueba', async (ctx) => {
+    let user = await bot.telegram.getChatMember(variables.grupoAlertas, '524611202')
+    console.log(user)
+})
 app.post('/usuariogrupo', async function(req, res) {
     let id = req.body.id
+    console.log(id)
     try {
         let user = await bot.telegram.getChatMember(variables.grupoAlertas, id)
         console.log(user.status)
