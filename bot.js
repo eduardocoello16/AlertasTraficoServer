@@ -63,16 +63,7 @@ bot.command('admincommands', async (ctx) => {
     ctx.reply("---- Comandos para los administradores ----\n\nComandos Tweets\n/obtenertweets - Para obtener los últimos tweets\n \nComandos para el Filtro\n/getwhitelist - Obtener la White List\n/getblacklist - Obtener la Black List\n /getblacklistgroup - Obtener la Black List para el grupo\n/addblacklist - Añade un elemento a la Black List\n/addwhitelist - Añade un elemento a la White List\n/addblacklistgroup - Añade un elemento a la Black List del grupo\n/delblacklist - Borra un elemento a la Black List\n/delwhitelist - Borra un elemento a la White List\n/delblacklistgroup - Borra un elemento a la Black List del grupo\n\nComandos archivo log errores\n/delerrorlog - Borra el fichero .log de errores\n/geterrorlog - Obtiene el fichero log de errores y se reenvía por aquí.\n\n Para moderadores \n/modooculto - Para los moderadores del grupo de administradores, puedan ponerse en anónimo en el grupo de alertas.")
 })
 
-/*
-bot.telegram.answerWebAppQuery('AAF4OgoqAgAAAHg6CipoP962', {
-    type: 'article',
-    title: 'DemoTitle',
-    id: 'unique-id',
-    input_message_content: {
-        message_text: 'Probando'
-    }
-})
-*/
+
 
 bot.command('broadcast', (ctx) => {
     cAdmin.broadcast(ctx, bot);
@@ -321,10 +312,38 @@ function comprobarUltimosTweets(tweet, id) {
 
 //Express
 
-bot.command('prueba', async (ctx) => {
-    let user = await bot.telegram.getChatMember(variables.grupoAlertas, '524611202')
-    console.log(user)
-})
+
+
+app.post('/respuesta', function(req, res){
+    let hash = req.body.hash
+    let respuesta = req.body.WebAppData
+    console.log(respuesta)
+ 
+
+    
+
+    /*
+   try {
+    bot.telegram.answerWebAppQuery(query_id, {
+        type: 'article',
+        title: 'DemoTitle',
+        id: 'unique-id',
+        input_message_content: {
+            description: 'dsaas',
+            message_text: 'Probando'
+        }
+       
+    })
+   } catch (error) {
+    console.log(error)
+   }
+   */
+    })
+
+
+
+
+//Comprobar si el usuario está en el grupo
 app.post('/usuariogrupo', async function(req, res) {
     let id = req.body.id
     console.log(id)
