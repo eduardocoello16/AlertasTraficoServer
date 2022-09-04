@@ -315,47 +315,28 @@ function comprobarUltimosTweets(tweet, id) {
 
 
 //Express
+function comprobarHash(WebAppData, hash, bot_token){
+    const q = new URLSearchParams(WebAppData);
+    q.delete("hash");
+     const v = Array.from(q.entries());
+      v.sort(([aN, aV], [bN, bV]) => aN.localeCompare(bN));
+      const data_check_string = v.map(([n, v]) => `${n}=${v}`).join("\n");
+      var secret_key = HmacSHA256(variables.botToken, "WebAppData")
+      var key = HmacSHA256(data_check_string, secret_key).toString(Hex);
+    var salida = false;
+      if(hash == key){
+        salida = true
+        console.log('Correcto')
+        
+      }
 
+      return salida
+}
 
 
 app.post('/respuesta', function(req, res){
-    let hash = req.body.hash
-    let respuesta = req.body.WebAppData
-const bot_token = variables.botToken
-const q = new URLSearchParams(respuesta);
-q.delete("hash");
- const v = Array.from(q.entries());
-  v.sort(([aN, aV], [bN, bV]) => aN.localeCompare(bN));
-  const data_check_string = v.map(([n, v]) => `${n}=${v}`).join("\n");
-  var secret_key = HmacSHA256(variables.botToken, "WebAppData")
-  var key = HmacSHA256(data_check_string, secret_key).toString(Hex);
-
-  if(hash == key){
-    console.log('Coincidió')
-    
-  }else{
-
-console.log('noppeee')
-  }
-
   
-
-    /*
-   try {
-    bot.telegram.answerWebAppQuery(query_id, {
-        type: 'article',
-        title: 'DemoTitle',
-        id: 'unique-id',
-        input_message_content: {
-            description: 'dsaas',
-            message_text: 'Probando'
-        }
-       
-    })
-   } catch (error) {
-    console.log(error)
-   }
-   */
+ 
     })
 
 
@@ -364,6 +345,13 @@ console.log('noppeee')
 //Comprobar si el usuario está en el grupo
 app.post('/usuariogrupo', async function(req, res) {
     let id = req.body.id
+    let hash = req.body.hash
+    let WebAppData = req.body.WebAppData
+    const bot_token = variables.WebAppData
+
+    if(comprobarHash(WebAppData, hash, bot_token)){
+
+   
 
     try {
         let user = await bot.telegram.getChatMember(variables.grupoAlertas, id)
@@ -379,5 +367,10 @@ app.post('/usuariogrupo', async function(req, res) {
         res.status(200).send(false)
     }
     
-   
+}else{
+    res.status(500).send({
+        "msg": "El hash del bot no es válido."
+    })
+}
    });
+   
