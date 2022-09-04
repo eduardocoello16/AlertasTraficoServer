@@ -1,6 +1,10 @@
 require('dotenv').config({
     path: './.env'
 });
+
+const HmacSHA256 = require('crypto-js/hmac-sha256')
+const Hex = require('crypto-js/enc-hex')
+const crypto = require('crypto-js')
 const fs = require('fs');
 const filtro = require('./accionesBot/Filtro')
 const twitter = require('./twitter')
@@ -317,10 +321,24 @@ function comprobarUltimosTweets(tweet, id) {
 app.post('/respuesta', function(req, res){
     let hash = req.body.hash
     let respuesta = req.body.WebAppData
-    console.log(respuesta)
- 
+const bot_token = variables.botToken
+const q = new URLSearchParams(respuesta);
+q.delete("hash");
+ const v = Array.from(q.entries());
+  v.sort(([aN, aV], [bN, bV]) => aN.localeCompare(bN));
+  const data_check_string = v.map(([n, v]) => `${n}=${v}`).join("\n");
+  var secret_key = HmacSHA256(variables.botToken, "WebAppData")
+  var key = HmacSHA256(data_check_string, secret_key).toString(Hex);
 
+  if(hash == key){
+    console.log('Coincidió')
     
+  }else{
+
+console.log('noppeee')
+  }
+
+  
 
     /*
    try {
@@ -346,10 +364,9 @@ app.post('/respuesta', function(req, res){
 //Comprobar si el usuario está en el grupo
 app.post('/usuariogrupo', async function(req, res) {
     let id = req.body.id
-    console.log(id)
+
     try {
         let user = await bot.telegram.getChatMember(variables.grupoAlertas, id)
-        console.log(user.status)
         if(user.status === 'left'){
             res.status(200).send(false)
         }else{
