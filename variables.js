@@ -14,5 +14,6 @@ module.exports = {
     grupoAdmins,
     grupoAlertas,
     canalAlertas,
+    botToken,
     bot
   };

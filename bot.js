@@ -1,6 +1,10 @@
 require('dotenv').config({
     path: './.env'
 });
+
+const HmacSHA256 = require('crypto-js/hmac-sha256')
+const Hex = require('crypto-js/enc-hex')
+const crypto = require('crypto-js')
 const fs = require('fs');
 const filtro = require('./accionesBot/Filtro')
 const twitter = require('./twitter')
@@ -63,16 +67,7 @@ bot.command('admincommands', async (ctx) => {
     ctx.reply("---- Comandos para los administradores ----\n\nComandos Tweets\n/obtenertweets - Para obtener los últimos tweets\n \nComandos para el Filtro\n/getwhitelist - Obtener la White List\n/getblacklist - Obtener la Black List\n /getblacklistgroup - Obtener la Black List para el grupo\n/addblacklist - Añade un elemento a la Black List\n/addwhitelist - Añade un elemento a la White List\n/addblacklistgroup - Añade un elemento a la Black List del grupo\n/delblacklist - Borra un elemento a la Black List\n/delwhitelist - Borra un elemento a la White List\n/delblacklistgroup - Borra un elemento a la Black List del grupo\n\nComandos archivo log errores\n/delerrorlog - Borra el fichero .log de errores\n/geterrorlog - Obtiene el fichero log de errores y se reenvía por aquí.\n\n Para moderadores \n/modooculto - Para los moderadores del grupo de administradores, puedan ponerse en anónimo en el grupo de alertas.")
 })
 
-/*
-bot.telegram.answerWebAppQuery('AAF4OgoqAgAAAHg6CipoP962', {
-    type: 'article',
-    title: 'DemoTitle',
-    id: 'unique-id',
-    input_message_content: {
-        message_text: 'Probando'
-    }
-})
-*/
+
 
 bot.command('broadcast', (ctx) => {
     cAdmin.broadcast(ctx, bot);
@@ -320,17 +315,46 @@ function comprobarUltimosTweets(tweet, id) {
 
 
 //Express
+function comprobarHash(WebAppData, hash, bot_token){
+    const q = new URLSearchParams(WebAppData);
+    q.delete("hash");
+     const v = Array.from(q.entries());
+      v.sort(([aN, aV], [bN, bV]) => aN.localeCompare(bN));
+      const data_check_string = v.map(([n, v]) => `${n}=${v}`).join("\n");
+      var secret_key = HmacSHA256(variables.botToken, "WebAppData")
+      var key = HmacSHA256(data_check_string, secret_key).toString(Hex);
+    var salida = false;
+      if(hash == key){
+        salida = true
+        console.log('Correcto')
+        
+      }
 
-bot.command('prueba', async (ctx) => {
-    let user = await bot.telegram.getChatMember(variables.grupoAlertas, '524611202')
-    console.log(user)
-})
+      return salida
+}
+
+
+app.post('/respuesta', function(req, res){
+  
+ 
+    })
+
+
+
+
+//Comprobar si el usuario está en el grupo
 app.post('/usuariogrupo', async function(req, res) {
     let id = req.body.id
-    console.log(id)
+    let hash = req.body.hash
+    let WebAppData = req.body.WebAppData
+    const bot_token = variables.WebAppData
+
+    if(comprobarHash(WebAppData, hash, bot_token)){
+
+   
+
     try {
         let user = await bot.telegram.getChatMember(variables.grupoAlertas, id)
-        console.log(user.status)
         if(user.status === 'left'){
             res.status(200).send(false)
         }else{
@@ -343,5 +367,10 @@ app.post('/usuariogrupo', async function(req, res) {
         res.status(200).send(false)
     }
     
-   
+}else{
+    res.status(500).send({
+        "msg": "El hash del bot no es válido."
+    })
+}
    });
+   
