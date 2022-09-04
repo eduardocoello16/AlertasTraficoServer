@@ -363,7 +363,8 @@ app.post('/usuariogrupo', async function(req, res) {
         }
         
     } catch (error) {
-   
+        console.log(user)
+        console.log(error)
         res.status(200).send(false)
     }
     
