@@ -149,11 +149,8 @@ bot.command('delblacklistgroup', async (ctx) => {
 
 //Comprobar tweets nuevos
 async function comprobarTweets(ctx) {
-    
     var cuentasTwitter = JSON.parse(process.env.Twitter_Accounts);
-
-
-    for await (let cuenta of cuentasTwitter) {
+    for  (let cuenta of cuentasTwitter) {
        
          if(ctx){
             ctx.reply('Obteniendo ultimo tweet de la cuenta ' + cuenta.name)
@@ -161,9 +158,8 @@ async function comprobarTweets(ctx) {
             console.log('Obteniendo ultimo tweet de la cuenta ' + cuenta.name)
          }
         
-        obtenerTweets(cuenta.id, cuenta.name)
-         //Esperar un tiempo
-        await new Promise(r => setTimeout(r, 1000));
+       await obtenerTweets(cuenta.id, cuenta.name)
+       
        
     }
    if(ctx){
@@ -188,7 +184,7 @@ bot.command('obtenertweets', async (ctx) => {
         if (enfriamiento === true) {
             enfriamiento = false
             comprobarTweets(ctx)
-            ctx.reply('Obteniendo todos los tweets...')
+           
             //Set timeout para cambiar de estado a false de 2 minutos
             setTimeout(() => {
                 enfriamiento = true;
@@ -233,6 +229,7 @@ async function obtenerTweets(id, name) {
             }
 
         }
+        return true
 
     } else {
         //Obtener hora y fecha actual 
