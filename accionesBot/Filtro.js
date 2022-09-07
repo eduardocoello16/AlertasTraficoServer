@@ -271,6 +271,10 @@ function filtradoAcceso(tweet) {
                 salida = false
             }
         })
+        //Descartar los retweets
+        if(tweetText[0] === 'R' && tweetText[1] === 'T'){
+            false
+        }
     } catch (error) {
         console.log(error)
     }

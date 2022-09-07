@@ -19,9 +19,6 @@ const canalAlertas = variables.canalAlertas
 const bot = variables.bot
 
 //Express
-
-
- 
 //Start bot
 //Detectar cuando el bot se conecta
 console.log('Iniciando bot... ')
@@ -34,7 +31,11 @@ bot.launch().then(() => {
 }).catch(err => {
     console.log(err)
 })
+
+//Abrir las rutas de express pasándole el bot.
 webBot.rutas(bot)
+
+
 // COMANDOS
 
 // Iniciar el bot Bienvenido 
@@ -51,10 +52,6 @@ bot.start((ctx) => {
         ctx.reply('Para ver los comandos de administrador usa el comando /admincommands')
     }
 })
-
-
-
-
 
 //Comando para obtener lista de comandos para admins
 bot.command('admincommands', async (ctx) => {
