@@ -9,6 +9,10 @@ const {
 const botToken = process.env.BOT_TOKEN
 const bot = new Telegraf(botToken)
 
+var enfriamiento = true;
+var obtenerTweets = false
+var usuariosPublicaciones = false
+
 module.exports = {
     usuariosAdmin,
     grupoAdmins,
@@ -19,5 +23,8 @@ module.exports = {
     enfriamiento,
     obtenerTweets,
     usuariosPublicaciones,
-    bot
+    bot,
+    enfriamiento,
+    obtenerTweets,
+    usuariosPublicaciones
   };
