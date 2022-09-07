@@ -15,5 +15,9 @@ module.exports = {
     grupoAlertas,
     canalAlertas,
     botToken,
+    mongoDbUri,
+    enfriamiento,
+    obtenerTweets,
+    usuariosPublicaciones,
     bot
   };

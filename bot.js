@@ -10,7 +10,7 @@ const variables = require('./variables')
 const errores = require('./errores.js')
 const cAdmin = require('./accionesBot/admin') 
 var express = require('express');
-const webBot = require('./webBot')
+const webBot = require('./webBot/webBot')
 
 //Variables usuarios
 const grupoAdmins = variables.grupoAdmins
@@ -149,6 +149,7 @@ bot.command('delblacklistgroup', async (ctx) => {
 
 //Comprobar tweets nuevos
 async function comprobarTweets(ctx) {
+    if(variables.obtenerTweets){
     var cuentasTwitter = JSON.parse(process.env.Twitter_Accounts);
     for  (let cuenta of cuentasTwitter) {
        
@@ -167,6 +168,11 @@ async function comprobarTweets(ctx) {
    }else{
     console.log('Finalizado')
    }
+}else{
+   
+        console.log('La obtención de tweets está deshabilitada')
+     
+}
 }
 
 
@@ -174,20 +180,30 @@ async function comprobarTweets(ctx) {
 //Obtener tweets llamando a la API twitter
 
 //Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
-
-var enfriamiento = true;
+bot.command('obtentweets', async (ctx) => { 
+   if(variables.obtenerTweets){
+    variables.obtenerTweets = false
+    ctx.reply('La obtención de tweets se ha desactivado')
+   }else{
+    variables.obtenerTweets = true
+    ctx.reply('La obtención de tweets se ha activado')
+   }
+})
 
 bot.command('obtenertweets', async (ctx) => {
-    console.log('Comprobación de tweets nuevos (Comando Usuario) - ' + new Date )
+    if(variables.obtenerTweets){
+        console.log('Comprobación de tweets nuevos (Comando Usuario) - ' + new Date )
+    
+    
     if ((ctx.message.chat.id == grupoAdmins) || (cAdmin.comprobarAdmin(ctx) === true)) {
 
-        if (enfriamiento === true) {
-            enfriamiento = false
+        if (variables.enfriamiento === true) {
+            variables.enfriamiento = false
             comprobarTweets(ctx)
            
             //Set timeout para cambiar de estado a false de 2 minutos
             setTimeout(() => {
-                enfriamiento = true;
+                variables.enfriamiento = true;
             }, 60000);
         } else {
 
@@ -200,6 +216,9 @@ bot.command('obtenertweets', async (ctx) => {
     } else {
         ctx.reply('No tienes permisos para ejecutar este comando')
     }
+}else{
+    ctx.reply('La obtención de tweets está deshabilitada')
+}
 })
 
 
