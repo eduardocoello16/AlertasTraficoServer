@@ -4,9 +4,10 @@ const crypto = require('crypto-js')
 var express = require('express');
 var app = express();
 var bp = require('body-parser')
-const variables = require('./variables')
+const variables = require('../variables')
 const cors = require('cors')
-
+const mongoose = require('mongoose')
+const usuarioModel = require('./models/user')
 
 app.use(bp.json())
 app.use(bp.urlencoded({ extended: true }))
@@ -14,6 +15,16 @@ app.use(cors())
 app.listen(2000, () =>{
     console.log("Servidor levantado correctamente en  http://localhost:" + 2000 )
 })
+
+//Base de datos 
+
+mongoose.connect(variables.mongoDbUri)
+.then(() => console.log("Conexión base datos satisfactoria."))
+.catch((error) => console.error(error))
+
+
+
+
 
 
 function comprobarHash(WebAppData, hash, bot_token){
@@ -39,7 +50,7 @@ function rutas(bot){
 
 
 app.post('/respuesta', function(req, res){
-  
+    let id = req.body.user
     console.log('ENtró')
     console.log(bot)
     })
@@ -48,7 +59,8 @@ app.post('/respuesta', function(req, res){
 
 
 //Comprobar si el usuario está en el grupo
-app.post('/usuariogrupo', async function(req, res) {
+app.post('/comprobarusuario', async function(req, res) {
+   console.log('Comprobando usuario' )
     let id = req.body.id
     let hash = req.body.hash
     let WebAppData = req.body.WebAppData
@@ -56,21 +68,22 @@ app.post('/usuariogrupo', async function(req, res) {
 
     if(comprobarHash(WebAppData, hash, bot_token)){
 
-   
+       
 
     try {
-        let user = await bot.telegram.getChatMember(variables.grupoAlertas, id)
-        if(user.status === 'left'){
-            res.status(200).send(false)
-        }else{
-          //  bot.telegram.sendMessage(user.user.id, 'Se abrió la web ' +  user.user.first_name)
+        const getUsuario = await usuarioModel.findOne({id: id})
+        if(getUsuario){
             res.status(200).send(true)
+        }else{
+            res.status(200).send(false)
         }
         
     } catch (error) {
-        console.log(user)
+        
         console.log(error)
-        res.status(200).send(false)
+        res.status(500).send({
+            "msg": "Error en el servidor"
+        })
     }
     
 }else{

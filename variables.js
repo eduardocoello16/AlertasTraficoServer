@@ -2,6 +2,7 @@ const usuariosAdmin = JSON.parse(process.env.BOT_AdminUsers)
 const grupoAdmins = process.env.BOT_AdminGroup_Test
 const grupoAlertas = process.env.BOT_GroupToSend_Test
 const canalAlertas = process.env.BOT_ChannelToSend_Test
+const mongoDbUri = process.env.MongoDbUri
 //Bot
 const {
     Telegraf
@@ -13,6 +14,10 @@ const bot = new Telegraf(botToken,
            testEnv: true
         } 
         })
+var enfriamiento = true;
+var obtenerTweets = false
+var usuariosPublicaciones = false
+
 
 module.exports = {
     usuariosAdmin,
@@ -20,5 +25,9 @@ module.exports = {
     grupoAlertas,
     canalAlertas,
     botToken,
+    mongoDbUri,
+    enfriamiento,
+    obtenerTweets,
+    usuariosPublicaciones,
     bot
   }; 
