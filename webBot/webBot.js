@@ -27,6 +27,7 @@ mongoose.connect(variables.mongoDbUri)
 
 
 
+
 function comprobarHash(WebAppData, hash, bot_token){
     const q = new URLSearchParams(WebAppData);
     q.delete("hash");
@@ -49,10 +50,34 @@ function rutas(bot){
 
 
 
-app.post('/respuesta', function(req, res){
-    let id = req.body.user
-    console.log('ENtró')
-    console.log(bot)
+app.post('/nuevoUsuario', async function(req, res){
+    const getUsuario = await usuarioModel.findOne({id: req.body.userData.id})
+    if(getUsuario){
+        res.status(400).send({
+            "msg": 'El usuario ya existe'
+           
+        })
+        console.log('el usuario ya existe')
+    }else{
+
+   
+    let user = await usuarioModel(req.body.userData)
+    try {
+        await user.save()
+        res.status(200).send(user)
+
+
+    } catch (error) {
+        res.status(500).send(
+            {
+                "msg": "Error en el servidor al guardar el usuario"
+            }
+        )
+    } 
+    
+    
+    
+}
     })
 
 

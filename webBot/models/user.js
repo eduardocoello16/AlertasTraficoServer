@@ -18,12 +18,12 @@ const userSchema = mongoose.Schema(
             type: String,
             require: false
         },
-        typeUser: {
+        type_user: {
             type: String,
             enum: ['admin','moder', 'user'],
             default: 'user'
         },
-        statusUser: {
+        status_user: {
             type: String,
             enum: ['pending','active', 'banned'],
             default: 'pending'
@@ -32,7 +32,7 @@ const userSchema = mongoose.Schema(
             type: Number,
             default: 0
         },
-        DateCreation: {
+        Date_creation: {
             type: Date,
             default: Date.now
         }
