@@ -230,12 +230,11 @@ async function delBlackListGroup(ctx){
         ctx.reply(errorInterno)
     }
 }
-function filtradoAcceso(tweet) {
+async function filtradoAcceso(tweet) {
     let salida = false
-    let rawdata = fs.readFileSync('filtro.json');
-    let result = JSON.parse(rawdata);
-    let whiteList = result.whiteList;
-    let blackList = result.blackList;
+    let filtro = await database.getBotData(variables.bot_db_name)
+    let whiteList = filtro.whiteList;
+    let blackList = filtro.blackList;
     let tweetText = tweet.text.toLowerCase()
 
     try {
@@ -254,10 +253,8 @@ function filtradoAcceso(tweet) {
         //Descartar los retweets
         if(tweetText[0] === 'r' && tweetText[1] === 't'){
          salida =   false
-        }else{
-            console.log(tweetText[0] + ' ' +
-                tweetText[1])
         }
+      
     } catch (error) {
         console.log(error)
     }
@@ -265,11 +262,10 @@ function filtradoAcceso(tweet) {
     return salida
 }
 
-function filtradoBlackListGroup(tweet) {
+async function filtradoBlackListGroup(tweet) {
     let salida = false
-    let rawdata = fs.readFileSync('filtro.json');
-    let result = JSON.parse(rawdata);
-    let blackListGroup = result.blackListGroup;
+    let filtro = await database.getBotData(variables.bot_db_name)
+    let blackListGroup = filtro.blackListGroup;
     let tweetText = tweet.text.toLowerCase();
     let arrayTweetText = tweetText.split(' ');
     blackListGroup.forEach(element => {
