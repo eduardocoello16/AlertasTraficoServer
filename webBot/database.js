@@ -46,10 +46,11 @@ async function obtenerUsuario(idUsuario){
 async function crearUsuario(userData){
     let user = await usuarioModel(userData)
     try {
-       return await user.save()
+       
+        return await user.save()
        
     } catch (error) {
-       return null
+       
        console.log(error)
     }   
 }

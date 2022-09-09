@@ -77,7 +77,7 @@ app.post('/nuevoUsuario', async function(req, res){
       }
       
     }else{
-       let user = database.crearUsuario(req.body.userData)
+       let user = await database.crearUsuario(req.body.userData)
        if(user){
         res.status(200).send({
             "msg": "Se ha enviado una solicitud a los administradores."
@@ -112,7 +112,7 @@ app.post('/comprobarusuario', async function(req, res) {
     if(comprobarHash(WebAppData, hash)){
     try {
         const getUsuario = await database.obtenerUsuario(id)
-        
+            console.log(getUsuario)
             res.status(200).send( {
                 user: getUsuario,
                 web_status: variables.usuariosPublicaciones
