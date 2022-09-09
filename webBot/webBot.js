@@ -16,14 +16,6 @@ app.listen(2000, () =>{
     console.log("Servidor levantado correctamente en  http://localhost:" + 2000 )
 })
 
-
-
-
-
-
-
-
-
 function comprobarHash(WebAppData, hash){
    
     const q = new URLSearchParams(WebAppData);
