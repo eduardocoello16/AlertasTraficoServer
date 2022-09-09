@@ -11,7 +11,7 @@ const errores = require('./errores.js')
 const cAdmin = require('./accionesBot/admin') 
 var express = require('express');
 const webBot = require('./webBot/webBot')
-
+const database = require('./webBot/database')
 //Variables usuarios
 const grupoAdmins = variables.grupoAdmins
 const grupoAlertas = variables.grupoAlertas
@@ -149,7 +149,8 @@ bot.command('delblacklistgroup', async (ctx) => {
 
 //Comprobar tweets nuevos
 async function comprobarTweets(ctx) {
-    if(variables.obtenerTweets){
+    let datos = await database.getBotData(variables.bot_db_name)
+    if(datos.obtenerTweets){
     var cuentasTwitter = JSON.parse(process.env.Twitter_Accounts);
     for  (let cuenta of cuentasTwitter) {
        
@@ -180,18 +181,22 @@ async function comprobarTweets(ctx) {
 //Obtener tweets llamando a la API twitter
 
 //Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
-bot.command('obtentweets', async (ctx) => { 
-   if(variables.obtenerTweets){
-    variables.obtenerTweets = false
-    ctx.reply('La obtención de tweets se ha desactivado')
-   }else{
-    variables.obtenerTweets = true
-    ctx.reply('La obtención de tweets se ha activado')
-   }
+bot.command('stateobtenertweets', async (ctx) => { 
+    let state = await database.getBotData(variables.bot_db_name)
+    if(state.obtenerTweets){
+        state.obtenerTweets = false
+        await database.save_obtenerTweets_state(state)
+        ctx.reply('La obtención de tweets se ha desactivado')
+       }else{
+        state.obtenerTweets = true
+        await database.save_obtenerTweets_state(state)
+        ctx.reply('La obtención de tweets se ha activado')
+       }
 })
 
 bot.command('obtenertweets', async (ctx) => {
-    if(variables.obtenerTweets){
+   let datos = await database.getBotData(variables.bot_db_name)
+    if(datos.obtenerTweets){
         console.log('Comprobación de tweets nuevos (Comando Usuario) - ' + new Date )
     
     

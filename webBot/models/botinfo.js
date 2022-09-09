@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
-const { addBlackListGroup } = require('../../accionesBot/Filtro');
+
 
 const botinfoSchema = mongoose.Schema(
-    { 
+    { id: {
+        type: String,
+        require: true
+    },
        name:{
         type: String
        },
