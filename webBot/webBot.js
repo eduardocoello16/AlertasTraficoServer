@@ -6,8 +6,7 @@ var app = express();
 var bp = require('body-parser')
 const variables = require('../variables')
 const cors = require('cors')
-const mongoose = require('mongoose')
-const usuarioModel = require('./models/user');
+const database = require('./database')
 const { Markup } = require('telegraf');
 
 app.use(bp.json())
@@ -17,11 +16,7 @@ app.listen(2000, () =>{
     console.log("Servidor levantado correctamente en  http://localhost:" + 2000 )
 })
 
-//Base de datos 
 
-mongoose.connect(variables.mongoDbUri)
-.then(() => console.log("Conexión base datos satisfactoria."))
-.catch((error) => console.error(error))
 
 
 
@@ -57,26 +52,51 @@ app.post('/nuevoUsuario', async function(req, res){
     let WebAppData = req.body.WebAppData
 
     if(comprobarHash(WebAppData, hash)){
-    const getUsuario = await usuarioModel.findOne({id: req.body.userData.id})
+    const getUsuario = await database.obtenerUsuario(req.body.userData.id)
     if(getUsuario){
-       console.log(getUsuario.Date_creation)
-       enviarSolicitud(getUsuario, bot)
-       res.status(200).send(getUsuario)
+        //Solo se podrá enviar la solicitud si ha pasado un día.
+      if(getUsuario.Date_creation){
+        let fecha = new Date(getUsuario.Date_creation)
+        let fechahoy = new Date()
+        let milisegundosDia  = 24*60*60*1000;
+        let milisegundostranscurridos = Math.abs(fecha.getTime() - fechahoy.getTime())
+        let diatransc = Math.round(milisegundostranscurridos/milisegundosDia)
+        if(diatransc != 0){
+            database.actualizarFechaCreation(getUsuario)
+            enviarSolicitud(getUsuario, bot)
+            res.status(200).send(
+                {
+                    "msg": "Tu solicitud se ha vuelto a enviar. Si no se le acepta la solicitud, recomendamos unirse al canal. "
+                }
+            )
+        }else{
+            res.status(200).send(
+                {
+                    "msg": "Tienes que esperar 24h minimo para volver a solicitar."
+                }
+            )
+        }
+       
+        
+      }else{
+        res.status(200).send({
+            "msg": "El usuario ya existía, por favor, espera 1 día"
+           })
+      }
+      
     }else{
-
-   
-    let user = await usuarioModel(req.body.userData)
-    try {
-        await user.save()
-        res.status(200).send(user)
+       let user = database.crearUsuario(req.body.userData)
+       if(user){
+        res.status(200).send({
+            "msg": "Se ha enviado una solicitud a los administradores."
+           })
         enviarSolicitud(user, bot)
-    } catch (error) {
-        res.status(500).send(
-            {
-                "msg": "Error en el servidor al guardar el usuario"
-            }
-        )
-    }   
+       }else{
+        res.status(500).send({
+            "msg": "Error en el servidor."
+        })
+       }
+      
 }
 }else{
     res.status(500).send(
@@ -98,11 +118,8 @@ app.post('/comprobarusuario', async function(req, res) {
     let WebAppData = req.body.WebAppData
    
     if(comprobarHash(WebAppData, hash)){
-
-       
-        
     try {
-        const getUsuario = await usuarioModel.findOne({id: id})
+        const getUsuario = await database.obtenerUsuario(id)
         
             res.status(200).send( {
                 user: getUsuario,
