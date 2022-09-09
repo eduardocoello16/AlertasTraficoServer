@@ -182,6 +182,9 @@ async function comprobarTweets(ctx) {
 
 //Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
 bot.command('stateobtenertweets', async (ctx) => { 
+    if(cAdmin.comprobarAdmin()){
+
+  
     let state = await database.getBotData(variables.bot_db_name)
     if(state.obtenerTweets){
         state.obtenerTweets = false
@@ -191,6 +194,8 @@ bot.command('stateobtenertweets', async (ctx) => {
         state.obtenerTweets = true
         await database.save_obtenerTweets_state(state)
         ctx.reply('La obtención de tweets se ha activado')
+       }  }else{
+        ctx.reply('Necesitas ser administrador para ejecutar este comando.')
        }
 })
 
@@ -236,10 +241,8 @@ async function obtenerTweets(id, name) {
         //Filtrar Tweet
         if (filtro.filtradoAcceso(tweet) === true) {
             if (filtro.filtradoBlackListGroup(tweet) === true) {
-
-
-
                 try {
+                    
                     enviarMensaje(tweet, name, grupoAlertas);
                 } catch (error) {
                     console.log(error)
