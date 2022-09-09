@@ -239,8 +239,8 @@ async function obtenerTweets(id, name) {
     //Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
     if (comprobarUltimosTweets(tweet, id) === false) {
         //Filtrar Tweet
-        if (filtro.filtradoAcceso(tweet) === true) {
-            if (filtro.filtradoBlackListGroup(tweet) === true) {
+        if (await filtro.filtradoAcceso(tweet) === true) {
+            if (await filtro.filtradoBlackListGroup(tweet) === true) {
                 try {
                     
                     enviarMensaje(tweet, name, grupoAlertas);
