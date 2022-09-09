@@ -35,6 +35,12 @@ const userSchema = mongoose.Schema(
         Date_creation: {
             type: Date,
             default: Date.now
+        },
+        Date_ban:{
+            type: Date
+        },
+        banned_until: {
+            type: Date
         }
     }
 )

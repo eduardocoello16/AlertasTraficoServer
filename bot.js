@@ -11,7 +11,7 @@ const errores = require('./errores.js')
 const cAdmin = require('./accionesBot/admin') 
 var express = require('express');
 const webBot = require('./webBot/webBot')
-
+const database = require('./webBot/database')
 //Variables usuarios
 const grupoAdmins = variables.grupoAdmins
 const grupoAlertas = variables.grupoAlertas
@@ -149,7 +149,8 @@ bot.command('delblacklistgroup', async (ctx) => {
 
 //Comprobar tweets nuevos
 async function comprobarTweets(ctx) {
-    if(variables.obtenerTweets){
+    let datos = await database.getBotData(variables.bot_db_name)
+    if(datos.obtenerTweets){
     var cuentasTwitter = JSON.parse(process.env.Twitter_Accounts);
     for  (let cuenta of cuentasTwitter) {
        
@@ -180,18 +181,22 @@ async function comprobarTweets(ctx) {
 //Obtener tweets llamando a la API twitter
 
 //Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
-bot.command('obtentweets', async (ctx) => { 
-   if(variables.obtenerTweets){
-    variables.obtenerTweets = false
-    ctx.reply('La obtención de tweets se ha desactivado')
-   }else{
-    variables.obtenerTweets = true
-    ctx.reply('La obtención de tweets se ha activado')
-   }
+bot.command('stateobtenertweets', async (ctx) => { 
+    let state = await database.getBotData(variables.bot_db_name)
+    if(state.obtenerTweets){
+        state.obtenerTweets = false
+        await database.save_obtenerTweets_state(state)
+        ctx.reply('La obtención de tweets se ha desactivado')
+       }else{
+        state.obtenerTweets = true
+        await database.save_obtenerTweets_state(state)
+        ctx.reply('La obtención de tweets se ha activado')
+       }
 })
 
 bot.command('obtenertweets', async (ctx) => {
-    if(variables.obtenerTweets){
+   let datos = await database.getBotData(variables.bot_db_name)
+    if(datos.obtenerTweets){
         console.log('Comprobación de tweets nuevos (Comando Usuario) - ' + new Date )
     
     
@@ -328,20 +333,40 @@ function comprobarUltimosTweets(tweet, id) {
 bot.on('inline_query', async (ctx) => {
     //console.log(ctx.update.inline_query.query)
     let respuesta = ctx.update.inline_query.query;
+    let publicacionesmsg = ''
+    if(variables.usuariosPublicaciones){
+        publicacionesmsg = 'Fue enviado con exito'
+    }else{
+        publicacionesmsg = 'La publicación de mensajes está deshabilitada'
+    }
+    let solicitar = [
+        
+            {
+                type: 'article',
+                id: 'solicitar',
+                title: 'Solicitar enviar alertas',
+                input_message_content: {
+                    message_text: respuesta + '. \n' + publicacionesmsg
+                },
+                description: 'Para enviar alertas necesita que un admin te valide.'
+                
+            }
+        
+    ]
     let results = [
         {
             type: 'article',
-            id: '1',
+            id: 'Radar',
             title: 'Radar',
             input_message_content: {
-                message_text: respuesta +' se ha envíado'
+                message_text: respuesta + '. \n' + publicacionesmsg
             },
             description: 'Envía una nueva alerta al canal.'
             
         },
         {
             type: 'article',
-            id: '2',
+            id: 'Accidente',
             title: 'Accidente',
             input_message_content: {
                 message_text: respuesta + ' se ha envíado'
@@ -357,9 +382,28 @@ bot.on('inline_query', async (ctx) => {
                 message_text:   `${respuesta}\n  Este mensaje fue enviado al canal.`
             },
             description: 'Envía una nueva alerta al canal.'
+        },
+        {
+            type: 'article',
+            id: 'Obra',
+            title: 'Obra',
+            input_message_content: {
+                message_text:   `${respuesta}\n  Este mensaje fue enviado al canal.`
+            },
+            description: 'Envía una nueva alerta al canal.',
+            reply_markup:{
+                keyboards: [
+                    [
+                        {
+                            text: 'Enviar', callback_data: 'enviar'
+                        }
+                    ]
+                ]
+            }
         }
     ]
    try {
+    
 	 ctx.answerInlineQuery(results)
 } catch (error) {
 	console.log(error)
@@ -368,9 +412,33 @@ bot.on('inline_query', async (ctx) => {
 
 })
 
+
+
 bot.on('chosen_inline_result', async (ctx) => {
     console.log(ctx)
+    
 
 })
 
 
+
+
+
+  bot.action(/aceptar_solicitud:(\d+)/, ctx => {
+    console.log('Aceptar solicitud')
+    const [, userId] = ctx.match
+    console.log(userId)
+  })
+  
+  
+  bot.action(/denegar_solicitud:(\d+)/, ctx => {
+    console.log('Denegar')
+    const [, userId] = ctx.match
+    console.log(ctx)
+  })
+
+  bot.action(/ban_solicitud:(\d+)/, ctx => {
+    console.log('Ban')
+    const [, userId] = ctx.match
+    console.log(userId)
+  })

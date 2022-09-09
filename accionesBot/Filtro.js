@@ -1,55 +1,35 @@
 const admin = require('./admin')
 const fs = require('fs');
 const errores = require('../errores')
+const variables = require('../variables')
+const database = require('../webBot/database')
 const errorInterno = 'Error interno del bot, por favor contacta con el desarrollador. Ver error -> /geterrorlog'
-//Funciones para abrir el archivo json
-function obtenerFiltro() {
-    try {
-        let rawdata = fs.readFileSync('filtro.json');
-        let result = JSON.parse(rawdata);
-        return result 
-    } catch (error) {
-        let msg = 'Error al obtener filtro.'
-        errores.botError(msg, error)
-        return false
-    }
-        
-}
 
-function guardarFiltro(filtro) {
-    try {
-        fs.writeFileSync('filtro.json', JSON.stringify(filtro))
-        return true
-    } catch (error) {
-        let msg = 'Error al guardar filtro.'
-        errores.botError(msg, error)
-        return false
-    }
-    
-}
 
 //Funciones de los comandos
 
 //Obtener BlackList 
 
-function getBlackList(ctx){
+async function getBlackList(ctx){
+    
     try {
         if (admin.comprobarAdmin(ctx) === true) {
-            let filtrado = obtenerFiltro(ctx)
+            let filtrado = await database.getBotData(variables.bot_db_name)
             ctx.reply(`Black List:\n${filtrado.blackList}`)
         } else {
             ctx.reply('No tienes permisos para ejecutar este comando')
         }
     } catch (error) {
+        console.log(error)
         let msg = 'Error al obtener la blackList.'
         errores.botError(msg, error)
         ctx.reply('Error interno del bot, por favor contacta con el desarrollador')
     }
 }
-function getBlackListGroup(ctx){
+async function getBlackListGroup(ctx){
     try {
         if (admin.comprobarAdmin(ctx) === true) {
-            let filtrado = obtenerFiltro( ctx)
+            let filtrado = await database.getBotData(variables.bot_db_name)
             ctx.reply(`Black List Grupo:\n${filtrado.blackListGroup}`)
         } else {
             ctx.reply('No tienes permisos para ejecutar este comando')
@@ -63,10 +43,10 @@ function getBlackListGroup(ctx){
 }
 
 
-function getWhiteList(ctx){
+async function getWhiteList(ctx){
   try {
     if (admin.comprobarAdmin(ctx) === true) {
-        let filtrado = obtenerFiltro( ctx)
+        let filtrado = await database.getBotData(variables.bot_db_name)
         ctx.reply(`WhiteList:\n${filtrado.whiteList}`)
     } else {
         ctx.reply('No tienes permisos para ejecutar este comando')
@@ -81,10 +61,10 @@ function getWhiteList(ctx){
 //Añadir a la lista
 
 
-function addBlackList(ctx){
+async function addBlackList(ctx){
     try {
         if (admin.comprobarAdmin(ctx) === true) {
-            let filtro = obtenerFiltro()
+            let filtro = await database.getBotData(variables.bot_db_name)
             if(ctx.message.text.split(' ').length != 2){
                 ctx.reply('Solo se puede añadir una palabra a la BlackList')
             }
@@ -93,7 +73,7 @@ function addBlackList(ctx){
                     ctx.reply('La palabra ya se encuentra en la BlackList')
                 }else{
                     filtro.blackList.push(ctx.message.text.split(' ')[1])
-                    guardarFiltro(filtro)
+                   await database.saveBotData(filtro)
                     ctx.reply('Palabra añadida a la BlackList')
                 }
              
@@ -109,10 +89,10 @@ function addBlackList(ctx){
         ctx.reply(errorInterno)
     }
 }
-function addWhiteList(ctx) {
+async function addWhiteList(ctx) {
     try {
         if (admin.comprobarAdmin(ctx) === true) {
-            let filtro = obtenerFiltro()
+            let filtro = await database.getBotData(variables.bot_db_name)
             if(ctx.message.text.split(' ').length != 2){
                 ctx.reply('Solo se puede añadir una palabra a la WhiteList')
             }
@@ -121,7 +101,7 @@ function addWhiteList(ctx) {
                     ctx.reply('La palabra ya se encuentra en la WhiteList')
                 }else{
                 filtro.whiteList.push(ctx.message.text.split(' ')[1])
-                guardarFiltro(filtro)
+                await database.saveBotData(filtro)
                 ctx.reply('Palabra añadida a la WhiteList')
             }
         }
@@ -136,10 +116,10 @@ function addWhiteList(ctx) {
     }
 }
 
-function addBlackListGroup(ctx){
+async function addBlackListGroup(ctx){
     try {
         if (admin.comprobarAdmin(ctx) === true) {
-            let filtro = obtenerFiltro()
+             let filtro = await database.getBotData(variables.bot_db_name)
             if(ctx.message.text.split(' ').length != 2){
                 ctx.reply('Solo se puede añadir una palabra a la Black Group List')
             }
@@ -148,7 +128,7 @@ function addBlackListGroup(ctx){
                     ctx.reply('La palabra ya se encuentra en la BlackList')
                 }else{
                 filtro.blackListGroup.push(ctx.message.text.split(' ')[1])
-                guardarFiltro(filtro)
+                await database.saveBotData(filtro)
                 ctx.reply(errorInterno)
             }
         }
@@ -163,10 +143,10 @@ function addBlackListGroup(ctx){
         ctx.reply(errorInterno)
     }
 }
-function delWhiteList(ctx){
+async function delWhiteList(ctx){
     try {
         if (admin.comprobarAdmin(ctx) === true) {
-            let filtro = obtenerFiltro()
+            let filtro = await database.getBotData(variables.bot_db_name)
             if(ctx.message.text.split(' ').length != 2){
                 ctx.reply('Solo se puede borrar de una en una palabra a la WhiteList')
             }
@@ -178,7 +158,7 @@ function delWhiteList(ctx){
                     ctx.reply('La palabra no está en el filtro')
                 }else{
                     filtro.whiteList.splice(posEncontrado, 1)
-                    guardarFiltro(filtro)
+                    await database.saveBotData(filtro)
                     if(posEncontrado != -1) delWhiteList(ctx)
                     ctx.reply(`La palabra ${ctx.message.text.split(' ')[1]} ha sido borrada con éxito` )
                 }
@@ -192,10 +172,10 @@ function delWhiteList(ctx){
         ctx.reply(errorInterno)
     }
 }
-function delBlackList(ctx){
+async function delBlackList(ctx){
     try {
         if (admin.comprobarAdmin(ctx) === true) {
-            let filtro = obtenerFiltro()
+            let filtro = await database.getBotData(variables.bot_db_name)
             if(ctx.message.text.split(' ').length != 2){
                 ctx.reply('Solo se puede borrar de una en una palabra a la BlackList')
             }
@@ -207,7 +187,7 @@ function delBlackList(ctx){
                     ctx.reply('La palabra no está en el filtro')
                 }else{
                     filtro.blackList.splice(posEncontrado, 1)
-                    guardarFiltro(filtro)
+                    await database.saveBotData(filtro)
                     if(posEncontrado != -1) delBlackList(ctx)
                     ctx.reply(`La palabra ${ctx.message.text.split(' ')[1]} ha sido borrada con éxito` )
                 }
@@ -221,10 +201,10 @@ function delBlackList(ctx){
         ctx.reply(errorInterno)
     }
 }
-function delBlackListGroup(ctx){
+async function delBlackListGroup(ctx){
     try {
         if (admin.comprobarAdmin(ctx) === true) {
-            let filtro = obtenerFiltro()
+            let filtro = await database.getBotData(variables.bot_db_name)
             if(ctx.message.text.split(' ').length != 2){
                 ctx.reply('Solo se puede borrar de una en una palabra a la Black Group List')
             }
@@ -236,7 +216,7 @@ function delBlackListGroup(ctx){
                     ctx.reply('La palabra no está en el filtro')
                 }else{
                     filtro.blackListGroup.splice(posEncontrado, 1)
-                    guardarFiltro(filtro)
+                    await database.saveBotData(filtro)
                     if(posEncontrado != -1) delBlackListGroup(ctx)
                     ctx.reply(`La palabra ${ctx.message.text.split(' ')[1]} ha sido borrada con éxito` )
                 }

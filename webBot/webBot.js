@@ -6,8 +6,8 @@ var app = express();
 var bp = require('body-parser')
 const variables = require('../variables')
 const cors = require('cors')
-const mongoose = require('mongoose')
-const usuarioModel = require('./models/user')
+const database = require('./database')
+const { Markup } = require('telegraf');
 
 app.use(bp.json())
 app.use(bp.urlencoded({ extended: true }))
@@ -16,11 +16,6 @@ app.listen(2000, () =>{
     console.log("Servidor levantado correctamente en  http://localhost:" + 2000 )
 })
 
-//Base de datos 
-
-mongoose.connect(variables.mongoDbUri)
-.then(() => console.log("Conexión base datos satisfactoria."))
-.catch((error) => console.error(error))
 
 
 
@@ -28,7 +23,9 @@ mongoose.connect(variables.mongoDbUri)
 
 
 
-function comprobarHash(WebAppData, hash, bot_token){
+
+function comprobarHash(WebAppData, hash){
+   
     const q = new URLSearchParams(WebAppData);
     q.delete("hash");
      const v = Array.from(q.entries());
@@ -51,32 +48,62 @@ function rutas(bot){
 
 
 app.post('/nuevoUsuario', async function(req, res){
-    const getUsuario = await usuarioModel.findOne({id: req.body.userData.id})
+    let hash = req.body.hash
+    let WebAppData = req.body.WebAppData
+
+    if(comprobarHash(WebAppData, hash)){
+    const getUsuario = await database.obtenerUsuario(req.body.userData.id)
     if(getUsuario){
-        res.status(400).send({
-            "msg": 'El usuario ya existe'
-           
-        })
-        console.log('el usuario ya existe')
+        //Solo se podrá enviar la solicitud si ha pasado un día.
+      if(getUsuario.Date_creation){
+        let fecha = new Date(getUsuario.Date_creation)
+        let fechahoy = new Date()
+        let milisegundosDia  = 24*60*60*1000;
+        let milisegundostranscurridos = Math.abs(fecha.getTime() - fechahoy.getTime())
+        let diatransc = Math.round(milisegundostranscurridos/milisegundosDia)
+        if(diatransc != 0){
+            database.actualizarFechaCreation(getUsuario)
+            enviarSolicitud(getUsuario, bot)
+            res.status(200).send(
+                {
+                    "msg": "Tu solicitud se ha vuelto a enviar. Si no se le acepta la solicitud, recomendamos unirse al canal. "
+                }
+            )
+        }else{
+            res.status(200).send(
+                {
+                    "msg": "Tienes que esperar 24h minimo para volver a solicitar."
+                }
+            )
+        }
+       
+        
+      }else{
+        res.status(200).send({
+            "msg": "El usuario ya existía, por favor, espera 1 día"
+           })
+      }
+      
     }else{
-
-   
-    let user = await usuarioModel(req.body.userData)
-    try {
-        await user.save()
-        res.status(200).send(user)
-
-
-    } catch (error) {
-        res.status(500).send(
-            {
-                "msg": "Error en el servidor al guardar el usuario"
-            }
-        )
-    } 
-    
-    
-    
+       let user = database.crearUsuario(req.body.userData)
+       if(user){
+        res.status(200).send({
+            "msg": "Se ha enviado una solicitud a los administradores."
+           })
+        enviarSolicitud(user, bot)
+       }else{
+        res.status(500).send({
+            "msg": "Error en el servidor."
+        })
+       }
+      
+}
+}else{
+    res.status(500).send(
+        {
+            "msg": "El hash no es correcto."
+        }
+    )
 }
     })
 
@@ -89,19 +116,16 @@ app.post('/comprobarusuario', async function(req, res) {
     let id = req.body.id
     let hash = req.body.hash
     let WebAppData = req.body.WebAppData
-    const bot_token = variables.WebAppData
-
-    if(comprobarHash(WebAppData, hash, bot_token)){
-
-       
-
+   
+    if(comprobarHash(WebAppData, hash)){
     try {
-        const getUsuario = await usuarioModel.findOne({id: id})
-        if(getUsuario){
-            res.status(200).send(true)
-        }else{
-            res.status(200).send(false)
-        }
+        const getUsuario = await database.obtenerUsuario(id)
+        
+            res.status(200).send( {
+                user: getUsuario,
+                web_status: variables.usuariosPublicaciones
+            })
+        
         
     } catch (error) {
         
@@ -111,16 +135,50 @@ app.post('/comprobarusuario', async function(req, res) {
         })
     }
     
-}else{
+}
+else{
     res.status(500).send({
         "msg": "El hash del bot no es válido."
     })
-}
+       }
    });
 
+
+
+ 
+
 }
 
 
+
+ async function enviarSolicitud(user, bot){
+    console.log('enviando mensaje')
+  let message = `El usuario ${user.first_name} ${user.last_name} solicita permiso para hacer publicaciones en el canal.`;
+ bot.telegram.sendMessage(variables.grupoAdmins, message, {
+  ...Markup.inlineKeyboard([
+    [
+    Markup.button.callback('Aceptar', `aceptar_solicitud:${user.id}`),
+    Markup.button.callback('Denegar', `denegar_solicitud:${user.id}`),
+    ], 
+    [
+        Markup.button.callback('Denegar y bloquear', `ban_solicitud:${user.id}`),
+    ],
+    [
+        Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+    ]
+  ]
+  )
+})
+
+
+}
+
+
+function aceptarUsuario(){
+    console.log('Aceptado')
+}
+
 module.exports = {
-    rutas
+    rutas,
+    aceptarUsuario
   };
