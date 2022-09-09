@@ -7,7 +7,8 @@ var bp = require('body-parser')
 const variables = require('../variables')
 const cors = require('cors')
 const mongoose = require('mongoose')
-const usuarioModel = require('./models/user')
+const usuarioModel = require('./models/user');
+const { Markup } = require('telegraf');
 
 app.use(bp.json())
 app.use(bp.urlencoded({ extended: true }))
@@ -28,7 +29,8 @@ mongoose.connect(variables.mongoDbUri)
 
 
 
-function comprobarHash(WebAppData, hash, bot_token){
+function comprobarHash(WebAppData, hash){
+   
     const q = new URLSearchParams(WebAppData);
     q.delete("hash");
      const v = Array.from(q.entries());
@@ -51,13 +53,15 @@ function rutas(bot){
 
 
 app.post('/nuevoUsuario', async function(req, res){
+    let hash = req.body.hash
+    let WebAppData = req.body.WebAppData
+
+    if(comprobarHash(WebAppData, hash)){
     const getUsuario = await usuarioModel.findOne({id: req.body.userData.id})
     if(getUsuario){
-        res.status(400).send({
-            "msg": 'El usuario ya existe'
-           
-        })
-        console.log('el usuario ya existe')
+       console.log(getUsuario.Date_creation)
+       enviarSolicitud(getUsuario, bot)
+       res.status(200).send(getUsuario)
     }else{
 
    
@@ -65,18 +69,21 @@ app.post('/nuevoUsuario', async function(req, res){
     try {
         await user.save()
         res.status(200).send(user)
-
-
+        enviarSolicitud(user, bot)
     } catch (error) {
         res.status(500).send(
             {
                 "msg": "Error en el servidor al guardar el usuario"
             }
         )
-    } 
-    
-    
-    
+    }   
+}
+}else{
+    res.status(500).send(
+        {
+            "msg": "El hash no es correcto."
+        }
+    )
 }
     })
 
@@ -89,19 +96,19 @@ app.post('/comprobarusuario', async function(req, res) {
     let id = req.body.id
     let hash = req.body.hash
     let WebAppData = req.body.WebAppData
-    const bot_token = variables.WebAppData
-
-    if(comprobarHash(WebAppData, hash, bot_token)){
+   
+    if(comprobarHash(WebAppData, hash)){
 
        
-
+        
     try {
         const getUsuario = await usuarioModel.findOne({id: id})
-        if(getUsuario){
-            res.status(200).send(true)
-        }else{
-            res.status(200).send(false)
-        }
+        
+            res.status(200).send( {
+                user: getUsuario,
+                web_status: variables.usuariosPublicaciones
+            })
+        
         
     } catch (error) {
         
@@ -111,16 +118,50 @@ app.post('/comprobarusuario', async function(req, res) {
         })
     }
     
-}else{
+}
+else{
     res.status(500).send({
         "msg": "El hash del bot no es válido."
     })
-}
+       }
    });
 
+
+
+ 
+
 }
 
 
+
+ async function enviarSolicitud(user, bot){
+    console.log('enviando mensaje')
+  let message = `El usuario ${user.first_name} ${user.last_name} solicita permiso para hacer publicaciones en el canal.`;
+ bot.telegram.sendMessage(variables.grupoAdmins, message, {
+  ...Markup.inlineKeyboard([
+    [
+    Markup.button.callback('Aceptar', `aceptar_solicitud:${user.id}`),
+    Markup.button.callback('Denegar', `denegar_solicitud:${user.id}`),
+    ], 
+    [
+        Markup.button.callback('Denegar y bloquear', `ban_solicitud:${user.id}`),
+    ],
+    [
+        Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+    ]
+  ]
+  )
+})
+
+
+}
+
+
+function aceptarUsuario(){
+    console.log('Aceptado')
+}
+
 module.exports = {
-    rutas
+    rutas,
+    aceptarUsuario
   };

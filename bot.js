@@ -328,20 +328,40 @@ function comprobarUltimosTweets(tweet, id) {
 bot.on('inline_query', async (ctx) => {
     //console.log(ctx.update.inline_query.query)
     let respuesta = ctx.update.inline_query.query;
+    let publicacionesmsg = ''
+    if(variables.usuariosPublicaciones){
+        publicacionesmsg = 'Fue enviado con exito'
+    }else{
+        publicacionesmsg = 'La publicación de mensajes está deshabilitada'
+    }
+    let solicitar = [
+        
+            {
+                type: 'article',
+                id: 'solicitar',
+                title: 'Solicitar enviar alertas',
+                input_message_content: {
+                    message_text: respuesta + '. \n' + publicacionesmsg
+                },
+                description: 'Para enviar alertas necesita que un admin te valide.'
+                
+            }
+        
+    ]
     let results = [
         {
             type: 'article',
-            id: '1',
+            id: 'Radar',
             title: 'Radar',
             input_message_content: {
-                message_text: respuesta +' se ha envíado'
+                message_text: respuesta + '. \n' + publicacionesmsg
             },
             description: 'Envía una nueva alerta al canal.'
             
         },
         {
             type: 'article',
-            id: '2',
+            id: 'Accidente',
             title: 'Accidente',
             input_message_content: {
                 message_text: respuesta + ' se ha envíado'
@@ -357,9 +377,28 @@ bot.on('inline_query', async (ctx) => {
                 message_text:   `${respuesta}\n  Este mensaje fue enviado al canal.`
             },
             description: 'Envía una nueva alerta al canal.'
+        },
+        {
+            type: 'article',
+            id: 'Obra',
+            title: 'Obra',
+            input_message_content: {
+                message_text:   `${respuesta}\n  Este mensaje fue enviado al canal.`
+            },
+            description: 'Envía una nueva alerta al canal.',
+            reply_markup:{
+                keyboards: [
+                    [
+                        {
+                            text: 'Enviar', callback_data: 'enviar'
+                        }
+                    ]
+                ]
+            }
         }
     ]
    try {
+    
 	 ctx.answerInlineQuery(results)
 } catch (error) {
 	console.log(error)
@@ -368,9 +407,33 @@ bot.on('inline_query', async (ctx) => {
 
 })
 
+
+
 bot.on('chosen_inline_result', async (ctx) => {
     console.log(ctx)
+    
 
 })
 
 
+
+
+
+  bot.action(/aceptar_solicitud:(\d+)/, ctx => {
+    console.log('Aceptar solicitud')
+    const [, userId] = ctx.match
+    console.log(userId)
+  })
+  
+  
+  bot.action(/denegar_solicitud:(\d+)/, ctx => {
+    console.log('Denegar')
+    const [, userId] = ctx.match
+    console.log(ctx)
+  })
+
+  bot.action(/ban_solicitud:(\d+)/, ctx => {
+    console.log('Ban')
+    const [, userId] = ctx.match
+    console.log(userId)
+  })
