@@ -28,6 +28,7 @@ module.exports = {
     obtenerTweets,
     usuariosPublicaciones,
     bot,
+    bot_db_name,
     enfriamiento,
     obtenerTweets,
     usuariosPublicaciones
