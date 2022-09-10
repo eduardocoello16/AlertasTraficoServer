@@ -4,6 +4,7 @@ require('dotenv').config({
 
 
 const fs = require('fs');
+const { Markup } = require('telegraf');
 const filtro = require('./accionesBot/Filtro')
 const twitter = require('./twitter')
 const variables = require('./variables')
@@ -11,7 +12,8 @@ const errores = require('./errores.js')
 const cAdmin = require('./accionesBot/admin') 
 var express = require('express');
 const webBot = require('./webBot/webBot')
-const database = require('./webBot/database')
+const database = require('./webBot/database');
+const { update } = require('./webBot/models/user');
 //Variables usuarios
 const grupoAdmins = variables.grupoAdmins
 const grupoAlertas = variables.grupoAlertas
@@ -334,14 +336,27 @@ function comprobarUltimosTweets(tweet, id) {
 
  
 bot.on('inline_query', async (ctx) => {
-    //console.log(ctx.update.inline_query.query)
+    
+    let id  = ctx.update.inline_query.from.id
+   let usuario = await  database.obtenerUsuario(id)
     let respuesta = ctx.update.inline_query.query;
-    let publicacionesmsg = ''
-    if(variables.usuariosPublicaciones){
-        publicacionesmsg = 'Fue enviado con exito'
-    }else{
-        publicacionesmsg = 'La publicación de mensajes está deshabilitada'
-    }
+
+ 
+
+    let solicitar_deny = [
+        //Se deniega ya que el tiempo es inválido
+        {
+            type: 'article',
+            id: 'solicitar_deny',
+            title: 'Solicitar enviar alertas',
+            input_message_content: {
+                message_text: 'Para hacer otra solicitud tendrás que esperar hasta un maximo de 24h.'
+            },
+            description: 'Parece que tendrás que esperar 24h'
+            
+        }
+    
+]
     let solicitar = [
         
             {
@@ -349,7 +364,7 @@ bot.on('inline_query', async (ctx) => {
                 id: 'solicitar',
                 title: 'Solicitar enviar alertas',
                 input_message_content: {
-                    message_text: respuesta + '. \n' + publicacionesmsg
+                    message_text: 'Se ha enviado  tu solicitud'
                 },
                 description: 'Para enviar alertas necesita que un admin te valide.'
                 
@@ -362,7 +377,7 @@ bot.on('inline_query', async (ctx) => {
             id: 'Radar',
             title: 'Radar',
             input_message_content: {
-                message_text: respuesta + '. \n' + publicacionesmsg
+                message_text: respuesta + '. \n Fue enviado al canal.' 
             },
             description: 'Envía una nueva alerta al canal.'
             
@@ -406,8 +421,31 @@ bot.on('inline_query', async (ctx) => {
         }
     ]
    try {
-    
-	 ctx.answerInlineQuery(results)
+    if(usuario){
+        if(usuario.status_user === 'pending'){
+        let fecha = new Date(usuario.Date_request)
+        let fechahoy = new Date()
+        let milisegundosDia  = 24*60*60*1000;
+        let milisegundostranscurridos = Math.abs(fecha.getTime() - fechahoy.getTime())
+        let diatransc = Math.round(milisegundostranscurridos/milisegundosDia)
+        if(diatransc === 0){
+         
+            ctx.answerInlineQuery(solicitar_deny)
+        }else{
+        
+            ctx.answerInlineQuery(solicitar)
+            database.actualizarFechaCreation(usuario)
+        }
+    }else{
+        if(usuario.status_user === 'active'){
+            ctx.answerInlineQuery(results)
+        }
+    }
+    }else{
+        ctx.answerInlineQuery(solicitar)
+    }
+  
+	
 } catch (error) {
 	console.log(error)
 }
@@ -418,13 +456,57 @@ bot.on('inline_query', async (ctx) => {
 
 
 bot.on('chosen_inline_result', async (ctx) => {
-    console.log(ctx)
+
+
+  try {
+    if(ctx.update.chosen_inline_result.result_id === 'solicitar'){
+        console.log(ctx.update.chosen_inline_result.from)
+       try {
+         let user = await database.crearUsuario(ctx.update.chosen_inline_result.from)
+        if(user){
+         enviarSolicitud(user)
+        }
+       } catch (error) {
+         console.log(error)
+       }
+      
+        }
+  } catch (error) {
+    console.log(error)
+  }
     
 
 })
 
 
+async function enviarSolicitud(user){
+    try {
+        
+   
+   if(user){
+    let message = `El usuario ${user.first_name} ${user.last_name} solicita permiso para hacer publicaciones en el canal.`;
+    bot.telegram.sendMessage(variables.grupoAdmins, message, {
+     ...Markup.inlineKeyboard([
+       [
+       Markup.button.callback('Aceptar', `aceptar_solicitud:${user.id}`),
+       Markup.button.callback('Denegar', `denegar_solicitud:${user.id}`),
+       ], 
+       [
+           Markup.button.callback('Denegar y bloquear', `ban_solicitud:${user.id}`),
+       ],
+       [
+           Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+       ]
+     ]
+     )
+   })
+   }
+  
+} catch (error) {
+        console.log(error)
+}
 
+}
 
 
   bot.action(/aceptar_solicitud:(\d+)/, ctx => {

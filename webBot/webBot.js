@@ -47,8 +47,8 @@ app.post('/nuevoUsuario', async function(req, res){
     const getUsuario = await database.obtenerUsuario(req.body.userData.id)
     if(getUsuario){
         //Solo se podrá enviar la solicitud si ha pasado un día.
-      if(getUsuario.Date_creation){
-        let fecha = new Date(getUsuario.Date_creation)
+      if(getUsuario.Date_request){
+        let fecha = new Date(getUsuario.Date_request)
         let fechahoy = new Date()
         let milisegundosDia  = 24*60*60*1000;
         let milisegundostranscurridos = Math.abs(fecha.getTime() - fechahoy.getTime())
