@@ -101,7 +101,26 @@ async function save_obtenerTweets_state(state){
 }
 
 
+async function aceptarSolicitud(userId){
+    let user = await obtenerUsuario(userId)
+    if(user){
+        user.status_user = 'active'
+        try {
+            user.save()
+            return true
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+        
+    }else{
+        return null
+    }
+
+}
+
 module.exports = {
+    aceptarSolicitud,
     save_obtenerTweets_state,
     obtenerUsuario,
     crearUsuario,
