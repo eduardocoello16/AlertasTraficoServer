@@ -44,15 +44,20 @@ async function obtenerUsuario(idUsuario){
 }
 
 async function crearUsuario(userData){
-    let user = await usuarioModel(userData)
-    try {
-       
-        return await user.save()
-       
-    } catch (error) {
-       
-       console.log(error)
-    }   
+    if(await usuarioModel.findOne({id: idUsuario})){
+        return null
+    }else{
+        let user = await usuarioModel(userData)
+        try {
+           
+            return await user.save()
+           
+        } catch (error) {
+           
+           console.log(error)
+        }   
+    }
+    
 }
 
 async function actualizarFechaCreation(user){

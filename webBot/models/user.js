@@ -36,6 +36,10 @@ const userSchema = mongoose.Schema(
             type: Date,
             default: Date.now
         },
+        Date_request: {
+            type: Date,
+            default: Date.now
+        },
         Date_ban:{
             type: Date
         },
