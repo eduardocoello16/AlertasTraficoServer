@@ -44,7 +44,7 @@ async function obtenerUsuario(idUsuario){
 }
 
 async function crearUsuario(userData){
-    if(await usuarioModel.findOne({id: idUsuario})){
+    if(await usuarioModel.findOne({id: userData.id})){
         return null
     }else{
         let user = await usuarioModel(userData)
