@@ -178,13 +178,30 @@ async function comprobarTweets(ctx) {
 }
 }
 
+//Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
+bot.command('switchusuarioalerta', async (ctx) => { 
+    if(cAdmin.comprobarAdmin(ctx)){
 
+  
+    let state = await database.getBotData(variables.bot_db_name)
+    if(state.usuariosPublicaciones){
+        state.usuariosPublicaciones = false
+        await database.save_obtenerTweets_state(state)
+        ctx.reply('La publicación de alertas por parte de usuarios se ha desactivado.')
+       }else{
+        state.usuariosPublicaciones = true
+        await database.save_obtenerTweets_state(state)
+        ctx.reply('La publicación de alertas por parte de usuarios se ha activado.')
+       }  }else{
+        ctx.reply('Necesitas ser administrador para ejecutar este comando.')
+       }
+})
 
 //Obtener tweets llamando a la API twitter
 
 //Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
-bot.command('stateobtenertweets', async (ctx) => { 
-    if(cAdmin.comprobarAdmin()){
+bot.command('switchobtenertweets', async (ctx) => { 
+    if(cAdmin.comprobarAdmin(ctx)){
 
   
     let state = await database.getBotData(variables.bot_db_name)
@@ -341,7 +358,20 @@ bot.on('inline_query', async (ctx) => {
    let usuario = await  database.obtenerUsuario(id)
     let respuesta = ctx.update.inline_query.query;
 
- 
+    let desactivado = [
+        
+        {
+            type: 'article',
+            id: 'alerta_deny',
+            title: 'Las alertas están desactivadas',
+            input_message_content: {
+                message_text: 'Enviar alertas al canal está desactivado.'
+            },
+            description: 'Ya eres usuario! Pero las alertas están desactivadas actualmente.'
+            
+        }
+    
+]
 
     let solicitar_deny = [
         //Se deniega ya que el tiempo es inválido
@@ -438,7 +468,14 @@ bot.on('inline_query', async (ctx) => {
         }
     }else{
         if(usuario.status_user === 'active'){
-            ctx.answerInlineQuery(results)
+            let servicioactivo = await database.getBotData(variables.bot_db_name)
+            if(servicioactivo.usuariosPublicaciones){
+
+                ctx.answerInlineQuery(results)
+            }else{
+                ctx.answerInlineQuery(desactivado)
+            }
+           
         }
     }
     }else{
