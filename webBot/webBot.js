@@ -108,14 +108,14 @@ app.post('/comprobarusuario', async function(req, res) {
     let id = req.body.id
     let hash = req.body.hash
     let WebAppData = req.body.WebAppData
-   
+    let state = await database.getBotData(variables.bot_db_name)
     if(comprobarHash(WebAppData, hash)){
     try {
         const getUsuario = await database.obtenerUsuario(id)
             console.log(getUsuario)
             res.status(200).send( {
                 user: getUsuario,
-                web_status: variables.usuariosPublicaciones
+                web_status: state.usuariosPublicaciones
             })
         
         
