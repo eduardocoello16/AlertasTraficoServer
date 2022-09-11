@@ -1,3 +1,42 @@
+const variables = require('../variables');
+const webBotActions = require('./webBotActions');
+function inlineCommands(bot,database){
+	
+
+ 
+	bot.on('inline_query', async (ctx) => {
+    
+		crearAlertas(ctx, database, variables);
+
+	});
+
+
+
+	bot.on('chosen_inline_result', async (ctx) => {
+
+
+		try {
+			if(ctx.update.chosen_inline_result.result_id === 'solicitar'){
+		
+				try {
+					let user = await database.crearUsuario(ctx.update.chosen_inline_result.from);
+					if(user){
+						webBotActions.enviarSolicitud(user,bot);
+					}
+				} catch (error) {
+					console.log(error);
+				}
+      
+			}
+		} catch (error) {
+			console.log(error);
+		}
+    
+
+	});
+
+}
+
 
 async function crearAlertas(ctx, database, variables){
 	let id  = ctx.update.inline_query.from.id;
@@ -136,5 +175,5 @@ async function crearAlertas(ctx, database, variables){
 }
 
 module.exports = {
-	crearAlertas
+	inlineCommands
 };
