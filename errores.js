@@ -1,5 +1,14 @@
 const fs = require('fs');
 const cAdmin = require('./accionesBot/admin');
+
+function commands(bot){
+	bot.command('delerrorlog', (ctx) => {
+		borrarFichero(ctx);
+	});
+	bot.command('geterrorlog', (ctx) => {
+		obtenerFichero(ctx);
+	});
+}
 function crearFichero()
 {
 	//Comprobar si el archivo bot.log existe, si no crearlo
@@ -54,5 +63,6 @@ module.exports = {
 	botError,
 	crearFichero,
 	borrarFichero,
-	obtenerFichero
+	obtenerFichero,
+	commands
 };

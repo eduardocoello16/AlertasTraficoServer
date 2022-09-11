@@ -1,10 +1,7 @@
 require('dotenv').config({
 	path: './.env'
 });
-
-
 const fs = require('fs');
-const { Markup } = require('telegraf');
 const filtro = require('./accionesBot/Filtro');
 const twitter = require('./twitter');
 const variables = require('./variables');
@@ -13,6 +10,8 @@ const cAdmin = require('./accionesBot/admin');
 const webBot = require('./webBot/webBot');
 const database = require('./webBot/database');
 const moders = require('./accionesBot/moders');
+const webBotActions = require('./accionesBot/webBotActions');
+const inlineActions = require('./accionesBot/inlineActions');
 //Variables usuarios
 const grupoAdmins = variables.grupoAdmins;
 const grupoAlertas = variables.grupoAlertas;
@@ -33,9 +32,12 @@ bot.launch().then(() => {
 	console.log(err);
 });
 
-//Abrir las rutas de express pasándole el bot.
-webBot.rutas(bot);
 
+//Abrir las rutas de express pasándole el bot.
+webBot.rutas(bot, database);
+
+//Funciones del filtro
+filtro.comandosFiltro(bot);
 
 // COMANDOS
 
@@ -53,98 +55,16 @@ bot.start((ctx) => {
 		ctx.reply('Para ver los comandos de administrador usa el comando /admincommands');
 	}
 });
-
-//Comando para obtener lista de comandos para admins
-bot.command('admincommands', async (ctx) => {
-
-	ctx.reply('---- Comandos para los administradores ----\n\nComandos Tweets\n/obtenertweets - Para obtener los últimos tweets\n \nComandos para el Filtro\n/getwhitelist - Obtener la White List\n/getblacklist - Obtener la Black List\n /getblacklistgroup - Obtener la Black List para el grupo\n/addblacklist - Añade un elemento a la Black List\n/addwhitelist - Añade un elemento a la White List\n/addblacklistgroup - Añade un elemento a la Black List del grupo\n/delblacklist - Borra un elemento a la Black List\n/delwhitelist - Borra un elemento a la White List\n/delblacklistgroup - Borra un elemento a la Black List del grupo\n\nComandos archivo log errores\n/delerrorlog - Borra el fichero .log de errores\n/geterrorlog - Obtiene el fichero log de errores y se reenvía por aquí.\n\n Para moderadores \n/modooculto - Para los moderadores del grupo de administradores, puedan ponerse en anónimo en el grupo de alertas.');
-});
-
-
-
-bot.command('broadcast', (ctx) => {
-	cAdmin.broadcast(ctx, bot);
-});
-
-
-bot.command('delerrorlog', (ctx) => {
-	errores.borrarFichero(ctx);
-});
-bot.command('geterrorlog', (ctx) => {
-	errores.obtenerFichero(ctx);
-});
-
-
-//Obtener el ID de un usuario+
-/*
-bot.command('getid', async (ctx) => {
-    let id;
-    if (ctx.update.message.chat.type === 'private') {
-        id = ctx.message.from.id
-    } else {
-        id = ctx.update.message.chat.id
-    }
-    ctx.reply(id)
-})
-*/
+cAdmin.adminCommands(bot);
+errores.commands(bot);
+moders.modersCommands(bot);
 
 //Cambiar permisos un usuario a administrador y hacerlo anónimo
-bot.command('modooculto', (ctx) => {
-	moders.modoOculto(ctx, bot);
-});
-
-//Quitar un usuario administrador
-bot.command('deladmin', async (ctx) => {
-	cAdmin.deleteAdmin(ctx, bot);
-});
 
 
-//Comandos FILTROS
 
 
-//Comando /getBlackList -> Obtiene la BlackList del JSON 
-bot.command('getblacklist', (ctx) => {
 
-	filtro.getBlackList(ctx);
-});
-//Comando /getBlackListGroup -> Obtiene la BlackListGroup del JSON 
-bot.command('getblacklistgroup', (ctx) => {
-	filtro.getBlackListGroup(ctx);
-});
-//Comando /getWhiteList -> Obtiene la WhiteList del JSON 
-bot.command('getwhitelist', (ctx) => {
-	filtro.getWhiteList(ctx);
-});
-//Añadir a la BlackList del JSON
-bot.command('addblacklist', (ctx) => {
-	filtro.addBlackList(ctx);
-});
-//Añadir a la WhiteList del JSON
-bot.command('addwhitelist', (ctx) => {
-	filtro.addWhiteList(ctx);
-});
-//Añadir a la BlackListGroup del JSON
-bot.command('addblacklistgroup', (ctx) => {
-	filtro.addBlackListGroup(ctx);
-});
-
-// Borrar de la whiteList 
-
-bot.command('delwhitelist', async (ctx) => {
-	filtro.delWhiteList(ctx);
-});
-
-// Borrar de la BlackList 
-
-bot.command('delblacklist', async (ctx) => {
-	filtro.delBlackList(ctx);
-});
-
-// Borrar de la Black group List 
-
-bot.command('delblacklistgroup', async (ctx) => {
-	filtro.delBlackListGroup(ctx);
-});
 
 //Funciónes Obtener tweets
 
@@ -353,139 +273,7 @@ function comprobarUltimosTweets(tweet, id) {
  
 bot.on('inline_query', async (ctx) => {
     
-	let id  = ctx.update.inline_query.from.id;
-	let usuario = await  database.obtenerUsuario(id);
-	let respuesta = ctx.update.inline_query.query;
-
-	let desactivado = [
-        
-		{
-			type: 'article',
-			id: 'alerta_deny',
-			title: 'Las alertas están desactivadas',
-			input_message_content: {
-				message_text: 'Enviar alertas al canal está desactivado.'
-			},
-			description: 'Ya eres usuario! Pero las alertas están desactivadas actualmente.'
-            
-		}
-    
-	];
-
-	let solicitar_deny = [
-		//Se deniega ya que el tiempo es inválido
-		{
-			type: 'article',
-			id: 'solicitar_deny',
-			title: 'Solicitar enviar alertas',
-			input_message_content: {
-				message_text: 'Para hacer otra solicitud tendrás que esperar hasta un maximo de 24h.'
-			},
-			description: 'Parece que tendrás que esperar 24h'
-            
-		}
-    
-	];
-	let solicitar = [
-        
-		{
-			type: 'article',
-			id: 'solicitar',
-			title: 'Solicitar enviar alertas',
-			input_message_content: {
-				message_text: 'Se ha enviado  tu solicitud'
-			},
-			description: 'Para enviar alertas necesita que un admin te valide.'
-                
-		}
-        
-	];
-	let results = [
-		{
-			type: 'article',
-			id: 'Radar',
-			title: 'Radar',
-			input_message_content: {
-				message_text: respuesta + '. \n Fue enviado al canal.' 
-			},
-			description: 'Envía una nueva alerta al canal.'
-            
-		},
-		{
-			type: 'article',
-			id: 'Accidente',
-			title: 'Accidente',
-			input_message_content: {
-				message_text: respuesta + ' se ha envíado'
-			},
-			description: 'Envía una nueva alerta al canal.'
-            
-		},
-		{
-			type: 'article',
-			id: 'Retenciones',
-			title: 'Retenciones',
-			input_message_content: {
-				message_text:   `${respuesta}\n  Este mensaje fue enviado al canal.`
-			},
-			description: 'Envía una nueva alerta al canal.'
-		},
-		{
-			type: 'article',
-			id: 'Obra',
-			title: 'Obra',
-			input_message_content: {
-				message_text:   `${respuesta}\n  Este mensaje fue enviado al canal.`
-			},
-			description: 'Envía una nueva alerta al canal.',
-			reply_markup:{
-				keyboards: [
-					[
-						{
-							text: 'Enviar', callback_data: 'enviar'
-						}
-					]
-				]
-			}
-		}
-	];
-	try {
-		if(usuario){
-			if(usuario.status_user === 'pending'){
-				let fecha = new Date(usuario.Date_request);
-				let fechahoy = new Date();
-				let milisegundosDia  = 24*60*60*1000;
-				let milisegundostranscurridos = Math.abs(fecha.getTime() - fechahoy.getTime());
-				let diatransc = Math.round(milisegundostranscurridos/milisegundosDia);
-				if(diatransc === 0){
-         
-					ctx.answerInlineQuery(solicitar_deny);
-				}else{
-        
-					ctx.answerInlineQuery(solicitar);
-					database.actualizarFechaCreation(usuario);
-				}
-			}else{
-				if(usuario.status_user === 'active'){
-					let servicioactivo = await database.getBotData(variables.bot_db_name);
-					if(servicioactivo.usuariosPublicaciones){
-
-						ctx.answerInlineQuery(results);
-					}else{
-						ctx.answerInlineQuery(desactivado);
-					}
-           
-				}
-			}
-		}else{
-			ctx.answerInlineQuery(solicitar);
-		}
-  
-	
-	} catch (error) {
-		console.log(error);
-	}
-
+	inlineActions.crearAlertas(ctx, database, variables);
 
 });
 
@@ -496,11 +284,11 @@ bot.on('chosen_inline_result', async (ctx) => {
 
 	try {
 		if(ctx.update.chosen_inline_result.result_id === 'solicitar'){
-			console.log(ctx.update.chosen_inline_result.from);
+		
 			try {
 				let user = await database.crearUsuario(ctx.update.chosen_inline_result.from);
 				if(user){
-					enviarSolicitud(user);
+					webBotActions.enviarSolicitud(user,bot);
 				}
 			} catch (error) {
 				console.log(error);
@@ -515,63 +303,13 @@ bot.on('chosen_inline_result', async (ctx) => {
 });
 
 
-async function enviarSolicitud(user){
-	try {
-        
-   
-		if(user){
-			let message = `El usuario ${user.first_name} ${user.last_name} solicita permiso para hacer publicaciones en el canal.`;
-			bot.telegram.sendMessage(variables.grupoAdmins, message, {
-				...Markup.inlineKeyboard([
-					[
-						Markup.button.callback('Aceptar', `aceptar_solicitud:${user.id}`),
-						Markup.button.callback('Denegar', `denegar_solicitud:${user.id}`),
-					], 
-					[
-						Markup.button.callback('Denegar y bloquear', `ban_solicitud:${user.id}`),
-					],
-					[
-						Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
-					]
-				]
-				)
-			});
-		}
-  
-	} catch (error) {
-		console.log(error);
-	}
 
-}
 
 
 bot.action(/aceptar_solicitud:(\d+)/, async ctx => {
-	console.log();
+	
 	const [, userId] = ctx.match;
-	let user = await database.obtenerUsuario(userId);
-	let aceptada;
-	if(user){
-		aceptada = await database.aceptarSolicitud(userId);
-	}
-	if(aceptada){
-
-  
-		let mensaje = `El usuario ${ctx.update.callback_query.from.first_name} ${ctx.update.callback_query.from.last_name} ha aceptado al usuario ${user.first_name} para que pueda publicar cosas en el canal. `;
-		ctx.editMessageText(
-			mensaje, {
-				...Markup.inlineKeyboard([
-					[
-						Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
-					],
-					[
-						Markup.button.callback('Banear', `ban_solicitud:${user.id}`)
-					]
-				]
-				)
-			}
-		);
-   
-	}
+	webBotActions.aceptarSolicitud(userId, ctx);
 });
   
   

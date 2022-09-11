@@ -5,16 +5,13 @@ var app = express();
 var bp = require('body-parser');
 const variables = require('../variables');
 const cors = require('cors');
-const database = require('./database');
-const { Markup } = require('telegraf');
-
+const webBotAction = require('../accionesBot/webBotActions');
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
 app.listen(2000, () =>{
 	console.log('Servidor levantado correctamente en  http://localhost:' + 2000 );
 });
-
 function comprobarHash(WebAppData, hash){
    
 	const q = new URLSearchParams(WebAppData);
@@ -34,8 +31,7 @@ function comprobarHash(WebAppData, hash){
 
 	return salida;
 }
-
-function rutas(bot){
+function rutas(bot, database){
 
 
 
@@ -55,7 +51,7 @@ function rutas(bot){
 					let diatransc = Math.round(milisegundostranscurridos/milisegundosDia);
 					if(diatransc != 0){
 						database.actualizarFechaCreation(getUsuario);
-						enviarSolicitud(getUsuario, bot);
+						webBotAction.enviarSolicitud(getUsuario, bot);
 						res.status(200).send(
 							{
 								'msg': 'Tu solicitud se ha vuelto a enviar. Si no se le acepta la solicitud, recomendamos unirse al canal. '
@@ -82,7 +78,7 @@ function rutas(bot){
 					res.status(200).send({
 						'msg': 'Se ha enviado una solicitud a los administradores.'
 					});
-					enviarSolicitud(user, bot);
+					webBotAction.enviarSolicitud(user, bot);
 				}else{
 					res.status(500).send({
 						'msg': 'Error en el servidor.'
@@ -98,10 +94,6 @@ function rutas(bot){
 			);
 		}
 	});
-
-
-
-
 	//Comprobar si el usuario está en el grupo
 	app.post('/comprobarusuario', async function(req, res) {
 		console.log('Comprobando usuario' );
@@ -134,43 +126,15 @@ function rutas(bot){
 			});
 		}
 	});
-
-
-
- 
-
 }
 
 
 
-async function enviarSolicitud(user, bot){
-	console.log('enviando mensaje');
-	let message = `El usuario ${user.first_name} ${user.last_name} solicita permiso para hacer publicaciones en el canal.`;
-	bot.telegram.sendMessage(variables.grupoAdmins, message, {
-		...Markup.inlineKeyboard([
-			[
-				Markup.button.callback('Aceptar', `aceptar_solicitud:${user.id}`),
-				Markup.button.callback('Denegar', `denegar_solicitud:${user.id}`),
-			], 
-			[
-				Markup.button.callback('Denegar y bloquear', `ban_solicitud:${user.id}`),
-			],
-			[
-				Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
-			]
-		]
-		)
-	});
 
 
-}
 
 
-function aceptarUsuario(){
-	console.log('Aceptado');
-}
 
 module.exports = {
-	rutas,
-	aceptarUsuario
+	rutas
 };

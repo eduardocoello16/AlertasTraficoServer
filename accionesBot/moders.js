@@ -1,5 +1,11 @@
 const variables = require('../variables');
 const errores = require('../errores');
+function modersCommands(bot){
+	bot.command('modooculto', (ctx) => {
+		modoOculto(ctx, bot);
+	});
+}
+
 async function comprobarGrupoModeradores(ctx, bot){
 	let salida = false;
 	try {
@@ -63,5 +69,5 @@ async function modoOculto(ctx, bot){
 }
 
 module.exports = {
-	modoOculto
+	modersCommands
 };

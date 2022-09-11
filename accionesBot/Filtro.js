@@ -4,7 +4,54 @@ const variables = require('../variables');
 const database = require('../webBot/database');
 const errorInterno = 'Error interno del bot, por favor contacta con el desarrollador. Ver error -> /geterrorlog';
 
+function comandosFiltro(bot){
+	//Comandos FILTROS
 
+
+	//Comando /getBlackList -> Obtiene la BlackList del JSON 
+	bot.command('getblacklist', (ctx) => {
+
+		getBlackList(ctx);
+	});
+	//Comando /getBlackListGroup -> Obtiene la BlackListGroup del JSON 
+	bot.command('getblacklistgroup', (ctx) => {
+		getBlackListGroup(ctx);
+	});
+	//Comando /getWhiteList -> Obtiene la WhiteList del JSON 
+	bot.command('getwhitelist', (ctx) => {
+		getWhiteList(ctx);
+	});
+	//Añadir a la BlackList del JSON
+	bot.command('addblacklist', (ctx) => {
+		addBlackList(ctx);
+	});
+	//Añadir a la WhiteList del JSON
+	bot.command('addwhitelist', (ctx) => {
+		addWhiteList(ctx);
+	});
+	//Añadir a la BlackListGroup del JSON
+	bot.command('addblacklistgroup', (ctx) => {
+		addBlackListGroup(ctx);
+	});
+
+	// Borrar de la whiteList 
+
+	bot.command('delwhitelist', async (ctx) => {
+		delWhiteList(ctx);
+	});
+
+	// Borrar de la BlackList 
+
+	bot.command('delblacklist', async (ctx) => {
+		delBlackList(ctx);
+	});
+
+	// Borrar de la Black group List 
+
+	bot.command('delblacklistgroup', async (ctx) => {
+		delBlackListGroup(ctx);
+	});
+}
 //Funciones de los comandos
 
 //Obtener BlackList 
@@ -276,15 +323,7 @@ async function filtradoBlackListGroup(tweet) {
 	return salida;
 }
 module.exports = {
-	getBlackList,
-	getBlackListGroup,
-	getWhiteList,
-	addBlackList,
-	addWhiteList,
-	addBlackListGroup,
-	delWhiteList,
-	delBlackList,
-	delBlackListGroup,
+	comandosFiltro,
 	filtradoAcceso,
 	filtradoBlackListGroup
 };
