@@ -53,51 +53,13 @@ bot.start((ctx) => {
 		ctx.reply('Para ver los comandos de administrador usa el comando /admincommands');
 	}
 });
-cAdmin.adminCommands(bot);
+cAdmin.adminCommands(bot,database);
 errores.commands(bot);
 moders.modersCommands(bot);
 twitterActions.twitterCommands(bot, database);
 inlineActions.inlineCommands(bot,database);
 
-//Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
-bot.command('switchusuarioalerta', async (ctx) => { 
-	if(cAdmin.comprobarAdmin(ctx)){
 
-  
-		let state = await database.getBotData(variables.bot_db_name);
-		if(state.usuariosPublicaciones){
-			state.usuariosPublicaciones = false;
-			await database.save_obtenerTweets_state(state);
-			ctx.reply('La publicación de alertas por parte de usuarios se ha desactivado.');
-		}else{
-			state.usuariosPublicaciones = true;
-			await database.save_obtenerTweets_state(state);
-			ctx.reply('La publicación de alertas por parte de usuarios se ha activado.');
-		}  }else{
-		ctx.reply('Necesitas ser administrador para ejecutar este comando.');
-	}
-});
-
-//Obtener tweets llamando a la API twitter
-
-//Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
-bot.command('switchobtenertweets', async (ctx) => { 
-	if(cAdmin.comprobarAdmin(ctx)){
-
-  
-		let state = await database.getBotData(variables.bot_db_name);
-		if(state.obtenerTweets){
-			state.obtenerTweets = false;
-			await database.save_obtenerTweets_state(state);
-			ctx.reply('La obtención de tweets se ha desactivado');
-		}else{
-			state.obtenerTweets = true;
-			await database.save_obtenerTweets_state(state);
-			ctx.reply('La obtención de tweets se ha activado');
-		}  }else{
-		ctx.reply('Necesitas ser administrador para ejecutar este comando.');
-	}
-});
 
 
 
