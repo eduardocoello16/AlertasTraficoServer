@@ -10,7 +10,7 @@ const grupoAlertas = variables.grupoAlertas;
 const canalAlertas = variables.canalAlertas;
 //Funciónes Obtener tweets
 function twitterCommands(bot, database){
-	console.log(database);
+	
 	bot.command('obtenertweets', async (ctx) => {
 		let datos = await database.getBotData(variables.bot_db_name);
 		if(datos.obtenerTweets){
