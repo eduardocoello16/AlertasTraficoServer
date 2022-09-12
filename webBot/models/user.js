@@ -25,7 +25,7 @@ const userSchema = mongoose.Schema(
 		},
 		status_user: {
 			type: String,
-			enum: ['pending','active', 'banned'],
+			enum: ['pending','deny','active', 'banned'],
 			default: 'pending'
 		},
 		penalization: {

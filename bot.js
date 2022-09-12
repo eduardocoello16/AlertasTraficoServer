@@ -72,18 +72,24 @@ inlineActions.inlineCommands(bot,database);
 bot.action(/aceptar_solicitud:(\d+)/, async ctx => {
 	
 	const [, userId] = ctx.match;
-	webBotActions.aceptarSolicitud(userId, ctx);
+	webBotActions.aceptarSolicitud(userId, ctx,bot);
 });
   
   
 bot.action(/denegar_solicitud:(\d+)/, ctx => {
-	console.log('Denegar');
+	
 	const [, userId] = ctx.match;
-	console.log(userId);
+	webBotActions.denegarSolicitud(userId, ctx,bot);
 });
 
 bot.action(/ban_solicitud:(\d+)/, ctx => {
-	console.log('Ban');
+
 	const [, userId] = ctx.match;
-	console.log(userId);
+	webBotActions.banearSolicitud(userId, ctx,bot);
+});
+
+bot.action(/pardon_solicitud:(\d+)/, ctx => {
+
+	const [, userId] = ctx.match;
+	webBotActions.perdonarSolicitud(userId, ctx,bot);
 });
