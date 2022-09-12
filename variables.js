@@ -16,12 +16,7 @@ const bot = new Telegraf(botToken,
 			testEnv: true
 		} 
 	});
-var enfriamiento = true;
-var obtenerTweets = false;
 var usuariosPublicaciones = false;
-
-
-
 module.exports = {
 	usuariosAdmin,
 	grupoAdmins,
@@ -29,8 +24,6 @@ module.exports = {
 	canalAlertas,
 	botToken,
 	mongoDbUri,
-	enfriamiento,
-	obtenerTweets,
 	usuariosPublicaciones,
 	bot_db_name,
 	bot

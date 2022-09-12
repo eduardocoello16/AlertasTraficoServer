@@ -3,7 +3,7 @@ require('dotenv').config({
 });
 
 const filtro = require('./accionesBot/Filtro');
-
+const { Markup } = require('telegraf');
 const variables = require('./variables');
 const errores = require('./errores.js');
 const cAdmin = require('./accionesBot/admin'); 
@@ -38,11 +38,19 @@ webBot.rutas(bot, database);
 filtro.comandosFiltro(bot);
 
 // COMANDOS
-
+bot.telegram.sendMessage(variables.grupoAdmins,'prueba', {
+	...Markup.inlineKeyboard([
+		[
+			
+			Markup.button.webApp('Web', 'https://alertastraficotnf.es/bot', false)
+	
+		]
+	])
+});
 // Iniciar el bot Bienvenido 
 bot.start((ctx) => {
 	//Get group id
-
+	
 	let nombre = '';
 	if (ctx.message.from.first_name) {
 		nombre = ' ' + ctx.message.from.first_name;

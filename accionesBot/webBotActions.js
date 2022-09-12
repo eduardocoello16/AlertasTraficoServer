@@ -11,6 +11,7 @@ async function enviarSolicitud(user, bot){
 			bot.telegram.sendMessage(variables.grupoAdmins, message, {
 				...Markup.inlineKeyboard([
 					[
+						
 						Markup.button.callback('Aceptar', `aceptar_solicitud:${user.id}`),
 						Markup.button.callback('Denegar', `denegar_solicitud:${user.id}`),
 					], 
