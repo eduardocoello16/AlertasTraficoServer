@@ -118,9 +118,60 @@ async function aceptarSolicitud(userId){
 	}
 
 }
+async function denegarSolicitud(userId){
+	let user = await obtenerUsuario(userId);
+	if(user){
+		user.status_user = 'deny';
+		try {
+			user.save();
+			return true;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+        
+	}else{
+		return null;
+	}
+}
+async function banearSolicitud(userId){
+	let user = await obtenerUsuario(userId);
+	if(user){
+		user.status_user = 'banned';
+		try {
+			user.save();
+			return true;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+        
+	}else{
+		return null;
+	}
+}
+async function perdonarSolicitud(userId){
+	let user = await obtenerUsuario(userId);
+	if(user){
+		user.status_user = 'active';
+		try {
+			user.save();
+			return true;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+        
+	}else{
+		return null;
+	}
+}
 
 module.exports = {
 	aceptarSolicitud,
+	denegarSolicitud,
+	perdonarSolicitud,
+	banearSolicitud,
 	save_obtenerTweets_state,
 	obtenerUsuario,
 	crearUsuario,

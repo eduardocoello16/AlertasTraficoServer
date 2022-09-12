@@ -10,7 +10,7 @@ app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
 app.listen(2000, () =>{
-	console.log('Servidor levantado correctamente en  http://localhost:' + 2000 );
+	console.log('Servidor levantado correctamente en  http://127.0.1:' + 2000 );
 });
 function comprobarHash(WebAppData, hash){
    
@@ -96,7 +96,7 @@ function rutas(bot, database){
 	});
 	//Comprobar si el usuario está en el grupo
 	app.post('/comprobarusuario', async function(req, res) {
-		console.log('Comprobando usuario' );
+	
 		let id = req.body.id;
 		let hash = req.body.hash;
 		let WebAppData = req.body.WebAppData;
@@ -104,7 +104,7 @@ function rutas(bot, database){
 		if(comprobarHash(WebAppData, hash)){
 			try {
 				const getUsuario = await database.obtenerUsuario(id);
-				console.log(getUsuario);
+				
 				res.status(200).send( {
 					user: getUsuario,
 					web_status: state.usuariosPublicaciones
