@@ -25,7 +25,7 @@ function comprobarHash(WebAppData, hash){
 	var salida = false;
 	if(hash == key){
 		salida = true;
-		console.log('Correcto');
+		
         
 	}
 
