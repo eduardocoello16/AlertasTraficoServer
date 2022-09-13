@@ -45,9 +45,9 @@ bot.start((ctx) => {
 	
 	let nombre = '';
 	if (ctx.message.from.first_name) {
-		nombre = ' ' + ctx.message.from.first_name;
+		nombre = ctx.message.from.first_name;
 	}
-	ctx.reply(`Hola${nombre}, este es el  BOT oficial de Alertas de Tráfico TNF`);
+	ctx.reply(`Hola ${nombre}, este es el  BOT oficial de Alertas de Tráfico TNF`);
 	//Mensaje para administradores: 
 	if (cAdmin.comprobarAdmin(ctx) === true) {
 		ctx.reply('Para ver los comandos de administrador usa el comando /admincommands');
@@ -58,16 +58,6 @@ errores.commands(bot);
 moders.modersCommands(bot);
 twitterActions.twitterCommands(bot, database);
 inlineActions.inlineCommands(bot,database);
-
-
-
-
-
-
-
-
-
-
 
 bot.action(/aceptar_solicitud:(\d+)/, async ctx => {
 	
