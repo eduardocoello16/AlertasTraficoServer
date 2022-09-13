@@ -32,111 +32,134 @@ async function enviarSolicitud(user, bot){
 
 }
 async function denegarSolicitud(userId, ctx,bot){
-	let user = await database.obtenerUsuario(userId);
-	if(user){
-		let denegada = await database.denegarSolicitud(userId);
-		if(denegada){
-			let mensaje = `El usuario ${ctx.update.callback_query.from.first_name} ${ctx.update.callback_query.from.last_name} ha denegado al usuario ${user.first_name} para que pueda publicar cosas en el canal. `;
-			ctx.editMessageText(
-				mensaje, {
-					...Markup.inlineKeyboard([
-						[
-							Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
-						],
-						[
-							Markup.button.callback('Banear', `ban_solicitud:${user.id}`)
+	try {
+		
+	
+		let user = await database.obtenerUsuario(userId);
+		if(user){
+			let denegada = await database.denegarSolicitud(userId);
+			if(denegada){
+				let mensaje = `El usuario ${ctx.update.callback_query.from.first_name} ${ctx.update.callback_query.from.last_name} ha denegado al usuario ${user.first_name} para que pueda publicar cosas en el canal. `;
+				ctx.editMessageText(
+					mensaje, {
+						...Markup.inlineKeyboard([
+							[
+								Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+							],
+							[
+								Markup.button.callback('Banear', `ban_solicitud:${user.id}`)
+							]
 						]
-					]
-					)
-				}
-			);
+						)
+					}
+				);
 
-			bot.telegram.sendMessage(userId, 'Lo sentimos 🤔 parece que han denegado tu solicitud, puedes volver a probar suerte. Te recomendamos que seas miembro del grupo.');
+				bot.telegram.sendMessage(userId, 'Lo sentimos 🤔 parece que han denegado tu solicitud, puedes volver a probar suerte. Te recomendamos que seas miembro del grupo.');
+			}
 		}
+	} catch (error) {
+		console.error(error);
 	}
 }
 async function aceptarSolicitud(userId, ctx,bot){
-	//Aceptar la solicitud y editar el mensaje 
-	let user = await database.obtenerUsuario(userId);
+	try {
+		
 	
-	if(user){
-		let	aceptada = await database.aceptarSolicitud(userId);
-		if(aceptada){
-			let mensaje = `El usuario ${ctx.update.callback_query.from.first_name} ${ctx.update.callback_query.from.last_name} ha aceptado al usuario ${user.first_name} para que pueda publicar cosas en el canal. `;
-			ctx.editMessageText(
-				mensaje, {
-					...Markup.inlineKeyboard([
-						[
-							Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
-						],
-						[
-							Markup.button.callback('Banear', `ban_solicitud:${user.id}`)
+		//Aceptar la solicitud y editar el mensaje 
+		let user = await database.obtenerUsuario(userId);
+	
+		if(user){
+			let	aceptada = await database.aceptarSolicitud(userId);
+			if(aceptada){
+				let mensaje = `El usuario ${ctx.update.callback_query.from.first_name} ${ctx.update.callback_query.from.last_name} ha aceptado al usuario ${user.first_name} para que pueda publicar cosas en el canal. `;
+				ctx.editMessageText(
+					mensaje, {
+						...Markup.inlineKeyboard([
+							[
+								Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+							],
+							[
+								Markup.button.callback('Banear', `ban_solicitud:${user.id}`)
+							]
 						]
-					]
-					)
-				}
-			);
+						)
+					}
+				);
 
-			bot.telegram.sendMessage(userId, 'Enorabuena!🎉🎉 tu solicitud para crear alertas en el canal ha sido aceptada. ');
+				bot.telegram.sendMessage(userId, 'Enorabuena!🎉🎉 tu solicitud para crear alertas en el canal ha sido aceptada. ');
    
-		}else{
-			ctx.reply('Ha habído un error, parece que ese usuario no se creó correctamente en la base de datos. 😂');
+			}else{
+				ctx.reply('Ha habído un error, parece que ese usuario no se creó correctamente en la base de datos. 😂');
+			}
 		}
+	} catch (error) {
+		console.log(error);
 	}
 }
 async function banearSolicitud(userId, ctx, bot){
-	//Aceptar la solicitud y editar el mensaje 
-	let user = await database.obtenerUsuario(userId);
+	try {
+		
 	
-	if(user){
-		let	aceptada = await database.banearSolicitud(userId);
-		if(aceptada){
-			let mensaje = `El usuario ${ctx.update.callback_query.from.first_name} ${ctx.update.callback_query.from.last_name} ha baneado al usuario ${user.first_name}`;
-			ctx.editMessageText(
-				mensaje, {
-					...Markup.inlineKeyboard([
-						[
-							Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
-						],
-						[
-							Markup.button.callback('Perdonar', `pardon_solicitud:${user.id}`)
+		//Aceptar la solicitud y editar el mensaje 
+		let user = await database.obtenerUsuario(userId);
+	
+		if(user){
+			let	aceptada = await database.banearSolicitud(userId);
+			if(aceptada){
+				let mensaje = `El usuario ${ctx.update.callback_query.from.first_name} ${ctx.update.callback_query.from.last_name} ha baneado al usuario ${user.first_name}`;
+				ctx.editMessageText(
+					mensaje, {
+						...Markup.inlineKeyboard([
+							[
+								Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+							],
+							[
+								Markup.button.callback('Perdonar', `pardon_solicitud:${user.id}`)
+							]
 						]
-					]
-					)
-				}
-			);
+						)
+					}
+				);
 
-			bot.telegram.sendMessage(userId, 'Parece que no has hecho algo bien😒. Los administradores han decidido banear tu cuenta de alertas. Ponte en contacto con un admin para solucionarlo.');
+				bot.telegram.sendMessage(userId, 'Parece que no has hecho algo bien😒. Los administradores han decidido banear tu cuenta de alertas. Ponte en contacto con un admin para solucionarlo.');
    
-		}else{
-			ctx.reply('Ha habído un error al banear el usuario.');
+			}else{
+				ctx.reply('Ha habído un error al banear el usuario.');
+			}
 		}
+	} catch (error) {
+		console.log(error);
 	}
 }
 async function perdonarSolicitud(userId, ctx, bot){
-	//Aceptar la solicitud y editar el mensaje 
-	let user = await database.obtenerUsuario(userId);
+	try {
+		//Aceptar la solicitud y editar el mensaje 
+		let user = await database.obtenerUsuario(userId);
 	
-	if(user){
-		let	aceptada = await database.perdonarSolicitud(userId);
-		if(aceptada){
-			let mensaje = `El usuario ${ctx.update.callback_query.from.first_name} ${ctx.update.callback_query.from.last_name}  perdonado al usuario ${user.first_name} `;
-			ctx.editMessageText(
-				mensaje, {
-					...Markup.inlineKeyboard([
-						[
-							Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+		if(user){
+			let	aceptada = await database.perdonarSolicitud(userId);
+			if(aceptada){
+				let mensaje = `El usuario ${ctx.update.callback_query.from.first_name} ${ctx.update.callback_query.from.last_name}  perdonado al usuario ${user.first_name} `;
+				ctx.editMessageText(
+					mensaje, {
+						...Markup.inlineKeyboard([
+							[
+								Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+							]
 						]
-					]
-					)
-				}
-			);
+						)
+					}
+				);
 
-			bot.telegram.sendMessage(userId, 'Bienvenido de nuevo! Parece que te han perdonado el baneo. No la cages de nuevo!💩');
+				bot.telegram.sendMessage(userId, 'Bienvenido de nuevo! Parece que te han perdonado el baneo. No la cages de nuevo!💩');
    
-		}else{
-			ctx.reply('Ha habído un error al banear el usuario.');
+			}else{
+				ctx.reply('Ha habído un error al banear el usuario.');
+			}
 		}
+	}catch (error) {
+		console.log(error);
+		
 	}
 }
 module.exports = {
