@@ -102,53 +102,46 @@ async function save_obtenerTweets_state(state){
 
 
 async function aceptarSolicitud(userId){
-	let user = await obtenerUsuario(userId);
-	if(user){
-		user.status_user = 'active';
-		try {
-			user.save();
-			return true;
-		} catch (error) {
-			console.log(error);
-			return null;
-		}
-        
-	}else{
+	const user = await obtenerUsuario(userId);
+	try {
+		const modificar = await usuarioModel.findByIdAndUpdate(user._id, {
+			status_user: 'active'
+		});
+		modificar.save();
+		return true;
+	} catch (error) {
+		console.log(error);
 		return null;
 	}
 
 }
 async function denegarSolicitud(userId){
-	let user = await obtenerUsuario(userId);
-	if(user){
-		user.status_user = 'deny';
-		try {
-			user.save();
-			return true;
-		} catch (error) {
-			console.log(error);
-			return null;
-		}
-        
-	}else{
+	const user = await obtenerUsuario(userId);
+	try {
+		const modificar = await usuarioModel.findByIdAndUpdate(user._id, {
+			status_user: 'deny'
+		});
+		modificar.save();
+		return true;
+	} catch (error) {
+		console.log(error);
 		return null;
 	}
 }
 async function banearSolicitud(userId){
-	let user = await obtenerUsuario(userId);
-	if(user){
-		user.status_user = 'banned';
-		try {
-			user.save();
-			return true;
-		} catch (error) {
-			console.log(error);
-			return null;
-		}
-        
-	}else{
+	const user = await obtenerUsuario(userId);
+	try {
+		const modificar = await usuarioModel.findByIdAndUpdate(user._id, {
+			status_user: 'banned'
+		});
+		modificar.save();
+		return true;
+	} catch (error) {
+		console.log(error);
 		return null;
 	}
+        
+	
 }
 async function perdonarSolicitud(userId){
 	let user = await obtenerUsuario(userId);
