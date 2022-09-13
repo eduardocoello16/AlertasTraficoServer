@@ -8,15 +8,7 @@ mongoose.connect(variables.mongoDbUri)
 	.then(() => console.log('Conexión base datos satisfactoria.'))
 	.catch((error) => console.error(error));
 
-//Configurando las variables por defecto en base a la Base de datos. 
-botinfo.findOne({id: variables.bot_db_name})
-	.then((bot) => {
-		if(bot){
-			variables.obtenerTweets = bot.obtenerTweets;
-			variables.usuariosPublicaciones = bot.usuariosPublicaciones;
-		}
-	})
-	.catch(() => console.log('No se pudieron obtener las variables de la base de datos.'));
+
 
 
 
