@@ -77,9 +77,6 @@ async function aceptarSolicitud(userId, ctx,bot){
 						...Markup.inlineKeyboard([
 							[
 								Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
-							],
-							[
-								Markup.button.callback('Banear', `ban_solicitud:${user.id}`)
 							]
 						]
 						)
