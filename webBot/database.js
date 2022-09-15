@@ -13,10 +13,10 @@ mongoose.connect(variables.mongoDbUri)
 
 
 /*
- crearBot()
+crearBot();
 async function crearBot(){
 	let datos = {
-		id: 'bot_alertas_tenerife',
+		id: 'bot_alertas_tenerife_test',
 		name: 'Bot Alertas Tráfico TNF',
 		obtenerTweets: true,
 		usuariosPublicaciones: false,
@@ -25,7 +25,7 @@ async function crearBot(){
 		blackListGroup :['agradecer','anoche','plazo','meses','euros','inversión','licita','licitación','pasado','semana','mes','año','asistió','atropelló','intervino','pasada','densidad','aprobado','anoche']
 	};
 	let nuevoBot = await botinfo(datos);
-	console.log(nuevoBot);
+	console.log('Bot creado');
 	nuevoBot.save();
 }
 */
@@ -85,8 +85,8 @@ async function saveBotData(bot){
 
 async function save_obtenerTweets_state(state){
 	try {
-		await state.save();
-        
+		const modificar = await botinfo.findByIdAndUpdate(state._id, state);
+		modificar.save();
 	} catch (error) {
 		console.log(error);
 	}

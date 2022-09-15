@@ -8,6 +8,7 @@ const filtro = require('./Filtro');
 const grupoAdmins = variables.grupoAdmins;
 const grupoAlertas = variables.grupoAlertas;
 const canalAlertas = variables.canalAlertas;
+var enfriamiento = true;
 //Funciónes Obtener tweets
 function twitterCommands(bot, database){
 	
@@ -19,13 +20,13 @@ function twitterCommands(bot, database){
         
 			if ((ctx.message.chat.id == grupoAdmins) || (cAdmin.comprobarAdmin(ctx) === true)) {
     
-				if (variables.enfriamiento === true) {
-					variables.enfriamiento = false;
+				if (enfriamiento === true) {
+					enfriamiento = false;
 					comprobarTweets(ctx,bot,database);
                
 					//Set timeout para cambiar de estado a false de 2 minutos
 					setTimeout(() => {
-						variables.enfriamiento = true;
+						enfriamiento = true;
 					}, 60000);
 				} else {
     
