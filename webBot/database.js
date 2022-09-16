@@ -136,26 +136,25 @@ async function banearSolicitud(userId){
 	
 }
 async function perdonarSolicitud(userId){
-	let user = await obtenerUsuario(userId);
-	if(user){
-		user.status_user = 'active';
-		try {
-			user.save();
-			return true;
-		} catch (error) {
-			console.log(error);
-			return null;
-		}
-        
-	}else{
+	const user = await obtenerUsuario(userId);
+	try {
+		const modificar = await usuarioModel.findByIdAndUpdate(user._id, {
+			status_user: 'active'
+		});
+		modificar.save();
+		return true;
+	} catch (error) {
+		console.log(error);
 		return null;
 	}
 }
 
 async function getListaUsuarios(){
 	try {
-		let listaUsuarios = await usuarioModel.find();
-	
+		let listaUsuarios = await usuarioModel.find().sort({
+			num_alertas: -1
+		});
+		listaUsuarios = listaUsuarios.filter(usuario => usuario.status_user == 'active');
 		return listaUsuarios;
 	} catch (error) {
 		console.log(error);
