@@ -13,6 +13,7 @@ const moders = require('./accionesBot/moders');
 const webBotActions = require('./accionesBot/webBotActions');
 const inlineActions = require('./accionesBot/inlineActions');
 const twitterActions = require('./accionesBot/twitterActions');
+const alertasUsuario = require('./webBot/alertasUsuario');
 
 const bot = variables.bot;
 
@@ -82,4 +83,12 @@ bot.action(/pardon_solicitud:(\d+)/, ctx => {
 
 	const [, userId] = ctx.match;
 	webBotActions.perdonarSolicitud(userId, ctx,bot);
+});
+
+
+
+bot.action(/cancelar_alerta:(\d+)/, ctx => {
+
+	const [, userId] = ctx.match;
+	alertasUsuario.cancelarAlerta(userId, ctx, bot);
 });
