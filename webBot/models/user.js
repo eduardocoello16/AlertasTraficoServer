@@ -45,6 +45,10 @@ const userSchema = mongoose.Schema(
 		},
 		banned_until: {
 			type: Date
+		},
+		avatar: {
+			type: String,
+			default: 'default'
 		}
 	}
 );

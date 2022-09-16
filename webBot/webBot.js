@@ -6,6 +6,7 @@ var bp = require('body-parser');
 const variables = require('../variables');
 const cors = require('cors');
 const webBotAction = require('../accionesBot/webBotActions');
+const alertasUsuario = require('./alertasUsuario');
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
@@ -116,6 +117,74 @@ function rutas(bot, database){
 				console.log(error);
 				res.status(500).send({
 					'msg': 'Error en el servidor'
+				});
+			}
+    
+		}
+		else{
+			res.status(500).send({
+				'msg': 'El hash del bot no es válido.'
+			});
+		}
+	});
+	app.post('/publicaralerta', async function(req, res) {
+	
+		
+		let hash = req.body.hash;
+		let WebAppData = req.body.WebAppData;
+		let state = await database.getBotData(variables.bot_db_name);
+		const found = alertasUsuario.mensajes.findIndex(element => element.idUsuario == req.body.datosAlerta.idUsuario);
+		if(comprobarHash(WebAppData, hash)){
+			if(state.usuariosPublicaciones){
+				
+				if(found === -1){
+					console.log('enviado');
+					await alertasUsuario.nuevoMensaje(req.body.datosAlerta,bot);
+					res.status(200).send(
+						{
+							'msg': 'Enviadno...'
+						}
+					);
+				}else{
+					console.log('mensaje enviado ya...');
+					res.status(200).send(
+						{
+							'msg': 'Ya tienes un  mensaje pendiente.'
+						}
+					);
+				}
+
+			}else{
+				res.status(400).send({
+					'msg': 'Las alertas están desactivadas.'
+				});
+			}
+    
+		}
+		else{
+			res.status(500).send({
+				'msg': 'El hash del bot no es válido.'
+			});
+		}
+	});
+
+	app.post('/comprobaralertaactiva', async function(req, res) {
+		let hash = req.body.hash;
+		let WebAppData = req.body.WebAppData;
+		let state = await database.getBotData(variables.bot_db_name);
+		if(comprobarHash(WebAppData, hash)){
+			if(state.usuariosPublicaciones){
+				
+				const found = alertasUsuario.mensajes.findIndex(element => element.idUsuario == req.body.idUsuario);
+				if(found != -1){
+					res.status(200).send(true);
+				}else{
+					res.status(200).send(false);
+				}
+
+			}else{
+				res.status(400).send({
+					'msg': 'Las alertas están desactivadas.'
 				});
 			}
     
