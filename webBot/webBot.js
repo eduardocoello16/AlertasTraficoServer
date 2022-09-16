@@ -97,7 +97,7 @@ function rutas(bot, database){
 	});
 	//Comprobar si el usuario está en el grupo
 	app.post('/comprobarusuario', async function(req, res) {
-	
+		console.log(req.body.userData.first_name + ' entró en webapp');
 		let id = req.body.id;
 		let hash = req.body.hash;
 		let WebAppData = req.body.WebAppData;
@@ -105,7 +105,9 @@ function rutas(bot, database){
 		if(comprobarHash(WebAppData, hash)){
 			try {
 				const getUsuario = await database.obtenerUsuario(id);
-				
+				if(getUsuario){
+					await database.actualizarUsuario(req.body.userData);
+				}
 				res.status(200).send( {
 					user: getUsuario,
 					web_status: state.usuariosPublicaciones
@@ -193,6 +195,18 @@ function rutas(bot, database){
 			res.status(500).send({
 				'msg': 'El hash del bot no es válido.'
 			});
+		}
+	});
+
+
+	app.post('/listausuarios', async function(req, res) {
+		
+	
+		let hash = req.body.hash;
+		let WebAppData = req.body.WebAppData;
+		if(comprobarHash(WebAppData, hash)){
+			let listausuarios = await database.getListaUsuarios();
+			res.status(200).send(listausuarios);
 		}
 	});
 }

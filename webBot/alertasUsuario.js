@@ -5,28 +5,34 @@ var mensajes = [];
 
 async function nuevoMensaje(datos, bot){
 	mensajes.push(datos);
-	let user = await database.obtenerUsuario(datos.idUsuario);
-	if(user){
+	try {
+		let user = await database.obtenerUsuario(datos.idUsuario);
+		if(user){
 		
 		
 		
-		let mensaje = `El usuario ${user.first_name} quiere publicar la alerta:\n${datos.alerta}`;
-		let envioMensaje =	await bot.telegram.sendMessage(variables.grupoAdmins, mensaje, {
-			...Markup.inlineKeyboard([
+			let mensaje = `El usuario ${user.first_name} quiere publicar la alerta:\n${datos.alerta}`;
+			let envioMensaje =	await bot.telegram.sendMessage(variables.grupoAdmins, mensaje, {
+				...Markup.inlineKeyboard([
 				
-				[
-					Markup.button.callback('Cancelar envio', `cancelar_alerta:${datos.idUsuario}`)
+					[
+						Markup.button.callback('Cancelar envio', `cancelar_alerta:${datos.idUsuario}`)
+					]
 				]
-			]
-			)
-		});
+				)
+			});
 		
-		setTimeout(enviarMensaje, 10000, datos, bot,envioMensaje, user);
+			setTimeout(enviarMensaje, 10000, datos, bot,envioMensaje, user);
 			
-		return true;
+			return true;
 	
 		
-	}	
+		}	
+	} catch (error) {
+		console.log(error);
+		const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
+		mensajes.splice(found, 1);
+	}
 
 }
 
@@ -37,7 +43,7 @@ function enviarMensaje(datos,bot,mensaje,user){
 	if(found != -1){
 
 		bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + '\n Fuente: Usuario del grupo');
-		bot.telegram.sendMessage(datos.idUsuario, 'Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤');
+		bot.telegram.sendMessage(datos.idUsuario, '✔ Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤');
 		bot.telegram.editMessageText( mensaje.chat.id, mensaje.message_id, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${datos.alerta}` );
 		mensajes.splice(found, 1);
 	}
@@ -50,7 +56,7 @@ function cancelarAlerta(id, ctx, bot){
 	const found = mensajes.findIndex(element => element.idUsuario == id);
 	if(found != -1){
 		mensajes.splice(found, 1);
-		bot.telegram.sendMessage(id, 'Tu envío de  alerta se ha cancelado.');
+		bot.telegram.sendMessage(id, '🚫 Los administradores han decidido cancelar el envío de tu alerta.');
 		ctx.editMessageText(
 			'Mensaje cancelado'
 		);

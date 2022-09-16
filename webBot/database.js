@@ -152,7 +152,33 @@ async function perdonarSolicitud(userId){
 	}
 }
 
+async function getListaUsuarios(){
+	try {
+		let listaUsuarios = await usuarioModel.find();
+	
+		return listaUsuarios;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+async function actualizarUsuario(usuario){
+	
+	const user = await obtenerUsuario(usuario.id);
+	try {
+		const modificar = await usuarioModel.findByIdAndUpdate(user._id, usuario);
+		
+		modificar.save();
+		return true;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+}
+
 module.exports = {
+	actualizarUsuario,
+	getListaUsuarios,
 	aceptarSolicitud,
 	denegarSolicitud,
 	perdonarSolicitud,
