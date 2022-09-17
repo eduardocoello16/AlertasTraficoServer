@@ -92,3 +92,14 @@ bot.action(/cancelar_alerta:(\d+)/, ctx => {
 	const [, userId] = ctx.match;
 	alertasUsuario.cancelarAlerta(userId, ctx, bot);
 });
+bot.action(/aceptar_alerta:(\d+)/, ctx => {
+
+	const [, userId] = ctx.match;
+	alertasUsuario.aceptarAlerta(userId, ctx, bot);
+});
+
+bot.action(/penalizar_usuario:(\d+)/, ctx => {
+
+	const [, userId] = ctx.match;
+	webBotActions.penalizarUsuario(userId, ctx, bot);
+});
