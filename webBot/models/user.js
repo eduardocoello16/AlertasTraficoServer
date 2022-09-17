@@ -52,6 +52,7 @@ const userSchema = mongoose.Schema(
 		},
 		avatar: {
 			type: String,
+			enum: ['default','semaforo','platano', 'senial'],
 			default: 'default'
 		}
 	}

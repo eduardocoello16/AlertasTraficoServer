@@ -175,7 +175,52 @@ async function actualizarUsuario(usuario){
 	}
 }
 
+async function sumarPublicacionUser(id){
+
+	
+	const user = await obtenerUsuario(id);
+	
+	try {
+		const modificar = await usuarioModel.findByIdAndUpdate(user._id, {
+			num_alertas: (user.num_alertas +  1)
+		});
+		modificar.save();
+		return true;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+}
+async function penalizarUsuario(userId){
+	const user = await obtenerUsuario(userId);
+	
+	let data;
+	if ((user.penalization + 1) >= 3 ){
+		console.log('addas');
+		data = {
+			penalization: (user.penalization + 1),
+			status_user: 'banned'
+		};
+	}else{
+	
+		data = {
+			penalization: (user.penalization + 1)
+		};
+	}
+	console.log(data);
+	try {
+		const modificar = await usuarioModel.findByIdAndUpdate(user._id, data);
+		modificar.save();
+		return true;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+}
+
 module.exports = {
+	penalizarUsuario,
+	sumarPublicacionUser,
 	actualizarUsuario,
 	getListaUsuarios,
 	aceptarSolicitud,

@@ -159,7 +159,45 @@ async function perdonarSolicitud(userId, ctx, bot){
 		
 	}
 }
+
+async function penalizarUsuario(userId, ctx, bot){
+	try {
+		
+	
+		//Aceptar la solicitud y editar el mensaje 
+		let user = await database.obtenerUsuario(userId);
+		let mensajeUser = `Los administradores te han puesto una penalización por una alerta. \nTienes ${user.penalization + 1} penalizaciones.`;
+		if((user.penalization + 1) >= 3){
+			mensajeUser = `Los administradores te han puesto una penalización por una alerta. \nTienes ${user.penalization + 1} penalizaciones. Por tener más de tres penalizaciones se te pondrá un ban.`;
+		}
+		if(user){
+			let	penalizar = await database.penalizarUsuario(userId);
+			if(penalizar){
+				bot.telegram.sendMessage(userId, mensajeUser);
+				let mensaje = `El usuario ${user.first_name} se le acaba de sumar una penalización por un mensaje.`;
+				ctx.editMessageText(
+					mensaje, {
+						...Markup.inlineKeyboard([
+							[
+								Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+							]
+						]
+						)
+					}
+				);
+
+				
+   
+			}else{
+				ctx.reply('Ha habído un error, parece que ese usuario no se creó correctamente en la base de datos. 😂');
+			}
+		}
+	} catch (error) {
+		console.log(error);
+	}
+}
 module.exports = {
+	penalizarUsuario,
 	aceptarSolicitud,
 	denegarSolicitud,
 	perdonarSolicitud,

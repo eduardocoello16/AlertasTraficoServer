@@ -140,13 +140,21 @@ function rutas(bot, database){
 			if(state.usuariosPublicaciones){
 				
 				if(found === -1){
-					console.log('enviado');
-					await alertasUsuario.nuevoMensaje(req.body.datosAlerta,bot);
-					res.status(200).send(
-						{
-							'msg': 'Enviadno...'
-						}
-					);
+					
+					if(await alertasUsuario.nuevoMensaje(req.body.datosAlerta,bot)){
+						res.status(200).send(
+							{
+								'msg': 'Enviadno...'
+							}
+						);
+					}else{
+						res.status(400).send(
+							{
+								'msg': 'Error en el servidor'
+							}
+						);
+					}
+					
 				}else{
 					console.log('mensaje enviado ya...');
 					res.status(200).send(
