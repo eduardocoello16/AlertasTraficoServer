@@ -175,7 +175,25 @@ async function actualizarUsuario(usuario){
 	}
 }
 
+async function sumarPublicacionUser(id){
+
+	
+	const user = await obtenerUsuario(id);
+	
+	try {
+		const modificar = await usuarioModel.findByIdAndUpdate(user._id, {
+			num_alertas: (user.num_alertas +  1)
+		});
+		modificar.save();
+		return true;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+}
+
 module.exports = {
+	sumarPublicacionUser,
 	actualizarUsuario,
 	getListaUsuarios,
 	aceptarSolicitud,

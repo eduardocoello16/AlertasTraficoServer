@@ -39,9 +39,9 @@ async function nuevoMensaje(datos, bot){
 function enviarMensaje(datos,bot,mensaje,user){
 	//Aquí se enviaría el mensaje al cabo de 5 m
 	const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
-
+	
 	if(found != -1){
-
+		database.sumarPublicacionUser(user.id);
 		bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + '\n Fuente: Usuario del grupo');
 		bot.telegram.sendMessage(datos.idUsuario, '✔ Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤');
 		bot.telegram.editMessageText( mensaje.chat.id, mensaje.message_id, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${datos.alerta}` );
