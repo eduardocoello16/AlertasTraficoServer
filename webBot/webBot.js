@@ -15,9 +15,10 @@ app.use(cors());
 app.listen(2000, () =>{
 	console.log('Servidor levantado correctamente en  http://127.0.1:' + 2000 );
 });
-function comprobarHash(WebAppData, hash){
+function comprobarHash(WebAppData){
    
 	const q = new URLSearchParams(WebAppData);
+	let hash = q.get('hash');
 	q.delete('hash');
 	const v = Array.from(q.entries());
 	// eslint-disable-next-line no-unused-vars
@@ -238,13 +239,10 @@ function rutas(bot, database){
 	});
 
 	app.post('/cambiarpermisos', async function(req, res) {
-		
-	
-		let hash = req.body.hash;
 		let WebAppData = req.body.WebAppData;
 		let idUsuario = req.body.idUsuarioCpermisos;
 		let permisos = req.body.permisos;
-		if(comprobarHash(WebAppData, hash)){
+		if(comprobarHash(WebAppData)){
 			if(await comprobarAdmin(WebAppData)){
 				let usuario = await database.obtenerUsuario(idUsuario);
 				if(usuario.type_user != permisos){
@@ -255,6 +253,23 @@ function rutas(bot, database){
 					res.status(200).send(usuario);
 				}
 			}
+		}
+	});
+	app.post('/cambiarmodooculto', async function(req,res){
+		let WebAppData = req.body.WebAppData;
+		if(comprobarHash(WebAppData)){
+			const q = new URLSearchParams(WebAppData);
+			let modUser = JSON.parse(q.get('user'));
+			let usuario = await database.obtenerUsuario(modUser.id);
+			if(usuario.type_user === 'moder' || usuario.type_user ==='admin'){
+				try {
+					let modoOculto = await moders.modoOculto(modUser.id, bot);
+					res.status(200).send(modoOculto);
+				} catch (error) {
+					console.log(error);
+				}
+				
+			}	
 		}
 	});
 
