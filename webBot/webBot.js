@@ -8,6 +8,7 @@ const cors = require('cors');
 const webBotAction = require('../accionesBot/webBotActions');
 const alertasUsuario = require('./alertasUsuario');
 const moders = require('../accionesBot/moders');
+const cAdmin = require('../accionesBot/admin');
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
@@ -235,6 +236,43 @@ function rutas(bot, database){
 			res.status(200).send(listausuarios);
 		}
 	});
+
+	app.post('/cambiarpermisos', async function(req, res) {
+		
+	
+		let hash = req.body.hash;
+		let WebAppData = req.body.WebAppData;
+		let idUsuario = req.body.idUsuarioCpermisos;
+		let permisos = req.body.permisos;
+		if(comprobarHash(WebAppData, hash)){
+			if(await comprobarAdmin(WebAppData)){
+				let usuario = await database.obtenerUsuario(idUsuario);
+				if(usuario.type_user != permisos){
+					
+					usuario.type_user = permisos;
+					await database.actualizarUsuario(usuario);
+					await cAdmin.cambiarPermisos(usuario.id, permisos, bot);
+					res.status(200).send(usuario);
+				}
+			}
+		}
+	});
+
+
+	async function comprobarAdmin(WebAppData){
+		const q = new URLSearchParams(WebAppData);
+		let adminUser = JSON.parse(q.get('user'));
+		
+		let usuario = await database.obtenerUsuario(adminUser.id);
+		if(usuario.type_user === 'admin'){
+		
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+
 }
 
 
