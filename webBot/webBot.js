@@ -7,6 +7,7 @@ const variables = require('../variables');
 const cors = require('cors');
 const webBotAction = require('../accionesBot/webBotActions');
 const alertasUsuario = require('./alertasUsuario');
+const moders = require('../accionesBot/moders');
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
@@ -34,7 +35,20 @@ function comprobarHash(WebAppData, hash){
 }
 function rutas(bot, database){
 
+	app.post('/comprobarusuarioanonimo' , async function(req, res){
+		let hash = req.body.hash;
+		let WebAppData = req.body.WebAppData;
+		let idUsuario = req.body.idUsuario;
 
+		if(comprobarHash(WebAppData, hash)){
+			if(moders.comrpobaranonimo(idUsuario))
+				console.log('u');
+			res.status(200).send(true);
+		}else{
+			console.log('nope');
+			res.status(200).send(false);
+		}
+	});
 
 	app.post('/nuevoUsuario', async function(req, res){
 		let hash = req.body.hash;
@@ -218,6 +232,7 @@ function rutas(bot, database){
 		}
 	});
 }
+
 
 
 
