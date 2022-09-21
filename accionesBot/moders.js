@@ -69,9 +69,15 @@ async function modoOculto(ctx, bot){
 }
 
 async function comrpobaranonimo( bot, idUsuario){
-	let user = await bot.telegram.getChatMember(variables.grupoAlertas, idUsuario);
-	if(user.is_anonymous === true) return true;
-	else return false;
+	
+	try {
+		let user = await bot.telegram.getChatMember(variables.grupoAlertas, idUsuario);
+		if(user.is_anonymous === true) return true;
+		else return false;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
 
 }
 
