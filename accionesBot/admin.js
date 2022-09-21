@@ -132,8 +132,56 @@ function broadcast(ctx, bot){
 	}
 }
 
+async function cambiarPermisos(id, permiso, bot){
+	try {
+		let user = await bot.telegram.getChatMember(variables.grupoAlertas, id);
+		if (user.status === 'left') {
+			return false;
+		} else {
+			//Añadir usuario a la lista de administradores
+			
+			if(permiso === 'admin'){
+				await bot.telegram.promoteChatMember(variables.grupoAlertas, id, {
+					can_change_info: true,
+					can_delete_messages: true,
+					can_manage_chat: true,
+					can_invite_users: true,
+					can_restrict_members: true,
+					can_pin_messages: true,
+					can_manage_video_chats: true,
+					can_promote_members: true,
+					is_anonymous: false
+				});
+				return true;
+			}else if(permiso === 'moder'){
+				await bot.telegram.promoteChatMember(variables.grupoAlertas, id, {
+					can_change_info: false,
+					can_delete_messages: true,
+					can_manage_chat: true,
+					can_invite_users: true,
+					can_restrict_members: true,
+					can_pin_messages: false,
+					can_manage_video_chats: true,
+					can_promote_members: false,
+					is_anonymous: false
+				});
+				return true;
+			}else{
+				await bot.telegram.promoteChatMember(variables.grupoAlertas, id, {});
+				return true;
+			}
+			
+		}
+	} catch (error) {
+		console.log(error);
+		return true;
+	}
+} 
+
+
 module.exports = {
 	comprobarAdmin,
-	adminCommands
+	adminCommands,
+	cambiarPermisos
 	
 };
