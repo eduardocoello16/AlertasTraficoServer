@@ -287,9 +287,33 @@ function rutas(bot, database){
 			return false;
 		}
 	}
+	const axios = require('axios');
 
+	app.post('/obtenerimagen', async function(req,res){
+		
+		let url = req.body.url; 
+	
+
+		try {
+			const arrayBuffer = await axios.get(url, {
+				responseType: 'arraybuffer'
+			});
+			let buffer = Buffer.from(arrayBuffer.data,'binary').toString('base64');
+			let image = `data:${arrayBuffer.headers['content-type']};base64,${buffer}`;
+			res.send(image);
+		
+		}catch(error){
+			console.log(error);
+		}
+	});
+	const fs = require('fs');
+	app.get('/obtenercamaras', async function(req,res){
+		let camaras = fs.readFileSync('./camarasTrafico.json', 'utf-8');
+		res.status(200).send(camaras);
+	});
 
 }
+
 
 
 
