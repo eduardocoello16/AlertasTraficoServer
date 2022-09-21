@@ -41,11 +41,15 @@ function rutas(bot, database){
 		let idUsuario = req.body.idUsuario;
 
 		if(comprobarHash(WebAppData, hash)){
-			if(moders.comrpobaranonimo(idUsuario))
-				console.log('u');
-			res.status(200).send(true);
+			if(await moders.comrpobaranonimo(bot, idUsuario)){
+
+				
+				res.status(200).send(true);
+			}else{
+				res.status(200).send(false);
+			}
 		}else{
-			console.log('nope');
+			
 			res.status(200).send(false);
 		}
 	});
