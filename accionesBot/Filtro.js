@@ -1,5 +1,5 @@
 const admin = require('./admin');
-const errores = require('../errores');
+const errores = require('../registroLogs');
 const variables = require('../variables');
 const database = require('../webBot/database');
 const errorInterno = 'Error interno del bot, por favor contacta con el desarrollador. Ver error -> /geterrorlog';
