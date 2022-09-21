@@ -5,7 +5,7 @@ require('dotenv').config({
 const filtro = require('./accionesBot/Filtro');
 
 const variables = require('./variables');
-const errores = require('./errores.js');
+const errores = require('./registroLogs.js');
 const cAdmin = require('./accionesBot/admin'); 
 const webBot = require('./webBot/webBot');
 const database = require('./webBot/database');

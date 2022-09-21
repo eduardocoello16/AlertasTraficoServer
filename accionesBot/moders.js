@@ -1,5 +1,5 @@
 const variables = require('../variables');
-const errores = require('../errores');
+const errores = require('../registroLogs');
 function modersCommands(bot){
 	bot.command('modooculto', (ctx) => {
 		modoOculto(ctx, bot);

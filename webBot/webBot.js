@@ -9,6 +9,7 @@ const webBotAction = require('../accionesBot/webBotActions');
 const alertasUsuario = require('./alertasUsuario');
 const moders = require('../accionesBot/moders');
 const cAdmin = require('../accionesBot/admin');
+const logs = require('../registroLogs');
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
@@ -117,7 +118,7 @@ function rutas(bot, database){
 	});
 	//Comprobar si el usuario está en el grupo
 	app.post('/comprobarusuario', async function(req, res) {
-		console.log(req.body.userData.first_name + ' entró en webapp');
+		logs.botLog(req.body.userData.first_name + ' entró en webapp');
 		let id = req.body.id;
 		let hash = req.body.hash;
 		let WebAppData = req.body.WebAppData;

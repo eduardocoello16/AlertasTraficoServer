@@ -1,11 +1,11 @@
 const fs = require('fs');
 const cAdmin = require('./accionesBot/admin');
-
+if (fs.existsSync('./registro.log') === false) crearFichero();
 function commands(bot){
-	bot.command('delerrorlog', (ctx) => {
+	bot.command('dellog', (ctx) => {
 		borrarFichero(ctx);
 	});
-	bot.command('geterrorlog', (ctx) => {
+	bot.command('logs', (ctx) => {
 		obtenerFichero(ctx);
 	});
 }
@@ -13,13 +13,17 @@ function crearFichero()
 {
 	//Comprobar si el archivo bot.log existe, si no crearlo
   
-	fs.writeFileSync('./errores.log', '----------------Registro de errores---------------\n');
+	fs.writeFileSync('./registro.log', '----------------Registro de logs---------------\n');
     
 }
 
 function botError(msg, error){
-	if (fs.existsSync('./errores.log') === false) crearFichero();
-	fs.appendFileSync('./errores.log', `\nError en el bot: ${msg} \n${error}` + `\n${new Date()}\n`);
+	
+	fs.appendFileSync('./registro.log', `\nError en el bot: ${msg} \n${error}` + `\n${new Date()}\n`);
+}
+
+function botLog(msg){
+	fs.appendFileSync('./registro.log', `\nLog: ${msg}` + `\n${new Date()}\n`);
 }
 
 
@@ -27,9 +31,9 @@ function borrarFichero(ctx) {
 	if(cAdmin.comprobarAdmin(ctx)=== false){
 		ctx.reply('Tienes que ser administrador para ejecutar este comando.');
 	}else{
-		if (fs.existsSync('./errores.log') != false) {
+		if (fs.existsSync('./registro.log') != false) {
 			try {
-				fs.unlinkSync('./errores.log');
+				fs.unlinkSync('./registro.log');
 				console.log('Un administrador ha borrado el fichero log de errores' + new Date);
 				ctx.reply('El archivo de errores log, ha sido borrado.');
 			} catch(err) {
@@ -37,7 +41,7 @@ function borrarFichero(ctx) {
 				ctx.reply('Hubo un error al borrar el fichero, revisa la consola de comandos.');
 			}
 		}else{
-			ctx.reply('No existe el fichero errores.log.  ¿Se eliminó recientemente? Consulta la consola de comandos.');
+			ctx.reply('No existe el fichero registro.log.  ¿Se eliminó recientemente? Consulta la consola de comandos.');
 		}
 	}
     
@@ -49,12 +53,12 @@ function obtenerFichero(ctx){
 	if(cAdmin.comprobarAdmin(ctx)=== false){
 		ctx.reply('Tienes que ser administrador para ejecutar este comando.');
 	}else{
-		if (fs.existsSync('./errores.log') != false) {
-			let fichero = fs.readFileSync('./errores.log', 'utf-8');
+		if (fs.existsSync('./registro.log') != false) {
+			let fichero = fs.readFileSync('./registro.log', 'utf-8');
 			ctx.reply(fichero);
 		}
 		else{
-			ctx.reply('No existe el fichero errores.log.  ¿Se eliminó recientemente? Consulta la consola de comandos.');
+			ctx.reply('No existe el fichero registro.log.  ¿Se eliminó recientemente? Consulta la consola de comandos.');
 		}
 	}
 }
@@ -62,6 +66,7 @@ function obtenerFichero(ctx){
 module.exports = {
 	botError,
 	crearFichero,
+	botLog,
 	borrarFichero,
 	obtenerFichero,
 	commands
