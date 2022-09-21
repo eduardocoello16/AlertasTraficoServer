@@ -7,4 +7,5 @@ npm-debug.log
 .DS_Store
 bot.log
 filtro.json
+registro.log
 ultimosTweets.json
