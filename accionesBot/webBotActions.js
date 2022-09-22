@@ -1,6 +1,7 @@
 const database = require('../webBot/database');
 const { Markup } = require('telegraf');
 const variables = require('../variables');
+const logs = require('../registroLogs');
 
 
 
@@ -27,7 +28,7 @@ async function enviarSolicitud(user, bot){
 		}
   
 	} catch (error) {
-		console.log(error);
+		logs.botError('Error al enviar solicitud al grupo de administradores', error);
 	}
 
 }
