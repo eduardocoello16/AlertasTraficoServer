@@ -8,19 +8,20 @@ const logs = require('../registroLogs');
 async function enviarSolicitud(user, bot){
 	try {
 		if(user){
+			let id = user.id.toString();
 			let message = `El usuario ${user.first_name} ${user.last_name} solicita permiso para hacer publicaciones en el canal.`;
 			bot.telegram.sendMessage(variables.grupoAdmins, message, {
 				...Markup.inlineKeyboard([
 					[
 						
-						Markup.button.callback('Aceptar', `aceptar_solicitud:${user.id}`),
-						Markup.button.callback('Denegar', `denegar_solicitud:${user.id}`),
+						Markup.button.callback('Aceptar', `aceptar_solicitud:${id}`),
+						Markup.button.callback('Denegar', `denegar_solicitud:${id}`),
 					], 
 					[
-						Markup.button.callback('Denegar y bloquear', `ban_solicitud:${user.id}`),
+						Markup.button.callback('Denegar y bloquear', `ban_solicitud:${id}`),
 					],
 					[
-						Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+						Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${id}`)
 					]
 				]
 				)
