@@ -109,6 +109,7 @@ function rutas(bot, database){
       
 			}
 		}else{
+			logs.botError('Error al crear usuario', 'Error al comprobar el hash');
 			res.status(500).send(
 				{
 					'msg': 'El hash no es correcto.'

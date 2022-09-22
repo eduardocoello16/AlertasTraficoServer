@@ -1,14 +1,100 @@
 [
     {
         "id": "TV-14",
-        "ubicacion": "Tunel 3 de Mayo",
-        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-536.jpg"
+        "nombre": "Entrada Tunel 3 de Mayo",
+        "url": "http://cic.tenerife.es/e-Traffic3/data/camara-2701001-14.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "Tres de Mayo"
     },
     {
-        "id": "TV- 5.1",
-        "ubicacion": "Tunel 3 de Mayo",
-        "url": "http://cic.tenerife.es/e-Traffic3/data/camara-2701001-22.jpg?d=1663780111900{NoCacheParam}"
+        "id": "TV-6",
+        "nombre": "Tunel 3 de Mayo",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-6.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "Tres de Mayo"
+        
+    },
+    {
+        "id": "TVM-21",
+        "nombre": "Salida Tunel 3 de Mayo",
+        "url": "http://cic.tenerife.es/e-Traffic3/data/camara-2701001-22.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "Tres de Mayo"
+        
+    },
+    {
+        "id": "TV-5.1",
+        "nombre": "Salida 3M",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-22.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.2",
+        "nombre": "Somosierra",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-27.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.3",
+        "nombre": "Somosierra TF-29",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-28.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.4",
+        "nombre": "Somosierra (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-26.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.6",
+        "nombre": "Residencia (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-29.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.8",
+        "nombre": "Taco (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-30.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.10",
+        "nombre": "Majuelos (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1020.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.10",
+        "nombre": "Chumberas (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-31.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.13",
+        "nombre": "Guajara ",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-41.jpg",
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
         
     }
+  
+  
   
 ]

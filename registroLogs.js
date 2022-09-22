@@ -1,25 +1,34 @@
 const fs = require('fs');
 const cAdmin = require('./accionesBot/admin');
-if (fs.existsSync('./registro.log') === false) crearFichero();
+
 function commands(bot){
-	bot.command('dellog', (ctx) => {
-		borrarFichero(ctx);
+	bot.command('dellogs', (ctx) => {
+		borrarFichero('registro',ctx);
 	});
 	bot.command('logs', (ctx) => {
-		obtenerFichero(ctx);
+		obtenerFichero('registro',ctx);
+	});
+	bot.command('delerrorlogs', (ctx) => {
+		borrarFichero('errores',ctx);
+	});
+	bot.command('errorlogs', (ctx) => {
+		obtenerFichero('errores',ctx);
 	});
 }
-function crearFichero()
+
+if (fs.existsSync('./errores.log') === false) crearFichero('errores');
+if (fs.existsSync('./registro.log') === false) crearFichero('registro');
+function crearFichero(fichero)
 {
 	//Comprobar si el archivo bot.log existe, si no crearlo
   
-	fs.writeFileSync('./registro.log', '----------------Registro de logs---------------\n');
+	fs.writeFileSync(`./${fichero}.log`, `----------------Logs de ${fichero}---------------\n`);
     
 }
 
 function botError(msg, error){
 	
-	fs.appendFileSync('./registro.log', `\nError en el bot: ${msg} \n${error}` + `\n${new Date()}\n`);
+	fs.appendFileSync('./errores.log', `\nError en el bot: ${msg} \n${error}` + `\n${new Date()}\n`);
 }
 
 function botLog(msg){
@@ -27,14 +36,16 @@ function botLog(msg){
 }
 
 
-function borrarFichero(ctx) {
+function borrarFichero(fichero,ctx) {
+	let ruta = `./${fichero}.log`;
 	if(cAdmin.comprobarAdmin(ctx)=== false){
 		ctx.reply('Tienes que ser administrador para ejecutar este comando.');
 	}else{
-		if (fs.existsSync('./registro.log') != false) {
+		if (fs.existsSync(ruta) != false) {
 			try {
-				fs.unlinkSync('./registro.log');
+				fs.unlinkSync(ruta);
 				console.log('Un administrador ha borrado el fichero log de errores' + new Date);
+				crearFichero(fichero);
 				ctx.reply('El archivo de errores log, ha sido borrado.');
 			} catch(err) {
 				console.error('No se pudo borrar el fichero de errores', err);
@@ -48,13 +59,13 @@ function borrarFichero(ctx) {
       
 }
 
-function obtenerFichero(ctx){
-    
+function obtenerFichero(fichero,ctx){
+	let ruta = `./${fichero}.log`;
 	if(cAdmin.comprobarAdmin(ctx)=== false){
 		ctx.reply('Tienes que ser administrador para ejecutar este comando.');
 	}else{
-		if (fs.existsSync('./registro.log') != false) {
-			let fichero = fs.readFileSync('./registro.log', 'utf-8');
+		if (fs.existsSync(ruta) != false) {
+			let fichero = fs.readFileSync(ruta, 'utf-8');
 			ctx.reply(fichero);
 		}
 		else{
