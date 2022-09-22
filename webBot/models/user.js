@@ -54,6 +54,10 @@ const userSchema = mongoose.Schema(
 			type: String,
 			enum: ['default','semaforo','platano', 'senial'],
 			default: 'default'
+		},
+		ranking: {
+			type: Boolean,
+			default: true
 		}
 	}
 );

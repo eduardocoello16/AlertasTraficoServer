@@ -154,7 +154,7 @@ async function getListaUsuarios(){
 		let listaUsuarios = await usuarioModel.find().sort({
 			num_alertas: -1
 		});
-		listaUsuarios = listaUsuarios.filter(usuario => usuario.status_user == 'active');
+	
 		return listaUsuarios;
 	} catch (error) {
 		console.log(error);
