@@ -1,5 +1,5 @@
 const variables = require('../variables');
-const errores = require('../registroLogs');
+const logs = require('../registroLogs');
 function modersCommands(bot){
 	bot.command('modooculto', (ctx) => {
 		modoOculto(ctx, bot);
@@ -61,7 +61,7 @@ async function modoOculto(id, bot){
 	} catch (error) {
 		let msg = 'Error al cambiar el modo oculto.';
 		
-		errores.botError(msg, error);
+		logs.botError(msg, error);
 	}
 	
 }
@@ -73,7 +73,7 @@ async function comrpobaranonimo( bot, idUsuario){
 		if(user.is_anonymous === true) return true;
 		else return false;
 	} catch (error) {
-		console.log(error);
+		logs.botError('comprobar anonimo', error);
 		return false;
 	}
 
