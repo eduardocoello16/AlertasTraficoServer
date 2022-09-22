@@ -15,7 +15,7 @@ function twitterCommands(bot, database){
 	bot.command('obtenertweets', async (ctx) => {
 		let datos = await database.getBotData(variables.bot_db_name);
 		if(datos.obtenerTweets){
-			console.log('Comprobación de tweets nuevos (Comando Usuario) - ' + new Date );
+			//console.log('Comprobación de tweets nuevos (Comando Usuario) - ' + new Date );
         
         
 			if ((ctx.message.chat.id == grupoAdmins) || (cAdmin.comprobarAdmin(ctx) === true)) {
@@ -53,8 +53,6 @@ async function comprobarTweets(ctx,bot,database) {
        
 			if(ctx){
 				ctx.reply('Obteniendo ultimo tweet de la cuenta ' + cuenta.name);
-			}else{
-				console.log('Obteniendo ultimo tweet de la cuenta ' + cuenta.name);
 			}
         
 			await obtenerTweets(cuenta.id, cuenta.name,bot);

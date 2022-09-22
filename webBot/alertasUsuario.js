@@ -1,6 +1,7 @@
 const variables = require('../variables');
 const { Markup } = require('telegraf');
 const database = require('./database');
+const logs = require('../registroLogs');
 var mensajes = [];
 
 async function nuevoMensaje(datos, bot){
@@ -9,7 +10,7 @@ async function nuevoMensaje(datos, bot){
 		let user = await database.obtenerUsuario(datos.idUsuario);
 		if(user && user.status_user === 'active'){
 		
-		
+			
 		
 			let mensaje = `El usuario ${user.first_name} quiere publicar la alerta:\n${datos.alerta}`;
 			let envioMensaje =	await bot.telegram.sendMessage(variables.grupoAdmins, mensaje, {
@@ -39,6 +40,7 @@ async function nuevoMensaje(datos, bot){
 		}	
 	} catch (error) {
 		console.log(error);
+		logs.botError('Error  al crear una alerta por un usuario', error);
 		const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
 		mensajes.splice(found, 1);
 	}
