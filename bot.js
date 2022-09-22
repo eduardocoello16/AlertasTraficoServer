@@ -24,7 +24,7 @@ console.log('Iniciando bot... ');
 bot.launch().then(() => {
 	console.log('Bot iniciado');
 	setInterval(() => {
-		console.log('Comprobando Tweets cada 5 minutos');
+		
 		twitterActions.comprobarTweets(null,bot,database);
 	}, 150000);
 }).catch(err => {

@@ -87,9 +87,25 @@
         
     },
     {
+        "id": "TV-5.12",
+        "nombre": "Guajara ",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-40.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
         "id": "TV-5.13",
         "nombre": "Guajara ",
-        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-41.jpg",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-41.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.14",
+        "nombre": "Vía Ronda (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-514.jpg", 
         "zona": "Zona Norte",
         "ubicacion": "TF-5"
         
