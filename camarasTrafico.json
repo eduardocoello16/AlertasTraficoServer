@@ -109,7 +109,262 @@
         "zona": "Zona Norte",
         "ubicacion": "TF-5"
         
+    },
+    {
+        "id": "TV-5.16",
+        "nombre": "Lora Tamayo (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-516.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.17",
+        "nombre": "Anchieta TF-24",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-517.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.19",
+        "nombre": "Anchieta (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-519.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.20",
+        "nombre": "San Benito",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-520.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.22",
+        "nombre": "Los Rodeos",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-522.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.23",
+        "nombre": "Los Rodeos (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-523.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.24",
+        "nombre": "Portezuelo   ",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-524.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.25",
+        "nombre": "Portezuelo (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-525.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.26",
+        "nombre": "Los Naranjeros",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-526.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.27",
+        "nombre": "Los Naranjeros (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-527.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.28",
+        "nombre": "Tacoronte",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-528.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.29",
+        "nombre": "Tacoronte (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-529.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.30",
+        "nombre": "El Sauzal",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-530.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.31",
+        "nombre": "El Sauzal (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-531.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.32",
+        "nombre": "La Matanza",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-532.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.33",
+        "nombre": "La Matanza (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-533.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.34",
+        "nombre": "Santa Úrsula",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-534.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.35",
+        "nombre": "Santa Úrsula (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-535.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.36",
+        "nombre": "Puerto de la Cruz",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-536.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.37",
+        "nombre": "Puerto de la Cruz (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-537.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.38",
+        "nombre": "La Villa",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-538.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.40",
+        "nombre": "Los Realejos",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-540.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.41",
+        "nombre": "Los Realejos (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-541.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.42",
+        "nombre": "Tunel San Vicente",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-542.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.43",
+        "nombre": "Tunel Santo Domingo",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-543.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.43",
+        "nombre": "Tunel Santo Domingo",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-543.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.44",
+        "nombre": "Buen Paso",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-544.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.45",
+        "nombre": "Buen Paso (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-545.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.46",
+        "nombre": "El Tanque",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-546.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-5.46",
+        "nombre": "El Tanque (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-547.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-5"
+        
+    },
+    {
+        "id": "TV-2.1",
+        "nombre": "San Matías",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-211.jpg", 
+        "zona": "Zona Norte",
+        "ubicacion": "TF-2"
+        
     }
+    
+    
+    
+    
+    
+  
+  
   
   
   
