@@ -61,8 +61,6 @@ async function comprobarTweets(ctx,bot,database) {
 		}
 		if(ctx){
 			ctx.reply('Finalizado');
-		}else{
-			console.log('Finalizado');
 		}
 	}else{
    
