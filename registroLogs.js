@@ -59,19 +59,18 @@ function borrarFichero(fichero,ctx) {
       
 }
 
-function obtenerFichero(fichero,ctx){
+function obtenerFichero(fichero){
+
 	let ruta = `./${fichero}.log`;
-	if(cAdmin.comprobarAdmin(ctx)=== false){
-		ctx.reply('Tienes que ser administrador para ejecutar este comando.');
-	}else{
-		if (fs.existsSync(ruta) != false) {
-			let fichero = fs.readFileSync(ruta, 'utf-8');
-			ctx.reply(fichero);
-		}
-		else{
-			ctx.reply('No existe el fichero registro.log.  ¿Se eliminó recientemente? Consulta la consola de comandos.');
-		}
+	
+	if (fs.existsSync(ruta) != false) {
+		let fichero = fs.readFileSync(ruta, 'utf-8');
+		return(fichero);
 	}
+	else{
+		return('No existe el fichero registro.log.  ¿Se eliminó recientemente? Consulta la consola de comandos.');
+	}
+	
 }
 
 module.exports = {

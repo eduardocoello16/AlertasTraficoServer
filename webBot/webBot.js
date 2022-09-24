@@ -2,6 +2,7 @@ const HmacSHA256 = require('crypto-js/hmac-sha256');
 const Hex = require('crypto-js/enc-hex');
 var express = require('express');
 var app = express();
+const fs = require('fs');
 var bp = require('body-parser');
 const variables = require('../variables');
 const cors = require('cors');
@@ -307,14 +308,52 @@ function rutas(bot, database){
 			console.log(error);
 		}
 	});
-	const fs = require('fs');
+	app.post('/obtenerficherolog', async function(req,res){
+
+		if( comprobarHash(req.body.WebAppData)){
+			try {
+			
+			
+				const q = new URLSearchParams(req.body.WebAppData);
+				let query_id = q.get('query_id');
+				
+				let idUsuario = JSON.parse(q.get('user')).id;
+		
+				let user = await database.obtenerUsuario(idUsuario);
+			
+				if( user.type_user == 'admin'){
+
+				
+					await bot.telegram.answerWebAppQuery(query_id, 
+						{
+							type: 'article',
+							id: 'enviadno',
+							title: 'LOG',
+							message_text: `Solicitado envío ${req.body.fichero}.log`
+						});
+					await bot.telegram.sendDocument(req.body.idUsuario, {source: `${req.body.fichero}.log`});
+				}
+			
+			}catch(error){
+				console.log(error);
+				res.status(500).send(
+					{
+						'msg': 'Error en el servidor'
+					}
+				);
+			}
+		}
+
+	
+	});
+
+
 	app.get('/obtenercamaras', async function(req,res){
 		let camaras = fs.readFileSync('./camarasTrafico.json', 'utf-8');
 		res.status(200).send(camaras);
 	});
 
 }
-
 
 
 
