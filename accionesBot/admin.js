@@ -1,17 +1,19 @@
 const variables = require('../variables');
+const logs = require('../registroLogs');
 
 function adminCommands(bot,database){
-	//Quitar un usuario administrador
-	bot.command('deladmin', async (ctx) => {
-		deleteAdmin(ctx, bot);
-	});
+	
 	
 	//Comando para obtener lista de comandos para admins
 	bot.command('admincommands', async (ctx) => {
-		if(comprobarAdmin(ctx)){
-			ctx.reply('---- Comandos para los administradores ----\n\nComandos Tweets\n/obtenertweets - Para obtener los últimos tweets\n \nComandos para el Filtro\n/getwhitelist - Obtener la White List\n/getblacklist - Obtener la Black List\n /getblacklistgroup - Obtener la Black List para el grupo\n/addblacklist - Añade un elemento a la Black List\n/addwhitelist - Añade un elemento a la White List\n/addblacklistgroup - Añade un elemento a la Black List del grupo\n/delblacklist - Borra un elemento a la Black List\n/delwhitelist - Borra un elemento a la White List\n/delblacklistgroup - Borra un elemento a la Black List del grupo\n\nComandos archivo log errores\n/dellog - Borra el fichero .log de errores\n/logs - Obtiene el fichero log de errores y se reenvía por aquí.');
-		}else{
-			ctx.reply('Necesitas ser admin para ejecutar este comando.');
+		try {
+			if(comprobarAdmin(ctx)){
+				ctx.reply('---- Comandos para los administradores ----\n\nComandos Tweets\n/obtenertweets - Para obtener los últimos tweets\n \nComandos para el Filtro\n/getwhitelist - Obtener la White List\n/getblacklist - Obtener la Black List\n /getblacklistgroup - Obtener la Black List para el grupo\n/addblacklist - Añade un elemento a la Black List\n/addwhitelist - Añade un elemento a la White List\n/addblacklistgroup - Añade un elemento a la Black List del grupo\n/delblacklist - Borra un elemento a la Black List\n/delwhitelist - Borra un elemento a la White List\n/delblacklistgroup - Borra un elemento a la Black List del grupo\n\nComandos archivo log errores\n/dellog - Borra el fichero .log de errores\n/logs - Obtiene el fichero log de errores y se reenvía por aquí.');
+			}else{
+				ctx.reply('Necesitas ser admin para ejecutar este comando.');
+			}
+		} catch (error) {
+			logs.botError('Error al enviar admin commands', error);
 		}
 	});
 	
@@ -85,51 +87,30 @@ function comprobarAdmin(ctx) {
 	return salida;
 }
 
-async function deleteAdmin(ctx, bot){
-	if (comprobarAdmin(ctx) === true) {
-		//Obtener usuario a añadir a la lista de administradores
-		let id = ctx.message.text.split(' ')[1];
-		//Comprobar que un usuario es anonimo
-		try {
-			let user = await bot.telegram.getChatMember(variables.grupoAlertas, id);
-			if (user.status === 'left') {
-				ctx.reply('El usuario no está en el grupo');
-			} else {
-				//Añadir usuario a la lista de administradores
-				try {
-					await bot.telegram.promoteChatMember(variables.grupoAlertas, id, {});
-					ctx.reply(`Se han actualizado los permisos del usuario ${user.user.first_name} ${user.user.last_name}`);
-				} catch (error) {
-					console.log(error);
-					ctx.reply('Error al añadir usuario');
-				}
-			}
-		} catch (error) {
-			console.log(error);
-			ctx.reply('Id o nombre inválido');
-		}
-	} else {
-		ctx.reply('No tienes permisos para ejecutar este comando');
-	}
-}
+
 
 function broadcast(ctx, bot){
-	if (comprobarAdmin(ctx)) {
-		let mensaje = ctx.message.text;
-		mensaje = mensaje.replace('/broadcast', '');
-		if (mensaje === '') {
-			ctx.reply('Mensaje vacío');
-		} else {
-			try {
-				bot.telegram.sendMessage(variables.grupoAlertas, mensaje);
-			} catch (error) {
-				ctx.reply('Error interno del bot');
-				
+	try {
+		if (comprobarAdmin(ctx)) {
+			let mensaje = ctx.message.text;
+			mensaje = mensaje.replace('/broadcast', '');
+			if (mensaje === '') {
+				ctx.reply('Mensaje vacío');
+			} else {
+				try {
+					bot.telegram.sendMessage(variables.grupoAlertas, mensaje);
+				} catch (error) {
+					ctx.reply('Error interno del bot');
+					
+				}
 			}
+		} else {
+			ctx.reply('Tienes que ser admin para ejecutar este comando.');
 		}
-	} else {
-		ctx.reply('Tienes que ser admin para ejecutar este comando.');
+	} catch (error) {
+		logs.botError('Error al hacer un broadcast', error);
 	}
+	
 }
 
 async function cambiarPermisos(id, permiso, bot){
@@ -173,7 +154,7 @@ async function cambiarPermisos(id, permiso, bot){
 			
 		}
 	} catch (error) {
-		console.log(error);
+		logs.botError('Error al cambiar los permisos', error);
 		return true;
 	}
 } 

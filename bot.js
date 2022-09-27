@@ -32,6 +32,8 @@ bot.launch().then(() => {
 });
 
 
+
+
 //Abrir las rutas de express pasándole el bot.
 webBot.rutas(bot, database);
 
@@ -54,6 +56,9 @@ bot.start((ctx) => {
 		ctx.reply('Para ver los comandos de administrador usa el comando /admincommands');
 	}
 });
+
+
+
 cAdmin.adminCommands(bot,database);
 errores.commands(bot);
 moders.modersCommands(bot);
@@ -98,8 +103,14 @@ bot.action(/aceptar_alerta:(\d+)/, ctx => {
 	alertasUsuario.aceptarAlerta(userId, ctx, bot);
 });
 
-bot.action(/penalizar_usuario:(\d+)/, ctx => {
+
+bot.action(/penalizar_usuario:(\d+)/, async ctx => {
 
 	const [, userId] = ctx.match;
-	webBotActions.penalizarUsuario(userId, ctx, bot);
+	try {
+		await webBotActions.penalizarUsuario(userId, ctx, bot);
+	} catch (error) {
+		console.log('sadsa');
+	}
+	
 });

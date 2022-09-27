@@ -60,7 +60,7 @@ async function denegarSolicitud(userId, ctx,bot){
 			}
 		}
 	} catch (error) {
-		console.error(error);
+		logs.botError('Error al denegar solicitud al grupo de administradores', error);
 	}
 }
 async function aceptarSolicitud(userId, ctx,bot){
@@ -92,7 +92,7 @@ async function aceptarSolicitud(userId, ctx,bot){
 			}
 		}
 	} catch (error) {
-		console.log(error);
+		logs.botError('Error al aceptar solicitud al grupo de administradores', error);
 	}
 }
 async function banearSolicitud(userId, ctx, bot){
@@ -127,7 +127,7 @@ async function banearSolicitud(userId, ctx, bot){
 			}
 		}
 	} catch (error) {
-		console.log(error);
+		logs.botError('Error al banear   grupo de administradores', error);
 	}
 }
 async function perdonarSolicitud(userId, ctx, bot){
@@ -157,7 +157,7 @@ async function perdonarSolicitud(userId, ctx, bot){
 			}
 		}
 	}catch (error) {
-		console.log(error);
+		logs.botError('Error al perdonar solicitud al grupo de administradores', error);
 		
 	}
 }
@@ -195,7 +195,7 @@ async function penalizarUsuario(userId, ctx, bot){
 			}
 		}
 	} catch (error) {
-		console.log(error);
+		logs.botError('Error al penalizar un usuario en el  grupo de administradores', error);
 	}
 }
 module.exports = {

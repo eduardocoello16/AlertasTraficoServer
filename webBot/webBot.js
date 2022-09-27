@@ -160,37 +160,43 @@ function rutas(bot, database){
 		let state = await database.getBotData(variables.bot_db_name);
 		const found = alertasUsuario.mensajes.findIndex(element => element.idUsuario == req.body.datosAlerta.idUsuario);
 		if(comprobarHash(WebAppData, hash)){
-			if(state.usuariosPublicaciones){
+			try {
 				
-				if(found === -1){
+			
+				if(state.usuariosPublicaciones){
+				
+					if(found === -1){
 					
-					if(await alertasUsuario.nuevoMensaje(req.body.datosAlerta,bot)){
+						if(await alertasUsuario.nuevoMensaje(req.body.datosAlerta,bot)){
+							res.status(200).send(
+								{
+									'msg': 'Enviadno...'
+								}
+							);
+						}else{
+							res.status(400).send(
+								{
+									'msg': 'Error en el servidor'
+								}
+							);
+						}
+					
+					}else{
+						console.log('mensaje enviado ya...');
 						res.status(200).send(
 							{
-								'msg': 'Enviadno...'
-							}
-						);
-					}else{
-						res.status(400).send(
-							{
-								'msg': 'Error en el servidor'
+								'msg': 'Ya tienes un  mensaje pendiente.'
 							}
 						);
 					}
-					
-				}else{
-					console.log('mensaje enviado ya...');
-					res.status(200).send(
-						{
-							'msg': 'Ya tienes un  mensaje pendiente.'
-						}
-					);
-				}
 
-			}else{
-				res.status(400).send({
-					'msg': 'Las alertas están desactivadas.'
-				});
+				}else{
+					res.status(400).send({
+						'msg': 'Las alertas están desactivadas.'
+					});
+				}
+			} catch (error) {
+				console.log(error);
 			}
     
 		}
