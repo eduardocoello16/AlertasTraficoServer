@@ -28,9 +28,10 @@ async function comprobarGrupoModeradores(ctx, bot){
 async function modoOculto(id, bot){
 
 	//Comprobar que un usuario es anonimo
-	let user = await bot.telegram.getChatMember(variables.grupoAlertas, id);
+	
        
 	try {
+		let user = await bot.telegram.getChatMember(variables.grupoAlertas, id);
 		if (user.is_anonymous === true) {
 			await bot.telegram.promoteChatMember(variables.grupoAlertas, id, {
 				is_anonymous: false,
@@ -73,7 +74,7 @@ async function comrpobaranonimo( bot, idUsuario){
 		if(user.is_anonymous === true) return true;
 		else return false;
 	} catch (error) {
-		logs.botError('comprobar anonimo', error);
+		logs.botError('Comprobar anonimo', error);
 		return false;
 	}
 

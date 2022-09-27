@@ -302,25 +302,30 @@ async function filtradoAcceso(tweet) {
 		}
       
 	} catch (error) {
-		console.log(error);
+		errores.botError('Error al filtrar acceso del tweet', error);
 	}
     
 	return salida;
 }
 
 async function filtradoBlackListGroup(tweet) {
-	let salida = false;
-	let filtro = await database.getBotData(variables.bot_db_name);
-	let blackListGroup = filtro.blackListGroup;
-	let tweetText = tweet.text.toLowerCase();
-	let arrayTweetText = tweetText.split(' ');
-	blackListGroup.forEach(element => {
-		if (arrayTweetText.includes(element.toLowerCase())) {
+	try {
+		let salida = false;
+		let filtro = await database.getBotData(variables.bot_db_name);
+		let blackListGroup = filtro.blackListGroup;
+		let tweetText = tweet.text.toLowerCase();
+		let arrayTweetText = tweetText.split(' ');
+		blackListGroup.forEach(element => {
+			if (arrayTweetText.includes(element.toLowerCase())) {
 
-			salida = true;
-		}
-	});
-	return salida;
+				salida = true;
+			}
+		});
+		return salida;
+	} catch (error) {
+		error.botError('Error filtrado black list group', error);
+	}
+	
 }
 module.exports = {
 	comandosFiltro,
