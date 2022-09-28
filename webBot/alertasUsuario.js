@@ -54,21 +54,24 @@ async function enviarMensaje(datos,bot,mensaje,user){
 		const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
 		if(found != -1){
 			database.sumarPublicacionUser(user.id);
+		
 			await bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + '\n Fuente: Usuario del grupo');
 			await bot.telegram.editMessageText( mensaje.chat.id, mensaje.message_id, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${datos.alerta}` );
+			mensajes.splice(found, 1);
 			try {
 				await bot.telegram.sendMessage(datos.idUsuario, '✔ Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤');
 			} catch (e) {
-				console.log('err');
+				console.log(e);
+				logs.botError('Error al enviar el mensaje al usuario.Mensaje: Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤.', e);
 			}
 		
 			
-			mensajes.splice(found, 1);
+			
 			
 		}
 	} catch (error) {
 		console.log(error);
-		logs.botError('Error al enviar el mensaje al canal de alertas.');
+		logs.botError('Error al enviar el mensaje al canal de alertas.', error);
 	}
 	
 	
@@ -133,7 +136,7 @@ async function aceptarAlerta(id, ctx, bot){
 				}
 			);
 			mensajes.splice(found, 1);
-			await bot.telegram.sendMessage(id, '✔ Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤');
+			await bot.telegram.sendMessage(id, '✔ Tu alerta se ha sido aceptada. Muchas Gracias 🙌❤');
 			
 		}
 	} catch (error) {

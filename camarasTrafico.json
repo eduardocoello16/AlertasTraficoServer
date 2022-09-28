@@ -357,7 +357,112 @@
         "zona": "Conexión",
         "ubicacion": "TF-2"
         
+    },
+    {
+        "id": "TV-2.2",
+        "nombre": "San Matías (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-212.jpg", 
+        "zona": "Conexión",
+        "ubicacion": "TF-2"
+        
+    },
+    {
+        "id": "TV-2.3",
+        "nombre": "Barranco Grande",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-213.jpg", 
+        "zona": "Conexión",
+        "ubicacion": "TF-2"
+        
+    },
+    {
+        "id": "TV-2.4",
+        "nombre": "Barranco Grande",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-214.jpg", 
+        "zona": "Conexión",
+        "ubicacion": "TF-2"
+        
+    },
+    {
+        "id": "TV-2.5",
+        "nombre": "Tincer",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-215.jpg", 
+        "zona": "Conexión",
+        "ubicacion": "TF-2"
+        
+    },
+    {
+        "id": "TV-2.6",
+        "nombre": "Tincer (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-216.jpg?d=1664376565368{NoCacheParam}", 
+        "zona": "Conexión",
+        "ubicacion": "TF-2"
+        
+    },
+    {
+        "id": "TV-2.9",
+        "nombre": "Leroy (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-39.jpg", 
+        "zona": "Conexión",
+        "ubicacion": "TF-2"
+        
+    },
+    {
+        "id": "CH-TVM-2",
+        "nombre": "Entrada tunel (Chumberas)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-38.jpg", 
+        "zona": "Bajos de alcampo",
+        "ubicacion": "TF-2"
+        
+    },
+    {
+        "id": "CH-TV-3",
+        "nombre": "Tunel (Chumberas)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-35.jpg", 
+        "zona": "Bajos de alcampo",
+        "ubicacion": "TF-2"
+        
+    },
+    {
+        "id": "CH-TVM-1",
+        "nombre": "TF5 a TF2",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-32.jpg", 
+        "zona": "Conexión",
+        "ubicacion": "TF-2"
+        
+    },
+    {
+        "id": "TV-4.1",
+        "nombre": "Recinto Ferial (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-49.jpg", 
+        "zona": "Vía Penetración de TF-2 Santa Cruz",
+        "ubicacion": "TF-4"
+        
+    },
+    {
+        "id": "TV-4.2",
+        "nombre": "Falso Tunel",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-50.jpg", 
+        "zona": "Vía Penetración de TF-2 Santa Cruz",
+        "ubicacion": "TF-4"
+        
+    },
+    {
+        "id": "TV-4.4",
+        "nombre": "Enlace TF-1",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-52.jpg", 
+        "zona": "Vía Penetración de TF-2 Santa Cruz",
+        "ubicacion": "TF-4"
+        
+    },
+    {
+        "id": "TV-4.5",
+        "nombre": "Enlace TF-1",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-53.jpg", 
+        "zona": "Vía Penetración de TF-2 Santa Cruz",
+        "ubicacion": "TF-4"
+        
     }
+    
     
     
     
