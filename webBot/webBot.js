@@ -235,6 +235,16 @@ function rutas(bot, database){
 		}
 	});
 
+	app.post('/alertasactivas', async function(req, res) {
+		
+	
+		let WebAppData = req.body.WebAppData;
+		if(comprobarHash(WebAppData)){
+			
+			res.status(200).send(alertasUsuario.mensajes);
+		}
+	});
+
 
 	app.post('/listausuarios', async function(req, res) {
 		

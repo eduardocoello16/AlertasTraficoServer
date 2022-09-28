@@ -132,8 +132,9 @@ async function aceptarAlerta(id, ctx, bot){
 					)
 				}
 			);
-			await bot.telegram.sendMessage(id, '✔ Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤');
 			mensajes.splice(found, 1);
+			await bot.telegram.sendMessage(id, '✔ Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤');
+			
 		}
 	} catch (error) {
 		logs.botError('Error al aceptar la alerta', error);
