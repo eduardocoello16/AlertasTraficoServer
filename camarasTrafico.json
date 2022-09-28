@@ -79,7 +79,7 @@
         
     },
     {
-        "id": "TV-5.10",
+        "id": "TV-5.11",
         "nombre": "Chumberas (M)",
         "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-31.jpg",
         "zona": "Zona Norte",
@@ -311,14 +311,6 @@
         
     },
     {
-        "id": "TV-5.43",
-        "nombre": "Tunel Santo Domingo",
-        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-543.jpg", 
-        "zona": "Zona Norte",
-        "ubicacion": "TF-5"
-        
-    },
-    {
         "id": "TV-5.44",
         "nombre": "Buen Paso",
         "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-544.jpg", 
@@ -343,7 +335,7 @@
         
     },
     {
-        "id": "TV-5.46",
+        "id": "TV-5.47",
         "nombre": "El Tanque (M)",
         "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-547.jpg", 
         "zona": "Zona Norte",
