@@ -251,15 +251,15 @@ function rutas(bot, database){
 		let camara = req.body.camara;
 		const q = new URLSearchParams(req.body.WebAppData);
 		let query_id = q.get('query_id');
-		console.log(camara);
+	
 		if(comprobarHash(WebAppData)){
 			let ruta = 'camarasTrafico.json';
 			let fichero = fs.readFileSync(ruta, 'utf-8');
 			fichero = JSON.parse(fichero);
 			let encontrado = fichero.findIndex((searchcamara) => searchcamara.id == camara);
-			console.log(encontrado);
+			
 			if(encontrado != -1 ){
-
+				console.log(fichero[encontrado].url);
 		
 				await bot.telegram.answerWebAppQuery(query_id, 
 					{
@@ -269,8 +269,6 @@ function rutas(bot, database){
 						photo_url: fichero[encontrado].url,
 						thumb_url: fichero[encontrado].url,
 					});
-			}else{
-				console.log('nope');
 			}
 			res.status(200).send(alertasUsuario.mensajes);
 		}
