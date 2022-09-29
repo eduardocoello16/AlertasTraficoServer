@@ -244,8 +244,28 @@ function rutas(bot, database){
 			res.status(200).send(alertasUsuario.mensajes);
 		}
 	});
+	app.post('/enviarimagen', async function(req, res) {
+		
+	
+		let WebAppData = req.body.WebAppData;
+		let camara = req.body.camara;
+		const q = new URLSearchParams(req.body.WebAppData);
+		let query_id = q.get('query_id');
+		console.log(camara);
+		if(comprobarHash(WebAppData)){
+			await bot.telegram.answerWebAppQuery(query_id, 
+				{
+					type: 'photo',
+					id: 'enviadno',
+					title: 'LOG',
+					photo_url: 'https://cic.tenerife.es/e-Traffic3/data/camara-2701001-6.jpg?d=1664467896638{NoCacheParam}',
+					thumb_url: 'https://cic.tenerife.es/e-Traffic3/data/camara-2701001-6.jpg?d=1664467896638{NoCacheParam}'
+				});
+			res.status(200).send(alertasUsuario.mensajes);
+		}
+	});
 
-
+	
 	app.post('/listausuarios', async function(req, res) {
 		
 	

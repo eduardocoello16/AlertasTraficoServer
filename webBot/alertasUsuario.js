@@ -55,7 +55,7 @@ async function enviarMensaje(datos,bot,mensaje,user){
 		if(found != -1){
 			database.sumarPublicacionUser(user.id);
 		
-			await bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + '\n Fuente: Usuario del grupo');
+			await bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + '\n Fuente: Usuario mediante @Alertastnf_bot');
 			await bot.telegram.editMessageText( mensaje.chat.id, mensaje.message_id, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${datos.alerta}` );
 			mensajes.splice(found, 1);
 			try {
@@ -118,7 +118,7 @@ async function aceptarAlerta(id, ctx, bot){
 		if(found != -1){
 			let user = await database.obtenerUsuario(id);
 			database.sumarPublicacionUser(id);
-			await bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + '\n Fuente: Usuario del grupo');
+			await bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + '\n Fuente: Usuario mediante @Alertastnf_bot');
 			
 			await ctx.editMessageText(
 				`Se ha aceptado el mensaje de  ${user.first_name}:  \n${mensajes[found].alerta }`,{
