@@ -253,14 +253,25 @@ function rutas(bot, database){
 		let query_id = q.get('query_id');
 		console.log(camara);
 		if(comprobarHash(WebAppData)){
-			await bot.telegram.answerWebAppQuery(query_id, 
-				{
-					type: 'photo',
-					id: 'enviadno',
-					title: 'LOG',
-					photo_url: 'https://cic.tenerife.es/e-Traffic3/data/camara-2701001-6.jpg?d=1664467896638{NoCacheParam}',
-					thumb_url: 'https://cic.tenerife.es/e-Traffic3/data/camara-2701001-6.jpg?d=1664467896638{NoCacheParam}'
-				});
+			let ruta = 'camarasTrafico.json';
+			let fichero = fs.readFileSync(ruta, 'utf-8');
+			fichero = JSON.parse(fichero);
+			let encontrado = fichero.findIndex((searchcamara) => searchcamara.id == camara);
+			console.log(encontrado);
+			if(encontrado != -1 ){
+
+		
+				await bot.telegram.answerWebAppQuery(query_id, 
+					{
+						type: 'photo',
+						id: 'enviadno',
+						title: 'LOG',
+						photo_url: fichero[encontrado].url,
+						thumb_url: fichero[encontrado].url,
+					});
+			}else{
+				console.log('nope');
+			}
 			res.status(200).send(alertasUsuario.mensajes);
 		}
 	});
