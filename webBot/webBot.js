@@ -260,7 +260,11 @@ function rutas(bot, database){
 			
 			if(encontrado != -1 ){
 				
-		
+				let fecha = new Date();
+				
+				let urldia = `?d=${fecha.getTime()}{NoCacheParam}`;
+				console.log(urldia);
+				
 				await bot.telegram.answerWebAppQuery(query_id,
 					{
 						cache_time: 0,
