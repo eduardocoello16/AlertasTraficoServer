@@ -259,10 +259,11 @@ function rutas(bot, database){
 			let encontrado = fichero.findIndex((searchcamara) => searchcamara.id == camara);
 			
 			if(encontrado != -1 ){
-				console.log(fichero[encontrado].url);
+				
 		
-				await bot.telegram.answerWebAppQuery(query_id, 
+				await bot.telegram.answerWebAppQuery(query_id,
 					{
+						cache_time: 0,
 						type: 'photo',
 						id: 'enviadno',
 						title: 'LOG',
