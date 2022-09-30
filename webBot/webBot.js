@@ -271,8 +271,8 @@ function rutas(bot, database){
 						type: 'photo',
 						id: 'enviadno',
 						title: 'LOG',
-						photo_url: fichero[encontrado].url,
-						thumb_url: fichero[encontrado].url,
+						photo_url: fichero[encontrado].url + urldia,
+						thumb_url: fichero[encontrado].url + urldia,
 					});
 			}
 			res.status(200).send(alertasUsuario.mensajes);
