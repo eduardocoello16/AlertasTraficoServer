@@ -11,6 +11,7 @@ const alertasUsuario = require('./alertasUsuario');
 const moders = require('../accionesBot/moders');
 const cAdmin = require('../accionesBot/admin');
 const logs = require('../registroLogs');
+const { obtenerUsuario } = require('./database');
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
@@ -120,21 +121,53 @@ function rutas(bot, database){
 	});
 	//Comprobar si el usuario está en el grupo
 	app.post('/comprobarusuario', async function(req, res) {
-		logs.botLog(req.body.userData.first_name + ' entró en webapp');
-		let id = req.body.id;
-		let hash = req.body.hash;
+		
+		
+	
 		let WebAppData = req.body.WebAppData;
+		const q = new URLSearchParams(WebAppData);
+		let user = JSON.parse(q.get('user'));
+		logs.botLog(user.first_name + ' entró en webapp');
+		
 		let state = await database.getBotData(variables.bot_db_name);
-		if(comprobarHash(WebAppData, hash)){
+		if(comprobarHash(WebAppData)){
 			try {
-				const getUsuario = await database.obtenerUsuario(id);
+				const getUsuario = await database.obtenerUsuario(user.id);
 				if(getUsuario){
-					await database.actualizarUsuario(req.body.userData);
+					await database.actualizarUsuario(user);
+					res.status(200).send( {
+						user: getUsuario,
+						web_status: state.usuariosPublicaciones
+					});
+					
+				}else{
+					
+					if(await webBotAction.userInGroup(user.id, bot)){
+						try {
+							let nuevoUsuario = await	database.crearUsuario(user);
+							nuevoUsuario.status_user = 'active';
+							await database.actualizarUsuario(nuevoUsuario);
+							let usuario = await obtenerUsuario(nuevoUsuario.id);
+						
+							res.status(200).send( {
+								user: usuario,
+								web_status: state.usuariosPublicaciones
+							});
+						} catch (error) {
+							logs.botError('Error al crear usuario(Ya que está en el grupo)', error);
+							res.status(500).send({
+								'msg': 'error al crear el usuario'
+							});
+						}
+						
+					}else{
+						res.status(200).send( {
+							user: getUsuario,
+							web_status: state.usuariosPublicaciones
+						});
+					}
 				}
-				res.status(200).send( {
-					user: getUsuario,
-					web_status: state.usuariosPublicaciones
-				});
+			
         
         
 			} catch (error) {

@@ -198,7 +198,27 @@ async function penalizarUsuario(userId, ctx, bot){
 		logs.botError('Error al penalizar un usuario en el  grupo de administradores', error);
 	}
 }
+
+
+async function userInGroup(idUsuario,bot){
+	try {
+		
+		let user = await bot.telegram.getChatMember(variables.grupoAlertas, idUsuario);
+		
+		if(user.status != 'left'){
+			return true;
+		}else{
+			return false;
+		}
+	} catch (error) {
+		logs.botError('Error al comprobar si el usuario está en el grupo de alertas', error);
+		return false;
+	}	
+
+
+}
 module.exports = {
+	userInGroup,
 	penalizarUsuario,
 	aceptarSolicitud,
 	denegarSolicitud,
