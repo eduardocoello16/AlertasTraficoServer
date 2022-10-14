@@ -20,7 +20,7 @@ const bot = variables.bot;
 //Express
 //Start bot
 //Detectar cuando el bot se conecta
-console.log('Iniciando bot... ');
+console.log('Iniciando bot... DEV');
 bot.launch().then(() => {
 	console.log('Bot iniciado');
 	setInterval(() => {
