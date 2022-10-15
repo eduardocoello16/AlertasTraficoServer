@@ -15,8 +15,9 @@ const { obtenerUsuario } = require('./database');
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
-app.listen(2000, () =>{
-	console.log('Servidor levantado correctamente en  http://127.0.1:' + 2000 );
+let port = process.env.PORT || 3000;
+app.listen(port, () =>{
+	console.log('Servidor levantado correctamente en  http://127.0.1:' + port );
 });
 function comprobarHash(WebAppData){
    
