@@ -1,17 +1,21 @@
-const HmacSHA256 = require('crypto-js/hmac-sha256');
-const Hex = require('crypto-js/enc-hex');
-var express = require('express');
+
+import  HmacSha256 from 'crypto-js/hmac-sha256.js';
+import  Hex from 'crypto-js/enc-hex.js';
+import  express from 'express';
+import  fs from 'fs';
+import  bp from 'body-parser';
+import * as variables from '../variables.js';
+import  cors from 'cors';
+import * as webBotAction from '../accionesBot/webBotActions.js';
+import * as alertasUsuario from './alertasUsuario.js'; 
+import * as moders from '../accionesBot/moders.js'
+import * as cAdmin from '../accionesBot/admin.js'; 
+import * as logs from '../registroLogs.js';
+import { obtenerUsuario } from './database.js';
+import axios  from 'axios';
+//const { obtenerUsuario } = require('./database');
 var app = express();
-const fs = require('fs');
-var bp = require('body-parser');
-const variables = require('../variables');
-const cors = require('cors');
-const webBotAction = require('../accionesBot/webBotActions');
-const alertasUsuario = require('./alertasUsuario');
-const moders = require('../accionesBot/moders');
-const cAdmin = require('../accionesBot/admin');
-const logs = require('../registroLogs');
-const { obtenerUsuario } = require('./database');
+
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
@@ -28,8 +32,8 @@ function comprobarHash(WebAppData){
 	// eslint-disable-next-line no-unused-vars
 	v.sort(([aN, aV], [bN, bV]) => aN.localeCompare(bN));
 	const data_check_string = v.map(([n, v]) => `${n}=${v}`).join('\n');
-	var secret_key = HmacSHA256(variables.botToken, 'WebAppData');
-	var key = HmacSHA256(data_check_string, secret_key).toString(Hex);
+	var secret_key = HmacSha256(variables.botToken, 'WebAppData');
+	var key = HmacSha256(data_check_string, secret_key).toString(Hex);
 	var salida = false;
 	if(hash == key){
 		salida = true;
@@ -373,7 +377,7 @@ function rutas(bot, database){
 			return false;
 		}
 	}
-	const axios = require('axios');
+
 
 	app.post('/obtenerimagen', async function(req,res){
 		
@@ -447,6 +451,6 @@ function rutas(bot, database){
 
 
 
-module.exports = {
+export  {
 	rutas
 };

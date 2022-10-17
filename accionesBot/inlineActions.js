@@ -1,5 +1,7 @@
-const variables = require('../variables');
+/*const variables = require('../variables');
 const webBotActions = require('./webBotActions');
+*/
+
 function inlineCommands(bot,database){
 	
 
@@ -173,7 +175,6 @@ async function crearAlertas(ctx, database, variables){
 	}
 
 }
-
-module.exports = {
+export  {
 	inlineCommands
 };

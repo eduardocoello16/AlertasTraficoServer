@@ -1,9 +1,9 @@
-const database = require('../webBot/database');
-const { Markup } = require('telegraf');
-const variables = require('../variables');
-const logs = require('../registroLogs');
 
 
+import * as database from '../webBot/database.js';
+import Markup from 'telegraf';
+import * as variables from '../variables.js';
+import * as logs from '../registroLogs.js';
 
 async function enviarSolicitud(user, bot){
 	try {
@@ -217,7 +217,7 @@ async function userInGroup(idUsuario,bot){
 
 
 }
-module.exports = {
+export {
 	userInGroup,
 	penalizarUsuario,
 	aceptarSolicitud,

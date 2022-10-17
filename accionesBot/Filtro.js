@@ -1,7 +1,9 @@
-const admin = require('./admin');
-const errores = require('../registroLogs');
-const variables = require('../variables');
-const database = require('../webBot/database');
+
+import * as admin from './admin.js';
+import * as errores from '../registroLogs.js';
+import * as variables from '../variables.js';
+import * as database from '../webBot/database.js';
+
 const errorInterno = 'Error interno del bot, por favor contacta con el desarrollador. Ver error -> /geterrorlog';
 
 function comandosFiltro(bot){
@@ -327,7 +329,7 @@ async function filtradoBlackListGroup(tweet) {
 	}
 	
 }
-module.exports = {
+export  {
 	comandosFiltro,
 	filtradoAcceso,
 	filtradoBlackListGroup

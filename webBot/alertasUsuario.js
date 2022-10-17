@@ -1,7 +1,9 @@
-const variables = require('../variables');
-const { Markup } = require('telegraf');
-const database = require('./database');
-const logs = require('../registroLogs');
+
+
+import * as variables from '../variables.js';
+import { Markup } from 'telegraf';
+import * as database from './database.js'
+import * as logs from '../registroLogs.js'; 
 var mensajes = [];
 
 async function nuevoMensaje(datos, bot){
@@ -143,7 +145,7 @@ async function aceptarAlerta(id, ctx, bot){
 		logs.botError('Error al aceptar la alerta', error);
 	}
 }
-module.exports = {
+export {
 	mensajes,
 	aceptarAlerta,
 	nuevoMensaje,

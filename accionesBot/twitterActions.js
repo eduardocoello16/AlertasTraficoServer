@@ -1,121 +1,69 @@
-const variables = require('../variables');
-const cAdmin = require('./admin');
-const fs = require('fs');
-const twitter = require('../twitter');
-const filtro = require('./Filtro');
+import * as variables from '../variables.js';
+import * as filtro from './Filtro.js';
+import { ETwitterStreamEvent, TweetStream, TwitterApi, ETwitterApiError } from 'twitter-api-v2';
+
 
 //Variables usuarios
 const grupoAdmins = variables.grupoAdmins;
 const grupoAlertas = variables.grupoAlertas;
 const canalAlertas = variables.canalAlertas;
-var enfriamiento = true;
+
 //Funciónes Obtener tweets
-function twitterCommands(bot, database){
+async function obtenerTweets(bot, database){
 	
-	bot.command('obtenertweets', async (ctx) => {
-		let datos = await database.getBotData(variables.bot_db_name);
-		if(datos.obtenerTweets){
-			//console.log('Comprobación de tweets nuevos (Comando Usuario) - ' + new Date );
-        
-        
-			if ((ctx.message.chat.id == grupoAdmins) || (cAdmin.comprobarAdmin(ctx) === true)) {
-    
-				if (enfriamiento === true) {
-					enfriamiento = false;
-					comprobarTweets(ctx,bot,database);
-               
-					//Set timeout para cambiar de estado a false de 2 minutos
-					setTimeout(() => {
-						enfriamiento = true;
-					}, 60000);
-				} else {
-    
-					ctx.reply('El bot está enfriado por favor espera unos minutos (Tiempo total de espera: 1 minutos)');
-				}
-    
-    
-    
-    
-			} else {
-				ctx.reply('No tienes permisos para ejecutar este comando');
-			}
-		}else{
-			ctx.reply('La obtención de tweets está deshabilitada');
-		}
+	const client = new TwitterApi(process.env.Twitter_token);
+	let cuentas = JSON.parse(process.env.Twitter_Accounts);
+		const stream = await client.v2.searchStream();
+	
+	await client.v2.updateStreamRules({
+		add: cuentas
 	});
-}
-//Comprobar tweets nuevos
-async function comprobarTweets(ctx,bot,database) {
-	let datos = await database.getBotData(variables.bot_db_name);
-	if(datos.obtenerTweets){
-		var cuentasTwitter = JSON.parse(process.env.Twitter_Accounts);
-		for  (let cuenta of cuentasTwitter) {
-       
-			if(ctx){
-				ctx.reply('Obteniendo ultimo tweet de la cuenta ' + cuenta.name);
-			}
-        
-			await obtenerTweets(cuenta.id, cuenta.name,bot);
-       
-       
-		}
-		if(ctx){
-			ctx.reply('Finalizado');
-		}
-	}else{
-   
-		console.log('La obtención de tweets está deshabilitada');
-     
-	}
-}
+	
+	
+	// Assign yor event handlers
+	// Emitted on Tweet
+	stream.on(ETwitterStreamEvent.Data, (data) => filtrado(data.data));
+	
 
-
-
-
-async function obtenerTweets(id, name,bot) {
-
-	var tweet = await twitter.getTwett(id);
-
+	// Start stream!
+	await stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
+		async function filtrado(tweet){
+		
 	//Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
-	if (comprobarUltimosTweets(tweet, id) === false) {
+	
 		//Filtrar Tweet
 		if (await filtro.filtradoAcceso(tweet) === true) {
 			if (await filtro.filtradoBlackListGroup(tweet) === true) {
 				try {
                     
-					enviarMensaje(tweet, name, grupoAlertas,bot);
+					enviarMensaje(tweet, grupoAlertas,bot);
 				} catch (error) {
 					console.log(error);
 				}
 			} else {
 				try {
-					enviarMensaje(tweet, name, canalAlertas,bot);
+					enviarMensaje(tweet, canalAlertas,bot);
 				} catch (error) {
 					console.log(error);
 				}
 			}
 
 		}
-		return true;
+		}
 
-	} else {
-		//Obtener hora y fecha actual 
-		/*
-        let fecha = new Date()
-        let hora = fecha.getHours() + ':' + fecha.getMinutes() + ':' + fecha.getSeconds()
-        //Guardar en .log fecha y hora del tweet
-        console.log(`Mensaje con ID:  ${tweet.id} ya envíado. Cuenta:${name}  [${hora}]`)*/
+	
 
-	}
-}
+
+	
 
 
 
-function enviarMensaje(tweet, name, destinatario,bot) {
 
+function enviarMensaje(tweet, destinatario,bot) {
+	
 	//Enviar tweet al grupo
 	try {
-		bot.telegram.sendMessage(destinatario, `${tweet.text}\nCuenta Twitter: ${name}`,
+		bot.telegram.sendMessage(destinatario, `${tweet.text}\nCuenta Twitter`,
 			//Send message without url preview
 			{
 				disable_web_page_preview: true
@@ -126,50 +74,11 @@ function enviarMensaje(tweet, name, destinatario,bot) {
 	//Mensaje sin sonido = disable_notification: true
 }
 
-function comprobarUltimosTweets(tweet, id) {
-	let salida = false;
-	//Comprobar si el archivo bot.log existe, si no crearlo
-	if (fs.existsSync('./ultimosTweets.json') === false) {
-		fs.writeFileSync('./ultimosTweets.json', '[]');
-
-	}
-	//Comprobar un registro .log si el tweet se ha enviado
-	try {
-		var json = fs.readFileSync('./ultimosTweets.json', 'utf8');
-		let ultimosTweets = JSON.parse(json);
-		let nuevoTweet = {
-			idTweet: tweet.id,
-			idCuenta: id
-		};
-		let cuentaEncontrada = ultimosTweets.findIndex(e => e.idCuenta === id);
-
-		if (cuentaEncontrada != -1) {
-			if (ultimosTweets[cuentaEncontrada].idTweet === tweet.id) {
-
-				salida = true;
-			} else {
-				ultimosTweets.splice(cuentaEncontrada, 1);
-
-				ultimosTweets.push(nuevoTweet);
-				fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets));
-
-
-
-			}
-		} else {
-			ultimosTweets.push(nuevoTweet);
-			fs.writeFileSync('ultimosTweets.json', JSON.stringify(ultimosTweets));
-		}
-
-	} catch (error) {
-		console.log(error);
-	}
-
-	return salida;
-
 }
 
-module.exports = {
-	twitterCommands,
-	comprobarTweets
-};
+
+
+
+export  {
+	obtenerTweets
+}
