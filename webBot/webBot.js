@@ -393,7 +393,8 @@ function rutas(bot, database){
 			res.send(image);
 		
 		}catch(error){
-			console.log(error);
+			console.log('Error al cargar una imagen (Para más detalle ir al .log)');
+			logs.botError('Error al cargar una imagen' + error);
 		}
 	});
 	app.post('/obtenerficherolog', async function(req,res){

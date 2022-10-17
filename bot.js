@@ -107,7 +107,7 @@ bot.action(/penalizar_usuario:(\d+)/, async ctx => {
 	try {
 		await webBotActions.penalizarUsuario(userId, ctx, bot);
 	} catch (error) {
-		console.log('sadsa');
+		console.log(error);
 	}
 	
 });

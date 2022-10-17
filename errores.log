@@ -7,3 +7,15 @@ Wed Sep 21 2022 13:16:27 GMT+0100 (GMT+02:00)
 Error en el bot: Error al cambiar el modo oculto. 
 Error: 400: Bad Request: can't remove chat owner
 Wed Sep 21 2022 13:16:28 GMT+0100 (GMT+02:00)
+
+Error en el bot: Error al cargar la obtención de tweets 
+Error: Request failed with code 429
+Mon Oct 17 2022 23:38:51 GMT+0100 (Western European Summer Time)
+
+Error en el bot: Error al cargar la obtención de tweets 
+Error: Request failed with code 429
+Mon Oct 17 2022 23:38:52 GMT+0100 (Western European Summer Time)
+
+Error en el bot: Error al cargar la obtención de tweets 
+Error: Request failed with code 429
+Mon Oct 17 2022 23:43:23 GMT+0100 (Western European Summer Time)

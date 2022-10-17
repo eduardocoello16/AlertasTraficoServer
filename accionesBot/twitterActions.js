@@ -1,5 +1,6 @@
 import * as variables from '../variables.js';
 import * as filtro from './Filtro.js';
+import * as logs from '../registroLogs.js';
 import { ETwitterStreamEvent, TweetStream, TwitterApi, ETwitterApiError } from 'twitter-api-v2';
 
 
@@ -11,7 +12,8 @@ const canalAlertas = variables.canalAlertas;
 //Funciónes Obtener tweets
 async function obtenerTweets(bot, database){
 	
-	const client = new TwitterApi(process.env.Twitter_token);
+	try {
+		const client = new TwitterApi(process.env.Twitter_token);
 	let cuentas = JSON.parse(process.env.Twitter_Accounts);
 		const stream = await client.v2.searchStream();
 	
@@ -27,6 +29,9 @@ async function obtenerTweets(bot, database){
 
 	// Start stream!
 	await stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
+	} catch (error) {
+		logs.botError('Error al cargar la obtención de tweets', error);
+	}
 		async function filtrado(tweet){
 		
 	//Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
