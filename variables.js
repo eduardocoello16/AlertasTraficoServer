@@ -11,13 +11,8 @@ const bot_db_name = process.env.BOT_Db_Name;
 
 
 
-const botToken = process.env.BOT_TOKEN_Test;
-const bot = new Telegraf(botToken, 
-	{
-		telegram: {
-			testEnv: true
-		} 
-	});
+const botToken = process.env.BOT_TOKEN;
+const bot = new Telegraf(botToken);
 var usuariosPublicaciones = false;
 export  {
 	usuariosAdmin,
