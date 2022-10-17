@@ -11,42 +11,24 @@ const canalAlertas = variables.canalAlertas;
 //Funciónes Obtener tweets
 async function obtenerTweets(bot, database){
 	
-	
-
 	const client = new TwitterApi(process.env.Twitter_token);
-	// Tell typescript it's a readonly app
-	//const client = twitterClient.readOnly;
-	// Not needed to await this!
-	//const stream = client.v2.sampleStream({ autoConnect: false });
-	
-	
-	
-	let userName = 'eduardocm160'
-	
-	
+	let cuentas = JSON.parse(process.env.Twitter_Accounts);
 		const stream = await client.v2.searchStream();
 	
 	await client.v2.updateStreamRules({
-		add: [
-		  { value: `from:${userName}`, tag: userName }
-		]});
+		add: cuentas
+	});
 	
 	
 	// Assign yor event handlers
 	// Emitted on Tweet
 	stream.on(ETwitterStreamEvent.Data, (data) => filtrado(data.data));
 	
-	
 
-	
 	// Start stream!
 	await stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
-	
-
-
-
 		async function filtrado(tweet){
-			
+		
 	//Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
 	
 		//Filtrar Tweet
