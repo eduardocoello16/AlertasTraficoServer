@@ -26,7 +26,7 @@ export  {
 	canalAlertas,
 	botToken,
 	mongoDbUri,
-	enfriamiento,
+
 	bot,
 	bot_db_name
 };
