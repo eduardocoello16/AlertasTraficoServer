@@ -1,8 +1,9 @@
 //Base de datos 
-const mongoose = require('mongoose');
-const usuarioModel = require('./models/user');
-const variables = require('../variables');
-const botinfo = require('./models/botinfo');
+import mongoose from 'mongoose';
+import usuarioModel from './models/user.js';
+import * as variables from '../variables.js';
+import botinfo from './models/botinfo.js';
+
 
 mongoose.connect(variables.mongoDbUri)
 	.then(() => console.log('Conexión base datos satisfactoria.'))
@@ -218,7 +219,7 @@ async function penalizarUsuario(userId){
 	}
 }
 
-module.exports = {
+export {
 	penalizarUsuario,
 	sumarPublicacionUser,
 	actualizarUsuario,

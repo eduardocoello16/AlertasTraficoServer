@@ -1,6 +1,5 @@
-require('dotenv').config({
-	path: './.env'
-});
+import * as dotenv from 'dotenv'
+dotenv.config()
 async function getTwett(id) {
 	const axios = require('axios').default;
 

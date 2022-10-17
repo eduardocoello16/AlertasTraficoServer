@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 
 const botinfoSchema = mongoose.Schema(
@@ -27,4 +27,4 @@ const botinfoSchema = mongoose.Schema(
 	}
 	});
 
-module.exports = mongoose.model('botinfo', botinfoSchema);
+	export default mongoose.model('botinfo', botinfoSchema);

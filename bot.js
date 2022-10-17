@@ -1,38 +1,35 @@
-require('dotenv').config({
-	path: './.env'
-});
+import * as dotenv from 'dotenv'
+dotenv.config()
+import * as filtro from './accionesBot/Filtro.js'
+import * as variables from './variables.js';
+import * as errores from './registroLogs.js';
+import * as cAdmin from './accionesBot/admin.js'; 
+import * as webBot from './webBot/webBot.js';
+import * as database from './webBot/database.js';
+import * as  moders from'./accionesBot/moders.js';
+import * as webBotActions from './accionesBot/webBotActions.js';
+import * as inlineActions from'./accionesBot/inlineActions.js';
+import * as twitterActions from './accionesBot/twitterActions.js';
+import * as alertasUsuario from './webBot/alertasUsuario.js';
 
-const filtro = require('./accionesBot/Filtro');
 
-const variables = require('./variables');
-const errores = require('./registroLogs.js');
-const cAdmin = require('./accionesBot/admin'); 
-const webBot = require('./webBot/webBot');
-const database = require('./webBot/database');
-const moders = require('./accionesBot/moders');
-const webBotActions = require('./accionesBot/webBotActions');
-const inlineActions = require('./accionesBot/inlineActions');
-const twitterActions = require('./accionesBot/twitterActions');
-const alertasUsuario = require('./webBot/alertasUsuario');
 
 const bot = variables.bot;
 
 //Express
 //Start bot
 //Detectar cuando el bot se conecta
-console.log('Iniciando bot... DEV');
+console.log('Iniciando bot...');
 bot.launch().then(() => {
 	console.log('Bot iniciado');
-	setInterval(() => {
-		
-		twitterActions.comprobarTweets(null,bot,database);
-	}, 150000);
-}).catch(err => {
-	console.log(err);
+	
+	
+
 });
+	
+twitterActions.obtenerTweets(bot,database);
 
-
-
+//twitterActions.twitterCommands(bot, database);
 
 //Abrir las rutas de express pasándole el bot.
 webBot.rutas(bot, database);
@@ -62,8 +59,8 @@ bot.start((ctx) => {
 cAdmin.adminCommands(bot,database);
 errores.commands(bot);
 moders.modersCommands(bot);
-twitterActions.twitterCommands(bot, database);
-inlineActions.inlineCommands(bot,database);
+
+//inlineActions.inlineCommands(bot,database);
 
 bot.action(/aceptar_solicitud:(\d+)/, async ctx => {
 	

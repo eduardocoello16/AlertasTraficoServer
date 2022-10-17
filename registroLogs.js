@@ -1,5 +1,6 @@
-const fs = require('fs');
-const cAdmin = require('./accionesBot/admin');
+
+import * as fs from 'fs';
+import * as cAdmin from './accionesBot/admin.js';
 
 function commands(bot){
 	bot.command('dellogs', (ctx) => {
@@ -73,7 +74,7 @@ function obtenerFichero(fichero){
 	
 }
 
-module.exports = {
+export {
 	botError,
 	crearFichero,
 	botLog,

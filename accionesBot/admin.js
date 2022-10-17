@@ -1,6 +1,5 @@
-const variables = require('../variables');
-const logs = require('../registroLogs');
-
+import * as variables from '../variables.js';
+import * as logs from '../registroLogs.js';
 function adminCommands(bot,database){
 	
 	
@@ -160,7 +159,7 @@ async function cambiarPermisos(id, permiso, bot){
 } 
 
 
-module.exports = {
+export {
 	comprobarAdmin,
 	adminCommands,
 	cambiarPermisos

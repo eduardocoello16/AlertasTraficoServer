@@ -1,5 +1,6 @@
-const variables = require('../variables');
-const logs = require('../registroLogs');
+
+import * as variables from '../variables.js';
+import * as logs from '../registroLogs.js';
 function modersCommands(bot){
 	bot.command('modooculto', (ctx) => {
 		modoOculto(ctx, bot);
@@ -80,7 +81,7 @@ async function comrpobaranonimo( bot, idUsuario){
 
 }
 
-module.exports = {
+export  {
 	modersCommands,
 	modoOculto,
 	comrpobaranonimo

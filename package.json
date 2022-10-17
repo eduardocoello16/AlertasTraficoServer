@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "bot.js",
+   "type": "module",
   "scripts": {
     "dev": "nodemon bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
