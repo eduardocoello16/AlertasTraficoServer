@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "bot.js",
-   "type": "module",
+  "type": "module",
   "scripts": {
     "dev": "nodemon bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,7 +22,8 @@
     "fs": "^0.0.1-security",
     "mongoose": "^6.5.5",
     "nodemon": "^2.0.19",
-    "telegraf": "^4.8.5"
+    "telegraf": "^4.8.5",
+    "twitter-api-v2": "^1.12.8"
   },
   "devDependencies": {
     "eslint": "^8.23.0"
