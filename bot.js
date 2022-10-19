@@ -63,7 +63,6 @@ moders.modersCommands(bot);
 //inlineActions.inlineCommands(bot,database);
 
 bot.action(/aceptar_solicitud:(\d+)/, async ctx => {
-	
 	const [, userId] = ctx.match;
 	webBotActions.aceptarSolicitud(userId, ctx,bot);
 });

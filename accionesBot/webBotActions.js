@@ -1,19 +1,20 @@
 
 
 import * as database from '../webBot/database.js';
-import Markup from 'telegraf';
+import { Markup } from 'telegraf';
 import * as variables from '../variables.js';
 import * as logs from '../registroLogs.js';
 
 async function enviarSolicitud(user, bot){
+	
 	try {
 		if(user){
 			let id = user.id.toString();
+		
 			let message = `El usuario ${user.first_name} ${user.last_name} solicita permiso para hacer publicaciones en el canal.`;
 			bot.telegram.sendMessage(variables.grupoAdmins, message, {
 				...Markup.inlineKeyboard([
 					[
-						
 						Markup.button.callback('Aceptar', `aceptar_solicitud:${id}`),
 						Markup.button.callback('Denegar', `denegar_solicitud:${id}`),
 					], 
@@ -29,6 +30,7 @@ async function enviarSolicitud(user, bot){
 		}
   
 	} catch (error) {
+		console.log(error)
 		logs.botError('Error al enviar solicitud al grupo de administradores', error);
 	}
 
