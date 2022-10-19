@@ -79,8 +79,8 @@ function rutas(bot, database){
 					let milisegundostranscurridos = Math.abs(fecha.getTime() - fechahoy.getTime());
 					let diatransc = Math.round(milisegundostranscurridos/milisegundosDia);
 					if(diatransc != 0){
-						database.actualizarFechaCreation(getUsuario);
-						webBotAction.enviarSolicitud(getUsuario, bot);
+						await database.actualizarFechaCreation(getUsuario);
+						await webBotAction.enviarSolicitud(getUsuario, bot);
 						res.status(200).send(
 							{
 								'msg': 'Tu solicitud se ha vuelto a enviar. Si no se le acepta la solicitud, recomendamos unirse al canal. '
@@ -107,7 +107,8 @@ function rutas(bot, database){
 					res.status(200).send({
 						'msg': 'Se ha enviado una solicitud a los administradores.'
 					});
-					webBotAction.enviarSolicitud(user, bot);
+				
+				await webBotAction.enviarSolicitud(user, bot);
 				}else{
 					res.status(500).send({
 						'msg': 'Error en el servidor.'
