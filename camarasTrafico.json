@@ -461,6 +461,125 @@
         "zona": "Vía Penetración de TF-2 Santa Cruz",
         "ubicacion": "TF-4"
         
+    },
+    {
+        "id": "TV-1.7",
+        "nombre": "Santa María del Mar",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-62.jpg?d=1666360387572{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.8",
+        "nombre": "Santa María del Mar",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701001-63.jpg?d=1666360468471{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.10",
+        "nombre": "Radazul (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1002.jpg?d=1666360497241{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.12",
+        "nombre": "Tabaiba (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1004.jpg?d=1666360558659{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.14",
+        "nombre": "Bco. Hondo (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1006.jpg?d=1666360610625{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.16",
+        "nombre": "Caletillas (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1008.jpg?d=1666360647635{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.18",
+        "nombre": "Pta. Larga (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1010.jpg?d=1666360660276{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.20",
+        "nombre": "Candelaria (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1012.jpg?d=1666360710093{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.22",
+        "nombre": "Pol Güimar (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1014.jpg?d=1666360736173{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.24",
+        "nombre": "Pto. Güimar (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1016.jpg?d=1666360754197{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.28",
+        "nombre": "Fasnia (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1022.jpg?d=1666360787044{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.30",
+        "nombre": "San Isidro (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1024.jpg?d=1666360810855{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.32",
+        "nombre": "Aerop. Sur (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1026.jpg?d=1666360887944{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.34",
+        "nombre": "Parque la Reina (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1028.jpg?d=1666360948496{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.36",
+        "nombre": "Guaza (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1030.jpg?d=1666360972462{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.38",
+        "nombre": "Fañabé (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1032.jpg?d=1666361009874{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
+    },
+    {
+        "id": "TV-1.40",
+        "nombre": "Adeje (M)",
+        "url": "https://cic.tenerife.es/e-Traffic3/data/camara-2701002-1034.jpg?d=1666361052177{NoCacheParam}", 
+        "zona": "Zona Sur",
+        "ubicacion": "TF-1"
     }
   
 ]
