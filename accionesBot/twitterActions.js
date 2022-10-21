@@ -24,12 +24,15 @@ async function obtenerTweets(bot, database){
 	
 	// Assign yor event handlers
 	// Emitted on Tweet
-	stream.on(ETwitterStreamEvent.Data, (data) => filtrado(data.data));
+	
 	
 
 	// Start stream!
 	await stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
+
+	stream.on(ETwitterStreamEvent.Data, (data) => filtrado(data.data));
 	} catch (error) {
+		console.log('No cargó correctamente la obtención de tweets')
 		logs.botError('Error al cargar la obtención de tweets', error);
 	}
 		async function filtrado(tweet){
