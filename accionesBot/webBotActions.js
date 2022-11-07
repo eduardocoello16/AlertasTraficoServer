@@ -1,5 +1,3 @@
-
-
 import * as database from '../webBot/database.js';
 import { Markup } from 'telegraf';
 import * as variables from '../variables.js';

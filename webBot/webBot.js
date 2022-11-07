@@ -209,7 +209,7 @@ function rutas(bot, database){
 						if(await alertasUsuario.nuevoMensaje(req.body.datosAlerta,bot)){
 							res.status(200).send(
 								{
-									'msg': 'Enviadno...'
+									'msg': 'Enviando...'
 								}
 							);
 						}else{
