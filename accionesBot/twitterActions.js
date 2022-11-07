@@ -30,13 +30,16 @@ async function obtenerTweets(bot, database){
 	// Start stream!
 	await stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
 
-	stream.on(ETwitterStreamEvent.Data, (data) => filtrado(data.data));
+	stream.on(ETwitterStreamEvent.Data, (data) => filtrado(data));
 	} catch (error) {
 		console.log('No cargó correctamente la obtención de tweets')
+		console.log(error)
 		logs.botError('Error al cargar la obtención de tweets', error);
 	}
-		async function filtrado(tweet){
-		
+		async function filtrado(data){
+			
+			let cuenta = data.matching_rules[0].tag;
+		let tweet = data.data;
 	//Comprobar si el tweet ya se ha guardado en los logs (Si ha sido enviado o descartado anteriormente)
 	
 		//Filtrar Tweet
@@ -44,13 +47,13 @@ async function obtenerTweets(bot, database){
 			if (await filtro.filtradoBlackListGroup(tweet) === true) {
 				try {
                     
-					enviarMensaje(tweet, grupoAlertas,bot);
+					enviarMensaje(tweet, grupoAlertas,bot, cuenta);
 				} catch (error) {
 					console.log(error);
 				}
 			} else {
 				try {
-					enviarMensaje(tweet, canalAlertas,bot);
+					enviarMensaje(tweet, canalAlertas,bot, cuenta);
 				} catch (error) {
 					console.log(error);
 				}
@@ -67,14 +70,20 @@ async function obtenerTweets(bot, database){
 
 
 
-function enviarMensaje(tweet, destinatario,bot) {
+async function enviarMensaje(tweet, destinatario,bot, cuenta) {
 	
 	//Enviar tweet al grupo
 	try {
-		bot.telegram.sendMessage(destinatario, `${tweet.text}\nCuenta Twitter`,
+		
+	
+			
+		
+		bot.telegram.sendMessage(destinatario, `${tweet.text}\nFuente: <a href="https://twitter.com/${cuenta}/status/${tweet.id}"> Cuenta Twitter de @${cuenta} </a>`,
 			//Send message without url preview
 			{
-				disable_web_page_preview: true
+				disable_web_page_preview: true,
+				parse_mode: 'HTML'
+			
 			});
 	} catch (error) {
 		console.log(error);

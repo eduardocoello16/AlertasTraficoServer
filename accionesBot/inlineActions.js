@@ -1,38 +1,69 @@
 /*const variables = require('../variables');
 const webBotActions = require('./webBotActions');
 */
-
+import {userInGroup} from './webBotActions.js';
+import * as variables from '../variables.js';
+import { Markup } from 'telegraf';
+import { nuevoMensaje} from '../webBot/alertasUsuario.js';
 function inlineCommands(bot,database){
 	
 
  
 	bot.on('inline_query', async (ctx) => {
-    
-		crearAlertas(ctx, database, variables);
+		let user = ctx.from;
+		let idUsuario = ctx.from.id;
+		const getUsuario = await database.obtenerUsuario(idUsuario);
+		if(getUsuario){
+			crearAlertas(ctx, database, variables);
+		}else{
 
+			if(await userInGroup(idUsuario, bot)){
+				let nuevoUsuario = await	database.crearUsuario(user);
+				nuevoUsuario.status_user = 'active';
+				await database.actualizarUsuario(nuevoUsuario);
+				crearAlertas(ctx, database, variables);
+			
+			}else{
+				ctx.answerInlineQuery([{
+					type: 'article',
+					id: 'noingroup',
+					title: 'Solicita enviar alertas',
+					input_message_content: {
+						message_text:  'NO se pudo enviar el mensaje, unete el grupo de alertas: https://t.me/alertastraficotnfchat o abre el BOT https://t.me/Alertastnf_bot y solicita permiso. '
+					},
+					description: 'No puedes enviar alertas, ya que no estás en la base de datos.'
+					
+				}],);
+			}
+		}
+
+
+		
+		
+	
 	});
 
 
 
 	bot.on('chosen_inline_result', async (ctx) => {
 
-
-		try {
-			if(ctx.update.chosen_inline_result.result_id === 'solicitar'){
 		
-				try {
-					let user = await database.crearUsuario(ctx.update.chosen_inline_result.from);
-					if(user){
-						webBotActions.enviarSolicitud(user,bot);
-					}
-				} catch (error) {
-					console.log(error);
-				}
-      
-			}
-		} catch (error) {
-			console.log(error);
+
+
+		let datos = {
+			idUsuario: ctx.update.chosen_inline_result.from.id,
+			tipoAlerta: ctx.update.chosen_inline_result.result_id,
+			alerta: ctx.update.chosen_inline_result.query
 		}
+		if(await nuevoMensaje(datos,bot)){
+			console.log('Enviado')
+			bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Tu alerta fue enviada a revisión.')
+		}else{
+			console.log('Error');
+			
+			bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Hubo un error al enviar la alerta. ¿Ya estás en proceso de enviar otra alerta?')
+		}
+		
     
 
 	});
@@ -60,41 +91,15 @@ async function crearAlertas(ctx, database, variables){
     
 	];
 
-	let solicitar_deny = [
-		//Se deniega ya que el tiempo es inválido
-		{
-			type: 'article',
-			id: 'solicitar_deny',
-			title: 'Solicitar enviar alertas',
-			input_message_content: {
-				message_text: 'Para hacer otra solicitud tendrás que esperar hasta un maximo de 24h.'
-			},
-			description: 'Parece que tendrás que esperar 24h'
-            
-		}
-    
-	];
-	let solicitar = [
-        
-		{
-			type: 'article',
-			id: 'solicitar',
-			title: 'Solicitar enviar alertas',
-			input_message_content: {
-				message_text: 'Se ha enviado  tu solicitud'
-			},
-			description: 'Para enviar alertas necesita que un admin te valide.'
-                
-		}
-        
-	];
+
+	
 	let results = [
 		{
 			type: 'article',
 			id: 'Radar',
 			title: 'Radar',
 			input_message_content: {
-				message_text: respuesta + '. \n Fue enviado al canal.' 
+				message_text: 'La alerta: ' +respuesta + '. \n se enviará al canal.' 
 			},
 			description: 'Envía una nueva alerta al canal.'
             
@@ -104,7 +109,7 @@ async function crearAlertas(ctx, database, variables){
 			id: 'Accidente',
 			title: 'Accidente',
 			input_message_content: {
-				message_text: respuesta + ' se ha envíado'
+				message_text: 'La alerta: ' + respuesta + ' se enviará al canal.'
 			},
 			description: 'Envía una nueva alerta al canal.'
             
@@ -114,7 +119,7 @@ async function crearAlertas(ctx, database, variables){
 			id: 'Retenciones',
 			title: 'Retenciones',
 			input_message_content: {
-				message_text:   `${respuesta}\n  Este mensaje fue enviado al canal.`
+				message_text:   `La alerta: ${respuesta}\n se enviará al canal.`
 			},
 			description: 'Envía una nueva alerta al canal.'
 		},
@@ -123,51 +128,20 @@ async function crearAlertas(ctx, database, variables){
 			id: 'Obra',
 			title: 'Obra',
 			input_message_content: {
-				message_text:   `${respuesta}\n  Este mensaje fue enviado al canal.`
+				message_text:   `La alerta: ${respuesta}\n  se enviará al canal.`
 			},
-			description: 'Envía una nueva alerta al canal.',
-			reply_markup:{
-				keyboards: [
-					[
-						{
-							text: 'Enviar', callback_data: 'enviar'
-						}
-					]
-				]
-			}
+			description: 'Envía una nueva alerta al canal.'
 		}
 	];
+	
 	try {
-		if(usuario){
-			if(usuario.status_user === 'pending'){
-				let fecha = new Date(usuario.Date_request);
-				let fechahoy = new Date();
-				let milisegundosDia  = 24*60*60*1000;
-				let milisegundostranscurridos = Math.abs(fecha.getTime() - fechahoy.getTime());
-				let diatransc = Math.round(milisegundostranscurridos/milisegundosDia);
-				if(diatransc === 0){
-         
-					ctx.answerInlineQuery(solicitar_deny);
-				}else{
-        
-					ctx.answerInlineQuery(solicitar);
-					database.actualizarFechaCreation(usuario);
-				}
-			}else{
-				if(usuario.status_user === 'active'){
-					let servicioactivo = await database.getBotData(variables.bot_db_name);
+		let servicioactivo = await database.getBotData(variables.bot_db_name);
 					if(servicioactivo.usuariosPublicaciones){
 
 						ctx.answerInlineQuery(results);
 					}else{
 						ctx.answerInlineQuery(desactivado);
 					}
-           
-				}
-			}
-		}else{
-			ctx.answerInlineQuery(solicitar);
-		}
   
 	
 	} catch (error) {

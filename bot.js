@@ -60,7 +60,7 @@ cAdmin.adminCommands(bot,database);
 errores.commands(bot);
 moders.modersCommands(bot);
 
-//inlineActions.inlineCommands(bot,database);
+inlineActions.inlineCommands(bot,database);
 
 bot.action(/aceptar_solicitud:(\d+)/, async ctx => {
 	const [, userId] = ctx.match;

@@ -7,6 +7,10 @@ import * as logs from '../registroLogs.js';
 var mensajes = [];
 
 async function nuevoMensaje(datos, bot){
+	const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
+	if(found === -1){
+
+	
 	mensajes.push(datos);
 	
 	try {
@@ -47,6 +51,10 @@ async function nuevoMensaje(datos, bot){
 		const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
 		mensajes.splice(found, 1);
 	}
+}else{
+	return false;
+
+}
 
 }
 
@@ -57,7 +65,8 @@ async function enviarMensaje(datos,bot,mensaje,user){
 		if(found != -1){
 			database.sumarPublicacionUser(user.id);
 		
-			await bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + '\n Fuente: Usuario mediante @Alertastnf_bot');
+			await bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + "\n Fuente: Usuario mediante <a href='https://t.me/Alertastnf_bot/'>BOT</a> ", {parse_mode: 'HTML'});
+			
 			await bot.telegram.editMessageText( mensaje.chat.id, mensaje.message_id, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${datos.alerta}` );
 			mensajes.splice(found, 1);
 			try {
@@ -120,7 +129,8 @@ async function aceptarAlerta(id, ctx, bot){
 		if(found != -1){
 			let user = await database.obtenerUsuario(id);
 			database.sumarPublicacionUser(id);
-			await bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + '\n Fuente: Usuario mediante @Alertastnf_bot');
+			await bot.telegram.sendMessage(variables.canalAlertas, mensajes[found].alerta + "\n Fuente: Usuario mediante <a href='https://t.me/Alertastnf_bot/'>BOT</a> ", {parse_mode: 'HTML'});
+
 			
 			await ctx.editMessageText(
 				`Se ha aceptado el mensaje de  ${user.first_name}:  \n${mensajes[found].alerta }`,{
@@ -143,6 +153,7 @@ async function aceptarAlerta(id, ctx, bot){
 		}
 	} catch (error) {
 		logs.botError('Error al aceptar la alerta', error);
+		console.log(error)
 	}
 }
 export {
