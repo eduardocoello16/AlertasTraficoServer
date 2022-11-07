@@ -18,10 +18,14 @@ function inlineCommands(bot,database){
 		}else{
 
 			if(await userInGroup(idUsuario, bot)){
-				let nuevoUsuario = await	database.crearUsuario(user);
+				try {
+					let nuevoUsuario = await	database.crearUsuario(user);
 				nuevoUsuario.status_user = 'active';
 				await database.actualizarUsuario(nuevoUsuario);
 				crearAlertas(ctx, database, variables);
+				} catch (error) {
+					console.log(error)
+				}
 			
 			}else{
 				ctx.answerInlineQuery([{
@@ -57,11 +61,19 @@ function inlineCommands(bot,database){
 		}
 		if(await nuevoMensaje(datos,bot)){
 			console.log('Enviado')
-			bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Tu alerta fue enviada a revisión.')
+			try {
+				bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Tu alerta fue enviada a revisión.')
+			} catch (error) {
+				console.log(error)
+			}
 		}else{
-			console.log('Error');
 			
-			bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Hubo un error al enviar la alerta. ¿Ya estás en proceso de enviar otra alerta?')
+			try {
+				bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Hubo un error al enviar la alerta. ¿Ya estás en proceso de enviar otra alerta?')
+			} catch (error) {
+				console.log(error);
+			}
+			
 		}
 		
     
