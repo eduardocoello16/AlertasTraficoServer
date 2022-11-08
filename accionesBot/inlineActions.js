@@ -73,14 +73,14 @@ return salida
 		if(await nuevoMensaje(datos,bot)){
 			console.log('Enviado')
 			try {
-				bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Tu alerta fue enviada a revisión.')
+				await bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Tu alerta fue enviada a revisión.')
 			} catch (error) {
 				console.log(error)
 			}
 		}else{
 			
 			try {
-				bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Hubo un error al enviar la alerta. ¿Ya estás en proceso de enviar otra alerta?')
+				await bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Hubo un error al enviar la alerta. ¿Ya estás en proceso de enviar otra alerta?')
 			} catch (error) {
 				console.log(error);
 			}
