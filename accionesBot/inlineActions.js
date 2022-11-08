@@ -10,9 +10,13 @@ function inlineCommands(bot,database){
 
  
 	bot.on('inline_query', async (ctx) => {
+	
 		let user = ctx.from;
 		let idUsuario = ctx.from.id;
 		const getUsuario = await database.obtenerUsuario(idUsuario);
+		if(ctx.update.inline_query.chat_type === 'supergroup'){
+
+	
 		if(getUsuario){
 			crearAlertas(ctx, database, variables);
 		}else{
@@ -40,7 +44,7 @@ function inlineCommands(bot,database){
 				}],);
 			}
 		}
-
+	}
 
 		
 		
@@ -53,7 +57,7 @@ function inlineCommands(bot,database){
 
 		
 
-
+	
 		let datos = {
 			idUsuario: ctx.update.chosen_inline_result.from.id,
 			tipoAlerta: ctx.update.chosen_inline_result.result_id,
