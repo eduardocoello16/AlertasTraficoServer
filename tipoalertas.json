@@ -1,0 +1,26 @@
+[
+    {
+        "tipoalerta": "retenciones",
+        "icono": "🟣"
+    },
+    {
+        "tipoalerta": "accidente",
+        "icono": "🔴"
+    },
+    {
+        "tipoalerta": "obras",
+        "icono": "🟡"
+    },
+    {
+        "tipoalerta": "viacortada",
+        "icono": "🟠"
+    },
+    {
+        "tipoalerta": "radar",
+        "icono": "🔵"
+    },
+    {
+        "tipoalerta": "otro",
+        "icono": "🟤"
+    }
+]
