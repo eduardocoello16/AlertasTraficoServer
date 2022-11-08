@@ -7,12 +7,22 @@ import { Markup } from 'telegraf';
 import { nuevoMensaje} from '../webBot/alertasUsuario.js';
 function inlineCommands(bot,database){
 	
-
+function control(ctx){
+	let salida = false;
+salida = ((ctx.update.inline_query.chat_type === 'supergroup') ? true : false);
+salida = ((ctx.update.inline_query.query.length >  5) ? true : false);
+salida = ((ctx.update.inline_query.query.includes(' ')  ) ? true : false);
+return salida
+}
  
 	bot.on('inline_query', async (ctx) => {
+	
 		let user = ctx.from;
 		let idUsuario = ctx.from.id;
 		const getUsuario = await database.obtenerUsuario(idUsuario);
+		if(control(ctx) === true){
+
+	
 		if(getUsuario){
 			crearAlertas(ctx, database, variables);
 		}else{
@@ -40,7 +50,7 @@ function inlineCommands(bot,database){
 				}],);
 			}
 		}
-
+	}
 
 		
 		
@@ -53,12 +63,13 @@ function inlineCommands(bot,database){
 
 		
 
-
+	
 		let datos = {
 			idUsuario: ctx.update.chosen_inline_result.from.id,
 			tipoAlerta: ctx.update.chosen_inline_result.result_id,
 			alerta: ctx.update.chosen_inline_result.query
 		}
+		
 		if(await nuevoMensaje(datos,bot)){
 			console.log('Enviado')
 			try {

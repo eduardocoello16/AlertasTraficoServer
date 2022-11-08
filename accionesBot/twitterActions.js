@@ -78,7 +78,7 @@ async function enviarMensaje(tweet, destinatario,bot, cuenta) {
 	
 			
 		
-		bot.telegram.sendMessage(destinatario, `${tweet.text}\nFuente: <a href="https://twitter.com/${cuenta}/status/${tweet.id}"> Cuenta Twitter de @${cuenta} </a>`,
+		bot.telegram.sendMessage(destinatario, `${tweet.text}\nFuente: <a href="https://twitter.com/${cuenta}/status/${tweet.id}"> \n\n<em>Cuenta Twitter de ${cuenta}</em> </a>`,
 			//Send message without url preview
 			{
 				disable_web_page_preview: true,
