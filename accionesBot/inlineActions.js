@@ -119,7 +119,7 @@ async function crearAlertas(ctx, database, variables){
 	let results = [
 		{
 			type: 'article',
-			id: 'Radar',
+			id: 'radar',
 			title: 'Radar',
 			input_message_content: {
 				message_text: 'La alerta: ' +respuesta + '. \n se enviará al canal.' 
@@ -129,7 +129,7 @@ async function crearAlertas(ctx, database, variables){
 		},
 		{
 			type: 'article',
-			id: 'Accidente',
+			id: 'accidente',
 			title: 'Accidente',
 			input_message_content: {
 				message_text: 'La alerta: ' + respuesta + ' se enviará al canal.'
@@ -139,7 +139,7 @@ async function crearAlertas(ctx, database, variables){
 		},
 		{
 			type: 'article',
-			id: 'Retenciones',
+			id: 'retenciones',
 			title: 'Retenciones',
 			input_message_content: {
 				message_text:   `La alerta: ${respuesta}\n se enviará al canal.`
@@ -148,8 +148,26 @@ async function crearAlertas(ctx, database, variables){
 		},
 		{
 			type: 'article',
-			id: 'Obra',
+			id: 'obras',
 			title: 'Obra',
+			input_message_content: {
+				message_text:   `La alerta: ${respuesta}\n  se enviará al canal.`
+			},
+			description: 'Envía una nueva alerta al canal.'
+		},
+		{
+			type: 'article',
+			id: 'otro',
+			title: 'Otro',
+			input_message_content: {
+				message_text:   `La alerta: ${respuesta}\n  se enviará al canal.`
+			},
+			description: 'Envía una nueva alerta al canal.'
+		},
+		{
+			type: 'article',
+			id: 'viacortada',
+			title: 'Vía Cortada',
 			input_message_content: {
 				message_text:   `La alerta: ${respuesta}\n  se enviará al canal.`
 			},

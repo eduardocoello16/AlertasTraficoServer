@@ -4,12 +4,21 @@ import * as variables from '../variables.js';
 import { Markup } from 'telegraf';
 import * as database from './database.js'
 import * as logs from '../registroLogs.js'; 
+import * as fs from 'fs';
 var mensajes = [];
 
 async function nuevoMensaje(datos, bot){
 	const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
 	if(found === -1){
-
+		//console.log(datos);
+		
+		let tipoalertas = fs.readFileSync('./tipoalertas.json', 'utf-8');
+		
+		tipoalertas = JSON.parse(tipoalertas);
+		let inde = tipoalertas.findIndex((alerta) => alerta.tipoalerta === datos.tipoAlerta)
+		if(inde != -1){
+			datos.alerta = tipoalertas[inde].icono+ ' ' + datos.alerta;
+		}
 	
 	mensajes.push(datos);
 	
@@ -73,7 +82,7 @@ async function enviarMensaje(datos,bot,mensaje,user){
 				await bot.telegram.sendMessage(datos.idUsuario, '✔ Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤');
 			} catch (e) {
 				console.log(e);
-				logs.botError('Error al enviar el mensaje al usuario.Mensaje: Tu alerta se ha publicado en el canal. Muchas Gracias 🙌❤.', e);
+				logs.botError('Error al enviar el mensaje al usuario', e);
 			}
 		
 			
