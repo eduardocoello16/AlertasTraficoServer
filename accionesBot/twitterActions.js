@@ -33,7 +33,7 @@ async function obtenerTweets(bot, database){
 	stream.on(ETwitterStreamEvent.Data, (data) => filtrado(data));
 	} catch (error) {
 		console.log('No cargó correctamente la obtención de tweets')
-		console.log(error)
+		
 		logs.botError('Error al cargar la obtención de tweets', error);
 	}
 		async function filtrado(data){
