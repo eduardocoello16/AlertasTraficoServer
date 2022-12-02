@@ -1,5 +1,3 @@
-
-
 import * as variables from '../variables.js';
 import { Markup } from 'telegraf';
 import * as database from './database.js'
@@ -9,6 +7,7 @@ var mensajes = [];
 
 async function nuevoMensaje(datos, bot){
 	const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
+	
 	if(found === -1){
 		//console.log(datos);
 		
@@ -19,11 +18,10 @@ async function nuevoMensaje(datos, bot){
 		if(inde != -1){
 			datos.alerta = tipoalertas[inde].icono+ ' ' + datos.alerta;
 		}
-	
+		let idAlerta = await database.nuevaAlerta(datos);
 	mensajes.push(datos);
-	
 	try {
-		let user = await database.obtenerUsuario(datos.idUsuario);
+		//let user = await database.obtenerUsuario(datos.idUsuario);
 		if(user && user.status_user === 'active'){
 		
 			
@@ -44,7 +42,7 @@ async function nuevoMensaje(datos, bot){
 				)
 			});
 		
-
+	
 			
 			setTimeout(enviarMensaje, 300000, datos, bot,envioMensaje, user);
 			

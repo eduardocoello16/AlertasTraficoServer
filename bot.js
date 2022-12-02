@@ -94,7 +94,7 @@ bot.action(/cancelar_alerta:(\d+)/, ctx => {
 	alertasUsuario.cancelarAlerta(userId, ctx, bot);
 });
 bot.action(/aceptar_alerta:(\d+)/, ctx => {
-
+	
 	const [, userId] = ctx.match;
 	alertasUsuario.aceptarAlerta(userId, ctx, bot);
 });
