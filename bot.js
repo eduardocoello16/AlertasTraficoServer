@@ -96,7 +96,7 @@ bot.action(/cancelar_alerta:(\d+)/, ctx => {
 bot.action(/aceptar_alerta:(\d+)/, ctx => {
 	
 	const [, userId] = ctx.match;
-	alertasUsuario.aceptarAlerta(userId, ctx, bot);
+	webBotActions.aceptarAlerta(userId, ctx, bot);
 });
 
 

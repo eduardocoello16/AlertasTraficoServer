@@ -6,7 +6,7 @@ const alertasSchema = mongoose.Schema(
             type: String, 
             require: true
         },
-        alert: {
+        alerta: {
             type: String, 
             require: true
         },

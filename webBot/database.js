@@ -225,16 +225,18 @@ async function penalizarUsuario(userId){
 
 
 async function nuevaAlerta(datos){
-	let alerta;
+
 	
 	try {
-		 alerta = await alertaModel(datos);
-	alerta.save();
+		let alerta = await alertaModel(datos);
+	
+	return await alerta.save();
 	} catch (error) {
 		console.log(error)
+		return null;
 	}
 
-return (alerta);
+
 
 
 }

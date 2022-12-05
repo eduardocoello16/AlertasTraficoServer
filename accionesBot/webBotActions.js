@@ -217,7 +217,103 @@ async function userInGroup(idUsuario,bot){
 
 
 }
+
+//Funciones crear alertas
+async function nuevaAlerta(datos, bot){
+try {
+	let alerta = await database.nuevaAlerta(datos);
+	let user = await database.obtenerUsuario(datos.idUsuario);
+	if(user && user.status_user === 'active'){
+	
+		
+	
+		let mensaje = `El usuario ${user.first_name} quiere publicar la alerta:\n${datos.alerta}`;
+		let envioMensaje =	await bot.telegram.sendMessage(variables.grupoAdmins, mensaje, {
+			...Markup.inlineKeyboard([
+			
+				[
+					Markup.button.callback('Aceptar Alerta', `aceptar_alerta:${alerta._id}`),
+					Markup.button.callback('Cancelar envio', `cancelar_alerta:${alerta._id}`)
+				],
+				[
+					Markup.button.callback('Banear', `ban_solicitud:${user.id}`),
+					Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+				]
+			]
+			)
+		});
+	
+
+		
+		//setTimeout(enviarMensaje, 300000, alerta, bot,envioMensaje, user);
+		
+		return true;
+
+	
+	}else{
+		return false;
+	}	
+} catch (error) {
+	console.log(error);
+	logs.botError('Error  al crear una alerta por un usuario', error);
+}
+
+
+}
+
+async function aceptarAlerta(id, ctx, bot){
+	try {
+	
+
+		const found = database.buscarAlerta(alerta);
+		if(found != null && found.estado_alerta === 'pending'){
+			
+			let user = await database.obtenerUsuario(id);
+			database.sumarPublicacionUser(id);
+
+	const iconos = {
+		'retenciones' : '🟣',
+		'accidente': '🔴',
+		'obras': '🟡',
+		'viacortada': '🟠',
+		'radar': '🔵',
+		'otro': '🟤'
+	}
+	const tipoAlerta = iconos[found.tipoAlerta] || '🟤'
+	found.alerta = `${tipoAlerta} ${found.alerta}`;
+			await bot.telegram.sendMessage(variables.canalAlertas, found.alerta + "\n\n<em>Enviado mediante <a href='https://t.me/Alertastnf_bot/'>BOT</a></em>", {parse_mode: 'HTML', disable_web_page_preview: true});
+
+			
+			await ctx.editMessageText(
+				`Se ha aceptado el mensaje de  ${user.first_name}:  \n${mensajes[found].alerta }`,{
+					...Markup.inlineKeyboard([
+				
+						[
+							Markup.button.callback('Penalizar ', `penalizar_usuario:${id}`)
+						],
+						[
+						
+							Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+						]
+					]
+					)
+				}
+			);
+		
+			await bot.telegram.sendMessage(id, '✔ Tu alerta se ha sido aceptada. Muchas Gracias 🙌❤');
+			
+		}
+	} catch (error) {
+		logs.botError('Error al aceptar la alerta', error);
+		console.log(error)
+	}
+}
+
+
+
 export {
+	nuevaAlerta,
+	aceptarAlerta,
 	userInGroup,
 	penalizarUsuario,
 	aceptarSolicitud,

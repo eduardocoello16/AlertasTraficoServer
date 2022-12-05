@@ -19,7 +19,7 @@ async function nuevoMensaje(datos, bot){
 		}
 		let idAlerta = await database.nuevaAlerta(datos);
 		console.log(' Alerta creada con id ' + idAlerta)
-	/*
+	
 	try {
 		//let user = await database.obtenerUsuario(datos.idUsuario);
 		if(user && user.status_user === 'active'){
@@ -59,7 +59,6 @@ async function nuevoMensaje(datos, bot){
 		mensajes.splice(found, 1);
 	}
 
-*/
 }
 
 async function enviarMensaje(datos,bot,mensaje,user){
