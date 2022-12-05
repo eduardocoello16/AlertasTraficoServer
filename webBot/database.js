@@ -1,6 +1,7 @@
 //Base de datos 
 import mongoose from 'mongoose';
 import usuarioModel from './models/user.js';
+import alertaModel from './models/alertas.js'
 import * as variables from '../variables.js';
 import botinfo from './models/botinfo.js';
 
@@ -219,7 +220,27 @@ async function penalizarUsuario(userId){
 	}
 }
 
+
+//Alertas
+
+
+async function nuevaAlerta(datos){
+	let alerta;
+	
+	try {
+		 alerta = await alertaModel(datos);
+	alerta.save();
+	} catch (error) {
+		console.log(error)
+	}
+
+return (alerta);
+
+
+}
+
 export {
+	nuevaAlerta,
 	penalizarUsuario,
 	sumarPublicacionUser,
 	actualizarUsuario,
