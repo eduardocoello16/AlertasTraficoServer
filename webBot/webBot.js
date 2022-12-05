@@ -197,16 +197,10 @@ function rutas(bot, database){
 		let hash = req.body.hash;
 		let WebAppData = req.body.WebAppData;
 		let state = await database.getBotData(variables.bot_db_name);
-		const found = alertasUsuario.mensajes.findIndex(element => element.idUsuario == req.body.datosAlerta.idUsuario);
 		if(comprobarHash(WebAppData, hash)){
 			try {
-				
-			
 				if(state.usuariosPublicaciones){
-				
-					if(found === -1){
-					
-						if(await alertasUsuario.nuevoMensaje(req.body.datosAlerta,bot)){
+					if(await webBotAction.nuevaAlerta(req.body.datosAlerta,bot)){
 							res.status(200).send(
 								{
 									'msg': 'Enviando...'
@@ -220,14 +214,7 @@ function rutas(bot, database){
 							);
 						}
 					
-					}else{
-						console.log('mensaje enviado ya...');
-						res.status(200).send(
-							{
-								'msg': 'Ya tienes un  mensaje pendiente.'
-							}
-						);
-					}
+				
 
 				}else{
 					res.status(400).send({
@@ -253,8 +240,9 @@ function rutas(bot, database){
 		if(comprobarHash(WebAppData, hash)){
 			if(state.usuariosPublicaciones){
 				
-				const found = alertasUsuario.mensajes.findIndex(element => element.idUsuario == req.body.idUsuario);
-				if(found != -1){
+				
+				const found = await webBotAction.comprobaralertaactiva(req.body.idUsuario)
+				if(found === true){
 					res.status(200).send(true);
 				}else{
 					res.status(200).send(false);
