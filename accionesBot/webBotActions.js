@@ -222,18 +222,19 @@ async function userInGroup(idUsuario,bot){
 async function nuevaAlerta(datos, bot){
 try {
 	let alerta = await database.nuevaAlerta(datos);
-	let user = await database.obtenerUsuario(datos.idUsuario);
+	let user = await database.obtenerUsuario(datos.id_usuario);
 	if(user && user.status_user === 'active'){
 	
 		
 	
-		let mensaje = `El usuario ${user.first_name} quiere publicar la alerta:\n${datos.alerta}`;
+		let mensaje = `Un usuario quiere publicar una alerta:\nNombre: ${user.first_name} \nId del Usuario: ${user.id}\nAlerta: ${datos.alerta}`;
+		console.log(alerta._id.toString())
 		let envioMensaje =	await bot.telegram.sendMessage(variables.grupoAdmins, mensaje, {
 			...Markup.inlineKeyboard([
 			
 				[
-					Markup.button.callback('Aceptar Alerta', `aceptar_alerta:${alerta._id}`),
-					Markup.button.callback('Cancelar envio', `cancelar_alerta:${alerta._id}`)
+					Markup.button.callback('Aceptar Alerta', `aceptar_alerta:${alerta._id.toString()}`),
+					Markup.button.callback('Cancelar envio', `cancelar_alerta:${alerta._id.toString()}`)
 				],
 				[
 					Markup.button.callback('Banear', `ban_solicitud:${user.id}`),
@@ -245,12 +246,13 @@ try {
 	
 
 		
-		//setTimeout(enviarMensaje, 300000, alerta, bot,envioMensaje, user);
+		setTimeout(aceptarAlerta, 300, alerta._id.toString(),envioMensaje, bot);
 		
 		return true;
 
 	
 	}else{
+		console.log('addsa')
 		return false;
 	}	
 } catch (error) {
@@ -261,15 +263,19 @@ try {
 
 }
 
-async function aceptarAlerta(id, ctx, bot){
+async function aceptarAlerta(idAlerta, mensaje, bot){
+	
 	try {
 	
 
-		const found = database.buscarAlerta(alerta);
-		if(found != null && found.estado_alerta === 'pending'){
-			
-			let user = await database.obtenerUsuario(id);
-			database.sumarPublicacionUser(id);
+		const found =await  database.buscarAlerta(idAlerta);
+		console.log(found)
+		if(found  && found.estado_alerta === 'pending'){
+			let user = await database.obtenerUsuario(found.id_usuario);
+			/*
+		
+			database.sumarPublicacionUser(found.id_usuarios);
+			*/
 
 	const iconos = {
 		'retenciones' : '🟣',
@@ -279,34 +285,21 @@ async function aceptarAlerta(id, ctx, bot){
 		'radar': '🔵',
 		'otro': '🟤'
 	}
-	const tipoAlerta = iconos[found.tipoAlerta] || '🟤'
+	const tipoAlerta = iconos[found.tipo_alerta] || '🟤'
 	found.alerta = `${tipoAlerta} ${found.alerta}`;
-			await bot.telegram.sendMessage(variables.canalAlertas, found.alerta + "\n\n<em>Enviado mediante <a href='https://t.me/Alertastnf_bot/'>BOT</a></em>", {parse_mode: 'HTML', disable_web_page_preview: true});
+			await bot.telegram.sendMessage(variables.canalAlertas, found.alerta + "\n\n<em><a href='https://t.me/Alertastnf_bot/'>Enviado mediante BOT</a></em>", {parse_mode: 'HTML', disable_web_page_preview: true});
 
 			
-			await ctx.editMessageText(
-				`Se ha aceptado el mensaje de  ${user.first_name}:  \n${mensajes[found].alerta }`,{
-					...Markup.inlineKeyboard([
-				
-						[
-							Markup.button.callback('Penalizar ', `penalizar_usuario:${id}`)
-						],
-						[
-						
-							Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
-						]
-					]
-					)
-				}
-			);
+			await bot.telegram.editMessageText( mensaje.chat.id, mensaje.message_id, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${found.alerta}` );
 		
-			await bot.telegram.sendMessage(id, '✔ Tu alerta se ha sido aceptada. Muchas Gracias 🙌❤');
+			await bot.telegram.sendMessage(user.id, '✔ Tu alerta se ha sido aceptada. Muchas Gracias 🙌❤');
 			
 		}
 	} catch (error) {
 		logs.botError('Error al aceptar la alerta', error);
 		console.log(error)
 	}
+	
 }
 
 

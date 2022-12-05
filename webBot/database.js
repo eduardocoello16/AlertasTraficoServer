@@ -235,6 +235,14 @@ async function nuevaAlerta(datos){
 		console.log(error)
 		return null;
 	}
+}
+async function buscarAlerta(id){
+	try {
+	return await alertaModel.findById(id)
+	} catch (error) {
+		console.log(error)
+		return null;
+	}
 
 
 
@@ -243,6 +251,7 @@ async function nuevaAlerta(datos){
 
 export {
 	nuevaAlerta,
+	buscarAlerta,
 	penalizarUsuario,
 	sumarPublicacionUser,
 	actualizarUsuario,
