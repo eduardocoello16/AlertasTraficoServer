@@ -73,7 +73,7 @@ return salida
 		if(await webBotAction.nuevaAlerta(datos,bot)){
 			console.log('Enviado')
 			try {
-				await bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Tu alerta fue enviada a revisión.')
+				await bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Tu alerta fue enviada a revisión, si en 5m no la aceptan se enviará automaticamente.')
 			} catch (error) {
 				console.log(error)
 			}

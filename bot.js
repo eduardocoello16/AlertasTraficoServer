@@ -90,8 +90,8 @@ bot.action(/pardon_solicitud:(\d+)/, ctx => {
 
 bot.action(/cancelar_alerta:(\w+)/, ctx => {
 
-	const [, userId] = ctx.match;
-	alertasUsuario.cancelarAlerta(userId, ctx, bot);
+	const [, idAlerta] = ctx.match;
+	webBotActions.cancelarAlerta(idAlerta, ctx, bot);
 });
 bot.action(/aceptar_alerta:(\w+)/, ctx => {
 	

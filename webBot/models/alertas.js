@@ -10,6 +10,9 @@ const alertasSchema = mongoose.Schema(
             type: String, 
             require: true
         },
+        id_mensaje:{
+            type: String
+        },
         id_usuario: {
             type: String,
             require: true,
@@ -26,6 +29,12 @@ const alertasSchema = mongoose.Schema(
             type: String
         },
         longitud: {
+            type: String
+        },
+        id_mensaje_adminchat:{
+            type: String
+        },
+        id_adminchat:{
             type: String
         },
         

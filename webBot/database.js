@@ -243,14 +243,34 @@ async function buscarAlerta(id){
 		console.log(error)
 		return null;
 	}
+}
+async function editAlerta(id, datos){
+	try {
+		const modificar = await alertaModel.findByIdAndUpdate(id, datos);
+		
+		return await modificar.save();
+	} catch (error) {
+		console.log(error)
+		return null;
+	}
+}
 
-
-
-
+async function obtenerAlertasActivas(idUsuario){
+	const filter = {
+		id_usuario: idUsuario
+	};
+	try {
+		let listaAlertasActivas = await alertaModel.find(filter);
+		return listaAlertasActivas;
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 export {
 	nuevaAlerta,
+	obtenerAlertasActivas,
+	editAlerta,
 	buscarAlerta,
 	penalizarUsuario,
 	sumarPublicacionUser,

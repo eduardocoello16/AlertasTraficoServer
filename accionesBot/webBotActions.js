@@ -220,6 +220,11 @@ async function userInGroup(idUsuario,bot){
 
 //Funciones crear alertas
 async function nuevaAlerta(datos, bot){
+
+	//Lo primero comprobar que el usuario no tenga una alerta activa
+if(await comprobaralertaactiva(datos.id_usuario) === false){
+
+
 try {
 	let alerta = await database.nuevaAlerta(datos);
 	let user = await database.obtenerUsuario(datos.id_usuario);
@@ -244,15 +249,19 @@ try {
 			)
 		});
 	
-
+		let datosadminchat = {
+			id_adminchat: envioMensaje.chat.id,
+			id_mensaje_adminchat: envioMensaje.message_id
+		}
+		await database.editAlerta(alerta._id.toString(), datosadminchat);
 		
-		setTimeout(aceptarAlerta, 300, alerta._id.toString(),envioMensaje, bot);
+		setTimeout(aceptarAlerta, 300000, alerta._id.toString(), bot);
 		
 		return true;
 
 	
 	}else{
-		console.log('addsa')
+		
 		return false;
 	}	
 } catch (error) {
@@ -260,8 +269,24 @@ try {
 	logs.botError('Error  al crear una alerta por un usuario', error);
 }
 
-
+}else{
+	return false;
 }
+}
+
+async function comprobaralertaactiva(idUsuario){
+//Comprueba si el usuario tiene una alerta en estado pending.
+	let alertasactivas = await database.obtenerAlertasActivas(idUsuario)
+	let found = alertasactivas.findIndex((alerta => alerta.estado_alerta === 'pending'))
+
+	if(found === -1){
+		return false
+	
+	}else{
+		return true
+		
+	}
+}	
 
 async function aceptarAlerta(idAlerta, mensaje, bot){
 	
@@ -269,13 +294,11 @@ async function aceptarAlerta(idAlerta, mensaje, bot){
 	
 
 		const found =await  database.buscarAlerta(idAlerta);
-		console.log(found)
 		if(found  && found.estado_alerta === 'pending'){
+			await database.editAlerta(found._id.toString(), {estado_alerta: 'activa'})
 			let user = await database.obtenerUsuario(found.id_usuario);
-			/*
-		
-			database.sumarPublicacionUser(found.id_usuarios);
-			*/
+			database.sumarPublicacionUser(found.id_usuario);
+			
 
 	const iconos = {
 		'retenciones' : '🟣',
@@ -288,10 +311,7 @@ async function aceptarAlerta(idAlerta, mensaje, bot){
 	const tipoAlerta = iconos[found.tipo_alerta] || '🟤'
 	found.alerta = `${tipoAlerta} ${found.alerta}`;
 			await bot.telegram.sendMessage(variables.canalAlertas, found.alerta + "\n\n<em><a href='https://t.me/Alertastnf_bot/'>Enviado mediante BOT</a></em>", {parse_mode: 'HTML', disable_web_page_preview: true});
-
-			
-			await bot.telegram.editMessageText( mensaje.chat.id, mensaje.message_id, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${found.alerta}` );
-		
+			await bot.telegram.editMessageText( found.id_adminchat, found.id_mensaje_adminchat, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${found.alerta}` );
 			await bot.telegram.sendMessage(user.id, '✔ Tu alerta se ha sido aceptada. Muchas Gracias 🙌❤');
 			
 		}
@@ -303,9 +323,25 @@ async function aceptarAlerta(idAlerta, mensaje, bot){
 }
 
 
+async function cancelarAlerta(idAlerta, ctx, bot){
+	try {
+
+		const found =await  database.buscarAlerta(idAlerta);
+		let user = await database.obtenerUsuario(found.id_usuario);
+		await database.editAlerta(found._id.toString(), {estado_alerta: 'denegada'})
+		await bot.telegram.editMessageText( found.id_adminchat, found.id_mensaje_adminchat, null, `Un mensaje ha sido eliminado.\nUsuario: ${user.first_name}\nMensaje: ${found.alerta}` );
+		await bot.telegram.sendMessage(user.id, '🚫 Los administradores han decidido cancelar el envío de tu alerta.');
+	} catch (error) {
+		logs.botError('Error al cancelar la alerta', error);
+		console.log(error)
+	}
+}
+
 
 export {
 	nuevaAlerta,
+	cancelarAlerta,
+	comprobaralertaactiva,
 	aceptarAlerta,
 	userInGroup,
 	penalizarUsuario,

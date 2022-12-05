@@ -240,8 +240,9 @@ function rutas(bot, database){
 		if(comprobarHash(WebAppData, hash)){
 			if(state.usuariosPublicaciones){
 				
-				const found = alertasUsuario.mensajes.findIndex(element => element.idUsuario == req.body.idUsuario);
-				if(found != -1){
+				
+				const found = await webBotAction.comprobaralertaactiva(req.body.idUsuario)
+				if(found === true){
 					res.status(200).send(true);
 				}else{
 					res.status(200).send(false);
