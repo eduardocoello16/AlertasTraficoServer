@@ -6,10 +6,9 @@ import * as fs from 'fs';
 var mensajes = [];
 
 async function nuevoMensaje(datos, bot){
-	const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
 	
-	if(found === -1){
-		//console.log(datos);
+	
+	
 		
 		let tipoalertas = fs.readFileSync('./tipoalertas.json', 'utf-8');
 		
@@ -19,7 +18,8 @@ async function nuevoMensaje(datos, bot){
 			datos.alerta = tipoalertas[inde].icono+ ' ' + datos.alerta;
 		}
 		let idAlerta = await database.nuevaAlerta(datos);
-	mensajes.push(datos);
+		console.log(' Alerta creada con id ' + idAlerta)
+	
 	try {
 		//let user = await database.obtenerUsuario(datos.idUsuario);
 		if(user && user.status_user === 'active'){
@@ -58,10 +58,6 @@ async function nuevoMensaje(datos, bot){
 		const found = mensajes.findIndex(element => element.idUsuario == datos.idUsuario);
 		mensajes.splice(found, 1);
 	}
-}else{
-	return false;
-
-}
 
 }
 

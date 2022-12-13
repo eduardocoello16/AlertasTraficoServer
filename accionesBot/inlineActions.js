@@ -4,7 +4,7 @@ const webBotActions = require('./webBotActions');
 import {userInGroup} from './webBotActions.js';
 import * as variables from '../variables.js';
 import { Markup } from 'telegraf';
-import { nuevoMensaje} from '../webBot/alertasUsuario.js';
+import * as webBotAction from './webBotActions.js';
 function inlineCommands(bot,database){
 	
 function control(ctx){
@@ -65,15 +65,15 @@ return salida
 
 	
 		let datos = {
-			idUsuario: ctx.update.chosen_inline_result.from.id,
-			tipoAlerta: ctx.update.chosen_inline_result.result_id,
+			id_usuario: ctx.update.chosen_inline_result.from.id,
+			tipo_alerta: ctx.update.chosen_inline_result.result_id,
 			alerta: ctx.update.chosen_inline_result.query
 		}
 		
-		if(await nuevoMensaje(datos,bot)){
+		if(await webBotAction.nuevaAlerta(datos,bot)){
 			console.log('Enviado')
 			try {
-				await bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Tu alerta fue enviada a revisión.')
+				await bot.telegram.sendMessage(ctx.update.chosen_inline_result.from.id,'Tu alerta fue enviada a revisión, si en 5m no la aceptan se enviará automaticamente.')
 			} catch (error) {
 				console.log(error)
 			}
