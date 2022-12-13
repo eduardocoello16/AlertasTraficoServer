@@ -233,7 +233,6 @@ try {
 		
 	
 		let mensaje = `Un usuario quiere publicar una alerta:\nNombre: ${user.first_name} \nId del Usuario: ${user.id}\nAlerta: ${datos.alerta}`;
-		console.log(alerta._id.toString())
 		let envioMensaje =	await bot.telegram.sendMessage(variables.grupoAdmins, mensaje, {
 			...Markup.inlineKeyboard([
 			
@@ -288,7 +287,7 @@ async function comprobaralertaactiva(idUsuario){
 	}
 }	
 
-async function aceptarAlerta(idAlerta, mensaje, bot){
+async function aceptarAlerta(idAlerta, bot){
 	
 	try {
 	

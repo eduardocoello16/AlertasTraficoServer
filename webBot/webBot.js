@@ -431,6 +431,36 @@ function rutas(bot, database){
 		res.status(200).send(camaras);
 	});
 
+
+	app.post('/obteneralertas', async function(req,res){
+
+		if( comprobarHash(req.body.WebAppData)){
+			try {
+			
+			
+				let alertas = await database.obteneralertas()
+			
+				res.status(200).send(alertas)
+				
+				
+			
+			
+			}catch(error){
+				console.log(error);
+				res.status(500).send(
+					{
+						'msg': 'Error en el servidor'
+					}
+				);
+			}
+		}
+
+	
+	});
+
+
+	
+
 }
 
 
