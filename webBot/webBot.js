@@ -439,7 +439,7 @@ function rutas(bot, database){
 			
 			
 				let alertas = await database.obteneralertas()
-				console.log(alertas)
+			
 				res.status(200).send(alertas)
 				
 				
