@@ -273,7 +273,7 @@ async function obteneralertas(){
 	};
 	try {
 		let listaAlertasActivas = await alertaModel.find(filter).sort({
-			fecha_creacion: -1
+			fecha_creacion: 1
 		});
 		return listaAlertasActivas;
 	} catch (error) {
