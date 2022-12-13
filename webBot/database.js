@@ -267,9 +267,25 @@ async function obtenerAlertasActivas(idUsuario){
 	}
 }
 
+async function obteneralertas(){
+	const filter = {
+		estado_alerta: 'activa'
+	};
+	try {
+		let listaAlertasActivas = await alertaModel.find(filter).sort({
+			fecha_creacion: -1
+		});
+		return listaAlertasActivas;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+
 export {
 	nuevaAlerta,
 	obtenerAlertasActivas,
+	obteneralertas,
 	editAlerta,
 	buscarAlerta,
 	penalizarUsuario,
