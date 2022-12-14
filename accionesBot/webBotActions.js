@@ -294,7 +294,7 @@ async function aceptarAlerta(idAlerta, bot){
 
 		const found =await  database.buscarAlerta(idAlerta);
 		if(found  && found.estado_alerta === 'pending'){
-			await database.editAlerta(found._id.toString(), {estado_alerta: 'activa'})
+			await database.editAlerta(found._id, {estado_alerta: 'activa'})
 			let user = await database.obtenerUsuario(found.id_usuario);
 			database.sumarPublicacionUser(found.id_usuario);
 			
