@@ -436,9 +436,19 @@ function rutas(bot, database){
 
 		if( comprobarHash(req.body.WebAppData)){
 			try {
-			
-			
 				let alertas = await database.obteneralertas()
+				let fechahoy = new Date();
+				let milisegundosDia  = 24*60*60*1000;
+				alertas = alertas.filter((alerta) => {
+					let fecha = new Date(alerta.fecha_creacion);
+					let milisegundostranscurridos = Math.abs(fecha.getTime() - fechahoy.getTime());
+					let diatransc = Math.round(milisegundostranscurridos/milisegundosDia);
+					if(diatransc == 0){ 
+						return alerta
+					}
+				})
+				
+		
 			
 				res.status(200).send(alertas)
 				
