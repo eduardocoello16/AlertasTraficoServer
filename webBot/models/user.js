@@ -58,6 +58,10 @@ const userSchema = mongoose.Schema(
 		ranking: {
 			type: Boolean,
 			default: true
+		},
+		recibiraleras: {
+			type: Boolean,
+			default: false
 		}
 	}
 );
