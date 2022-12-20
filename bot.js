@@ -52,7 +52,7 @@ bot.start((ctx) => {
 		...Markup.inlineKeyboard([
 		
 			[
-				Markup.button.webApp('Abrir WebBot', 'http://127.0.0.1:8080/#/bot')
+				Markup.button.webApp('Abrir WebBot', 'https://www.alertastraficotnf.es/#/bot')
 			]
 		]
 		)
