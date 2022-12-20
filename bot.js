@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
+import { Markup } from 'telegraf';
 import * as filtro from './accionesBot/Filtro.js'
 import * as variables from './variables.js';
 import * as errores from './registroLogs.js';
@@ -47,7 +48,16 @@ bot.start((ctx) => {
 	if (ctx.message.from.first_name) {
 		nombre = ctx.message.from.first_name;
 	}
-	ctx.reply(`Hola ${nombre}, este es el  BOT oficial de Alertas de Tráfico TNF`);
+	ctx.reply(`Hola ${nombre}, este es el  BOT oficial de Alertas de Tráfico TNF para manejarlo tiene que abrir la interfaz web.`, {
+		...Markup.inlineKeyboard([
+		
+			[
+				Markup.button.webApp('Abrir WebBot', 'http://127.0.0.1:8080/#/bot')
+			]
+		]
+		)
+	});
+	
 	//Mensaje para administradores: 
 	if (cAdmin.comprobarAdmin(ctx) === true) {
 		ctx.reply('Para ver los comandos de administrador usa el comando /admincommands');
