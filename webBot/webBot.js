@@ -438,12 +438,13 @@ function rutas(bot, database){
 			try {
 				let alertas = await database.obteneralertas()
 				let fechahoy = new Date();
-				let milisegundosDia  = 24*60*60*1000;
+				let milisegundosDia  = 12*60*60*1000;
 				alertas = alertas.filter((alerta) => {
 					let fecha = new Date(alerta.fecha_creacion);
 					let milisegundostranscurridos = Math.abs(fecha.getTime() - fechahoy.getTime());
+
 					let diatransc = Math.round(milisegundostranscurridos/milisegundosDia);
-					if(diatransc == 0){ 
+					if(milisegundosDia > milisegundostranscurridos){ 
 						return alerta
 					}
 				})
