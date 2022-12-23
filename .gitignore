@@ -8,4 +8,5 @@ npm-debug.log
 bot.log
 filtro.json
 registro.log
+errores.log
 ultimosTweets.json
