@@ -222,7 +222,7 @@ async function userInGroup(idUsuario,bot){
 async function nuevaAlerta(datos, bot){
 
 	//Lo primero comprobar que el usuario no tenga una alerta activa
-if(await comprobaralertaactiva(datos.id_usuario) === false){
+if(await comprobaralertapending(datos.id_usuario) === false){
 
 
 try {
@@ -288,7 +288,7 @@ try {
 }
 }
 
-async function comprobaralertaactiva(idUsuario){
+async function comprobaralertapending(idUsuario){
 //Comprueba si el usuario tiene una alerta en estado pending.
 	let alertasactivas = await database.obtenerAlertasActivas(idUsuario)
 	let found = alertasactivas.findIndex((alerta => alerta.estado_alerta === 'pending'))
@@ -370,7 +370,7 @@ async function cancelarAlerta(idAlerta, ctx, bot){
 export {
 	nuevaAlerta,
 	cancelarAlerta,
-	comprobaralertaactiva,
+	comprobaralertapending,
 	aceptarAlerta,
 	userInGroup,
 	penalizarUsuario,

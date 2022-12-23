@@ -25,7 +25,7 @@ function adminCommands(bot,database){
 
 
 	//Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
-	bot.command('switchusuarioalerta', async (ctx) => { 
+	bot.command('alertasusuarios', async (ctx) => { 
 		if(comprobarAdmin(ctx)){
 
   
@@ -46,7 +46,7 @@ function adminCommands(bot,database){
 	//Obtener tweets llamando a la API twitter
 
 	//Comando para llamar a la función obtenerTweets. Ponerle un tiempo de espera de 1 minut para ejecutar el comando 
-	bot.command('switchobtenertweets', async (ctx) => { 
+	bot.command('obtenertweets', async (ctx) => { 
 		if(comprobarAdmin(ctx)){
 
   

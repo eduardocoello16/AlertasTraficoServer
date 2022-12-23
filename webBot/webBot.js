@@ -232,7 +232,7 @@ function rutas(bot, database){
 		}
 	});
 
-	app.post('/comprobaralertaactiva', async function(req, res) {
+	app.post('/comprobaralertapending', async function(req, res) {
 		let hash = req.body.hash;
 		let WebAppData = req.body.WebAppData;
 		let state = await database.getBotData(variables.bot_db_name);
@@ -240,7 +240,7 @@ function rutas(bot, database){
 			if(state.usuariosPublicaciones){
 				
 				
-				const found = await webBotAction.comprobaralertaactiva(req.body.idUsuario)
+				const found = await webBotAction.comprobaralertapending(req.body.idUsuario)
 				if(found === true){
 					res.status(200).send(true);
 				}else{
