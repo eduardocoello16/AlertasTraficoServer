@@ -193,6 +193,17 @@ async function sumarPublicacionUser(id){
 		return null;
 	}
 }
+async function editUsuario(id, datos){
+	try {
+		const modificar = await usuarioModel.findByIdAndUpdate(id, datos);
+		
+		return await modificar.save();
+	} catch (error) {
+		console.log(error)
+		return null;
+	}
+}
+
 async function penalizarUsuario(userId){
 	const user = await obtenerUsuario(userId);
 	
@@ -305,6 +316,7 @@ async function obtenerAdmins(){
 
 export {
 	nuevaAlerta,
+	editUsuario,
 	obtenerAdmins,
 	obtenerAlertasActivas,
 	obteneralertas,

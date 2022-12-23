@@ -292,8 +292,10 @@ function rutas(bot, database){
 						photo_url: fichero[encontrado].url + urldia,
 						thumb_url: fichero[encontrado].url + urldia,
 					});
+			}else{
+				res.status(500).send('Error al enviar foto');
 			}
-			res.status(200).send('');
+			
 		}
 	});
 
@@ -311,7 +313,7 @@ function rutas(bot, database){
 
 	app.post('/cambiarpermisos', async function(req, res) {
 		let WebAppData = req.body.WebAppData;
-		let idUsuario = req.body.idUsuarioCpermisos;
+		let idUsuario = req.body.idUsuario;
 		let permisos = req.body.permisos;
 		if(comprobarHash(WebAppData)){
 			if(await comprobarAdmin(WebAppData)){
@@ -319,12 +321,35 @@ function rutas(bot, database){
 				if(usuario.type_user != permisos){
 					
 					usuario.type_user = permisos;
+					//Cambiar permisos en la base de datos.
 					await database.actualizarUsuario(usuario);
+					//Cambiar permisos en el grupo de Telegram.
 					await cAdmin.cambiarPermisos(usuario.id, permisos, bot);
 					res.status(200).send(usuario);
 				}
 			}
 		}
+	});
+
+	app.post('/banearusuario', async function(req, res) {
+		let WebAppData = req.body.WebAppData;
+		let idUsuario = req.body.idUsuario;
+		let accion = req.body.accion;
+		try {
+			if(comprobarHash(WebAppData)){
+				if(await comprobarAdmin(WebAppData)){
+					await database.banearSolicitud(idUsuario);
+					let usuario = await database.obtenerUsuario(idUsuario);
+					await database.editUsuario(usuario._id.toString(), {status_user: accion} )
+					
+						res.status(200).send(usuario);
+					
+				}
+			}
+		} catch (error) {
+			res.status(500).send('Error');
+		}
+		
 	});
 	app.post('/cambiarmodooculto', async function(req,res){
 		let WebAppData = req.body.WebAppData;
