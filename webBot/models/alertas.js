@@ -31,11 +31,12 @@ const alertasSchema = mongoose.Schema(
         longitud: {
             type: String
         },
-        id_mensaje_adminchat:{
-            type: String
+        id_mensajes_adminchat:{
+            type: Array
         },
-        id_adminchat:{
-            type: String
+        aceptadopor: {
+            type: String,
+            default: '0000'
         },
         
         fecha_creacion: {

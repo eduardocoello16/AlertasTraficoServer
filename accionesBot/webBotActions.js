@@ -226,31 +226,46 @@ if(await comprobaralertaactiva(datos.id_usuario) === false){
 
 
 try {
+	//Crear la alerta en la base de datos (por defecto estará como pendign ya que está pendiente de aceptar)
 	let alerta = await database.nuevaAlerta(datos);
 	let user = await database.obtenerUsuario(datos.id_usuario);
+	//Revisar que el usuario este activo y no baneado.
 	if(user && user.status_user === 'active'){
-	
-		
-	
 		let mensaje = `Un usuario quiere publicar una alerta:\nNombre: ${user.first_name} \nId del Usuario: ${user.id}\nAlerta: ${datos.alerta}`;
-		let envioMensaje =	await bot.telegram.sendMessage(variables.grupoAdmins, mensaje, {
-			...Markup.inlineKeyboard([
-			
-				[
-					Markup.button.callback('Aceptar Alerta', `aceptar_alerta:${alerta._id.toString()}`),
-					Markup.button.callback('Cancelar envio', `cancelar_alerta:${alerta._id.toString()}`)
-				],
-				[
-					Markup.button.callback('Banear', `ban_solicitud:${user.id}`),
-					Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
-				]
-			]
-			)
-		});
+		//Obtener la lista de administradores.
+		let adminList = await database.obtenerAdmins();
+
+	let idMensajes = [];
 	
+	for (const admin of adminList) {
+		try {
+			let envioMensaje =	await bot.telegram.sendMessage(admin.id, mensaje, {
+				...Markup.inlineKeyboard([
+				
+					[
+						Markup.button.callback('Aceptar Alerta', `aceptar_alerta:${alerta._id.toString()}`),
+						Markup.button.callback('Cancelar envio', `cancelar_alerta:${alerta._id.toString()}`)
+					],
+					[
+						Markup.button.callback('Banear', `ban_solicitud:${user.id}`),
+						Markup.button.url(`Ver perfil de ${user.first_name}`, `tg://user?id=${user.id}`)
+					]
+				]
+				)
+			});
+			idMensajes.push({
+				usuarioAdmin: admin.id,
+				idMensaje: envioMensaje.message_id
+			})
+			
+		} catch (error) {
+			console.log('Error al enviar mensaje a ' + admin.username)
+		}
+	
+	}
 		let datosadminchat = {
-			id_adminchat: envioMensaje.chat.id,
-			id_mensaje_adminchat: envioMensaje.message_id
+			
+			id_mensajes_adminchat: idMensajes
 		}
 		await database.editAlerta(alerta._id.toString(), datosadminchat);
 		
@@ -310,7 +325,15 @@ async function aceptarAlerta(idAlerta, bot){
 	const tipoAlerta = iconos[found.tipo_alerta] || '🟤'
 	found.alerta = `${tipoAlerta} ${found.alerta}`;
 			await bot.telegram.sendMessage(variables.canalAlertas, found.alerta + "\n\n<em><a href='https://t.me/Alertastnf_bot/'>Enviado mediante BOT</a></em>", {parse_mode: 'HTML', disable_web_page_preview: true});
-			await bot.telegram.editMessageText( found.id_adminchat, found.id_mensaje_adminchat, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${found.alerta}` );
+			let adminList = await database.obtenerAdmins();
+			let adminMessages = found.id_mensajes_adminchat;
+			for(const admin of adminList){
+			let message = adminMessages.find((message) => message.usuarioAdmin == admin.id)
+				if(message != null){
+					await bot.telegram.editMessageText( message.usuarioAdmin, message.idMensaje, null, `Mensaje de ${user.first_name} ha sido enviado.\nMensaje: ${found.alerta}` );
+				}
+			}
+
 			await bot.telegram.sendMessage(user.id, '✔ Tu alerta se ha sido aceptada. Muchas Gracias 🙌❤');
 			
 		}
@@ -328,7 +351,14 @@ async function cancelarAlerta(idAlerta, ctx, bot){
 		const found =await  database.buscarAlerta(idAlerta);
 		let user = await database.obtenerUsuario(found.id_usuario);
 		await database.editAlerta(found._id.toString(), {estado_alerta: 'denegada'})
-		await bot.telegram.editMessageText( found.id_adminchat, found.id_mensaje_adminchat, null, `Un mensaje ha sido eliminado.\nUsuario: ${user.first_name}\nMensaje: ${found.alerta}` );
+		let adminList = await database.obtenerAdmins();
+		let adminMessages = found.id_mensajes_adminchat;
+		for(const admin of adminList){
+			let message = adminMessages.find((message) => message.usuarioAdmin == admin.id)
+				if(message != null){
+					await bot.telegram.editMessageText( message.usuarioAdmin, message.idMensaje, null, `Un mensaje ha sido eliminado.\nUsuario: ${user.first_name}\nMensaje: ${found.alerta}` );
+				}
+			}
 		await bot.telegram.sendMessage(user.id, '🚫 Los administradores han decidido cancelar el envío de tu alerta.');
 	} catch (error) {
 		logs.botError('Error al cancelar la alerta', error);

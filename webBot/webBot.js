@@ -7,7 +7,6 @@ import  bp from 'body-parser';
 import * as variables from '../variables.js';
 import  cors from 'cors';
 import * as webBotAction from '../accionesBot/webBotActions.js';
-import * as alertasUsuario from './alertasUsuario.js'; 
 import * as moders from '../accionesBot/moders.js'
 import * as cAdmin from '../accionesBot/admin.js'; 
 import * as logs from '../registroLogs.js';
@@ -262,15 +261,7 @@ function rutas(bot, database){
 		}
 	});
 
-	app.post('/alertasactivas', async function(req, res) {
-		
 	
-		let WebAppData = req.body.WebAppData;
-		if(comprobarHash(WebAppData)){
-			
-			res.status(200).send(alertasUsuario.mensajes);
-		}
-	});
 	app.post('/enviarimagen', async function(req, res) {
 		
 	
@@ -302,7 +293,7 @@ function rutas(bot, database){
 						thumb_url: fichero[encontrado].url + urldia,
 					});
 			}
-			res.status(200).send(alertasUsuario.mensajes);
+			res.status(200).send('');
 		}
 	});
 

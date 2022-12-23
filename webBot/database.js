@@ -282,8 +282,30 @@ async function obteneralertas(){
 }
 
 
+async function obtenerAdmins(){
+
+	const filter = {
+		$or: [
+			{ 	type_user:   'moder'  },
+			{ 	type_user: 'admin' }
+		  ]
+	
+	};
+	try {
+		let admins = await usuarioModel.find(filter);
+		
+		return admins;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+
+
+
 export {
 	nuevaAlerta,
+	obtenerAdmins,
 	obtenerAlertasActivas,
 	obteneralertas,
 	editAlerta,
