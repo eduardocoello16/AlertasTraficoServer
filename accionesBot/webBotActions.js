@@ -2,6 +2,7 @@ import * as database from '../webBot/database.js';
 import { Markup } from 'telegraf';
 import * as variables from '../variables.js';
 import * as logs from '../registroLogs.js';
+var usuariosActivos = [];
 
 async function enviarSolicitud(user, bot){
 	
@@ -220,6 +221,15 @@ async function userInGroup(idUsuario,bot){
 
 //Funciones crear alertas
 async function nuevaAlerta(datos, bot){
+	
+	
+	let find = usuariosActivos.find(idUsuario => idUsuario == datos.id_usuario)
+	console.log(find)
+	if(!find){
+		usuariosActivos.push(datos.id_usuario)
+	
+	console.log(usuariosActivos)
+	
 
 	//Lo primero comprobar que el usuario no tenga una alerta activa
 if(await comprobaralertapending(datos.id_usuario) === false){
@@ -286,6 +296,9 @@ try {
 }else{
 	return false;
 }
+	}else{
+		return false
+	}
 }
 
 async function comprobaralertapending(idUsuario){
@@ -300,6 +313,7 @@ async function comprobaralertapending(idUsuario){
 		return true
 		
 	}
+	
 }	
 
 async function aceptarAlerta(idAlerta, bot){
@@ -308,6 +322,10 @@ async function aceptarAlerta(idAlerta, bot){
 	
 
 		const found =await  database.buscarAlerta(idAlerta);
+		let find = usuariosActivos.find(idUsuario => idUsuario == found.id_usuario)
+		usuariosActivos.pop(find)
+		console.log(usuariosActivos)
+
 		if(found  && found.estado_alerta === 'pending'){
 			await database.editAlerta(found._id, {estado_alerta: 'activa'})
 			let user = await database.obtenerUsuario(found.id_usuario);
@@ -349,6 +367,8 @@ async function cancelarAlerta(idAlerta, ctx, bot){
 	try {
 
 		const found =await  database.buscarAlerta(idAlerta);
+		let find = usuariosActivos.find(idUsuario => idUsuario == found.id_usuario)
+		usuariosActivos.pop(find)
 		let user = await database.obtenerUsuario(found.id_usuario);
 		await database.editAlerta(found._id.toString(), {estado_alerta: 'denegada'})
 		let adminList = await database.obtenerAdmins();
