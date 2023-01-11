@@ -9,9 +9,8 @@ function inlineCommands(bot,database){
 	
 function control(ctx){
 	let salida = false;
-salida = ((ctx.update.inline_query.chat_type === 'supergroup') ? true : false);
 salida = ((ctx.update.inline_query.query.length >  5) ? true : false);
-salida = ((ctx.update.inline_query.query.includes(' ')  ) ? true : false);
+salida = ((ctx.update.inline_query.chat_type === 'supergroup') ? true : false);
 return salida
 }
  
@@ -124,7 +123,7 @@ async function crearAlertas(ctx, database, variables){
 			input_message_content: {
 				message_text: 'La alerta: ' +respuesta + '. \n se enviará al canal.' 
 			},
-			thumb_url: 'https://alertastraficotnfbot.netlify.app/radar.png',
+			thumb_url: 'https://alertastraficotnfbot.netlify.app/radarfoto.png',
 			description: 'Envía una nueva alerta al canal.'
             
 		},
@@ -135,7 +134,7 @@ async function crearAlertas(ctx, database, variables){
 			input_message_content: {
 				message_text: 'La alerta: ' + respuesta + ' se enviará al canal.'
 			},
-			thumb_url: 'https://alertastraficotnfbot.netlify.app/accidente.png',
+			thumb_url: 'https://alertastraficotnfbot.netlify.app/accidentefoto.png',
 			description: 'Envía una nueva alerta al canal.'
             
 		},
@@ -146,7 +145,7 @@ async function crearAlertas(ctx, database, variables){
 			input_message_content: {
 				message_text:   `La alerta: ${respuesta}\n se enviará al canal.`
 			},
-			thumb_url: 'https://alertastraficotnfbot.netlify.app/retenciones.png',
+			thumb_url: 'https://alertastraficotnfbot.netlify.app/retencionesfoto.png',
 			description: 'Envía una nueva alerta al canal.'
 		},
 		{
@@ -156,7 +155,7 @@ async function crearAlertas(ctx, database, variables){
 			input_message_content: {
 				message_text:   `La alerta: ${respuesta}\n  se enviará al canal.`
 			},
-			thumb_url: 'https://alertastraficotnfbot.netlify.app/obras.png',
+			thumb_url: 'https://alertastraficotnfbot.netlify.app/obrasfoto.png',
 			description: 'Envía una nueva alerta al canal.'
 		},
 		{
@@ -166,7 +165,7 @@ async function crearAlertas(ctx, database, variables){
 			input_message_content: {
 				message_text:   `La alerta: ${respuesta}\n  se enviará al canal.`
 			},
-			thumb_url: 'https://alertastraficotnfbot.netlify.app/otro.png',
+			thumb_url: 'https://alertastraficotnfbot.netlify.app/otrofoto.png',
 			description: 'Envía una nueva alerta al canal.'
 		},
 		{
@@ -176,7 +175,7 @@ async function crearAlertas(ctx, database, variables){
 			input_message_content: {
 				message_text:   `La alerta: ${respuesta}\n  se enviará al canal.`
 			},
-			thumb_url: 'https://alertastraficotnfbot.netlify.app/viacortada.png',
+			thumb_url: 'https://alertastraficotnfbot.netlify.app/viacortadafoto.png',
 			description: 'Envía una nueva alerta al canal.'
 		}
 	];
